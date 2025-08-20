@@ -1,0 +1,647 @@
+<!-- Deposit List -->
+<div class="container-fluid" style="height: 100%;">
+
+  <div class="d-flex justify-content-end mb-3">
+
+    <small><span class="text-primary">Deposit</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-dark">Deposit List</span></small>
+
+  </div>
+
+  <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+    <div class="card-header bg-white">
+
+      <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+
+        <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Deposit List</h6>
+        
+      </div>
+          
+    </div>
+
+    <div class="card-body">
+
+      <div class="card rounded-0">
+
+        <div class="card-body rounded-0">
+
+          <div class="d-flex justify-content-between">
+
+            <div class="d-flex">
+
+              <div class="position-relative">
+
+                <img src="images/searchBlack.png" class="position-absolute search-icon" style="width: 25px;top: 6px;left: 8px;">
+            
+                <input type="text" class="form-control" placeholder="Search here..." style="background: transparent !important; border-radius: 8px !important; padding-left: 40px;">
+      
+              </div>
+
+              <div style="border: 1px solid #D8D8D8; cursor: pointer;" class="px-3 ms-2 d-flex align-items-center rounded-3" aria-controls="offcanvasRight" data-bs-target="#offcanvasRight" data-bs-toggle="offcanvas">
+
+                <img src="images/filterVapour.png" style="width: 18px;" alt=""><span class="ms-2">Filter</span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="mt-3">
+
+            <div class="table-responsive table-wrapper">
+
+              <table class="table table-borderless align-middle table-scroll">
+
+                <thead class="bg-light text-secondary">
+
+                  <tr>
+
+                    <th>Property Name</th>
+
+                    <th>Unit</th>
+
+                    <th>Deposit Amount</th>
+
+                    <th>Received</th>
+
+                    <th>Balance</th>
+
+                    <th>Refund Amount</th>
+                    
+                    <th>Payment History</th>
+
+                    <th>Refund History</th>
+
+                    <th style="text-align: center !important; min-width: 210px !important;" class="th-action">Action</th>
+
+                  </tr>
+
+                </thead>
+          
+                <tbody>
+
+                  <ng-container *ngIf="(_.size(this.permissions.viewPermission?.branchIds) > 0 ); else other">
+
+                    <ng-container *ngIf="!_.isEmpty(masterList['depositList']) ;else other">
+
+                      <tr *ngFor="let deposit of this.masterList['depositList']">
+  
+                        <td>{{ deposit.property?.propertyName }}</td>
+
+                        <td>{{ deposit?.unit?.unitName }}</td>
+
+                        <td>{{ this.service.currencyCode?.currencyCode }}. {{ (deposit.depositAmount | number: '1.0') || 0 }}</td>
+
+                        <td>{{ this.service.currencyCode?.currencyCode }}. {{ (deposit.amountPaid | number: '1.0') || 0 }}</td>
+
+                        <td>{{ this.service.currencyCode?.currencyCode }}. {{ (deposit.amountOutstanding | number: '1.0') || 0 }}</td>
+
+                        <td>{{ this.service.currencyCode?.currencyCode }}. {{ (deposit.amountRefunded | number: '1.0') || 0 }}</td>
+
+                        <td style="text-align: center !important;">
+
+                          <img src="images/icons/history-outline.svg" style="width: 26px; height: auto; cursor: pointer;" alt="" (click)="openPaymentHistoryModal(deposit)">
+
+                        </td>
+                          
+                        <td style="text-align: center !important;">
+
+                          <img src="images/icons/history-outline.svg" style="width: 26px; height: auto; cursor: pointer;" alt="" (click)="openRefundHistoryModal(deposit)">
+
+                        </td>
+                        
+                        <!-- <td>
+
+                          <img src="images/icons/pepicons-pencil.svg" style="width: 26px; height: auto;" alt="">
+
+                        </td> -->
+
+                        <td class="d-flex justify-content-center th-action">
+
+                          <div>
+
+                            <nav class="navbar navbar-expand-lg navbar-light">
+                    
+                              <div class="navbar-collapse collapse show">
+                      
+                                <ul class="navbar-nav ml-auto navbar-list align-items-center">
+                    
+                                  <li class="nav-item nav-icon">
+                  
+                                    <a class="cursor-pointer" [matMenuTriggerFor]="profileMenu">
+            
+                                      <img src="images/icons/pepicons-pencil.svg" style="width: 26px; height: auto;" alt="">
+            
+                                    </a>
+            
+                                    <mat-menu class="header-mat-menu" #profileMenu="matMenu">
+            
+                                      <div class="btn-container">
+          
+                                        <div>
+        
+                                          <div class="action-buttons p-1" *ngIf="(deposit.amountPaid <=  deposit.depositAmount)" (click)="openReceiveModal(deposit?._id)">
+          
+                                            <p class="p-2 mb-0">Receive</p>
+    
+                                          </div>
+      
+                                          <div *ngIf="(deposit.depositAmount <=  deposit.amountPaid)" class="action-buttons p-1" (click)="openRefundModal(deposit?._id)">
+          
+                                            <p class="p-2 mb-0">Refund</p>
+    
+                                          </div>
+          
+                                        </div>
+          
+                                      </div>
+            
+                                    </mat-menu>
+                  
+                                  </li>
+                    
+                                </ul>
+                      
+                              </div>
+                        
+                            </nav>
+
+                          </div>
+
+                        </td>
+  
+                      </tr>
+
+                    </ng-container>
+                     
+                    <ng-template #other>
+
+                      <tr>
+
+                        <td colspan="10" style="text-align: center !important;">No Records Found</td>
+
+                      </tr>
+
+                    </ng-template>
+
+                  </ng-container>
+
+                  <ng-template #other>
+
+                    <tr>
+
+                      <td colspan="11" style="text-align: center !important;"><img style="width: 16px !important;" class="me-2" src="images/lock2.png" alt="">Access Denied</td>
+
+                    </tr>
+
+                  </ng-template>
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+            <div *ngIf="totalCount > 0">
+
+              <mat-paginator 
+                class="custom-paginator"
+                appendTo="body"
+                [length]="totalCount"
+                [pageSize]="pageSize"
+                [pageIndex]="pageIndex"
+                [pageSizeOptions]="[5, 10, 25, 50]"
+                (page)="onPageChange($event)">
+              </mat-paginator>
+
+            </div>  
+
+          </div>
+
+        </div>
+          
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Payment History Modal -->
+<ng-template #paymentHistoryModal let-modal>
+
+  <div class="modal-header">
+  
+    <div class="d-flex justify-content-between align-items-center w-100" style="height: 40px;">
+
+      <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119 ;">Payment History :</h6>
+      
+      <i class="bi bi-x-lg pe-2 fw-bold" (click)="modal.close()"></i>
+      
+    </div>
+  
+  </div>
+
+  <div class="modal-body">
+
+    <div class="mt-3">
+
+      <div class="table-responsive">
+
+        <table class="table table-borderless align-middle table-striped">
+
+          <thead class="bg-light text-secondary">
+
+            <tr>
+
+              <th>Payment Date</th>
+
+              <th>Deposit Amount</th>
+
+              <th>Received Amount</th>
+
+              <th>Balance Amount</th>
+
+              <th>Payment Mode</th>
+
+            </tr>
+
+          </thead>
+      
+          <tbody>
+
+            <ng-container *ngIf="(_.size(this.permissions.viewPermission?.branchIds) > 0);  else other">
+
+              <ng-container *ngIf="!_.isEmpty(masterList['receiveHistory']) ;else other">
+
+                <tr *ngFor="let pay of this.masterList['receiveHistory']">
+
+                  <td>{{ pay.paymentDate | date: 'dd-MM-yyyy' }}</td>
+
+                  <td>{{ this.service.currencyCode?.currencyCode }}. {{ (pay?.amountDue | number: '1.0') || '0' }}</td>
+
+                  <td>{{ this.service.currencyCode?.currencyCode }}. {{ (pay.amountPaid | number: '1.0' ) || '0' }}</td>
+
+                  <td>{{ this.service.currencyCode?.currencyCode }}. {{ (pay.amountOutstanding | number: '1.0') || '0' }}</td>
+
+                  <td class="d-flex justify-content-center th-action">{{ (pay.paymentMode | titlecase ) || '-' }}</td>
+
+                </tr>
+
+              </ng-container>
+
+              <ng-template #other>
+
+                <tr>
+
+                  <td colspan="10" style="text-align: center !important;">No  Records Found</td>
+
+                </tr>
+
+              </ng-template>
+
+            </ng-container>
+
+            <ng-template #other>
+
+              <tr>
+
+                <td colspan="10" style="text-align: center !important;"><img style="width: 16px !important;" class="me-2" src="images/lock2.png" alt="">Access Denied</td>
+
+              </tr>
+
+            </ng-template>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</ng-template>
+
+<!-- Refund History Modal -->
+<ng-template #refundHistoryModal let-modal>
+
+  <div class="modal-header">
+  
+    <div class="d-flex justify-content-between align-items-center w-100" style="height: 40px;">
+
+      <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119 ;">Refund History :</h6>
+      
+      <i class="bi bi-x-lg pe-2 fw-bold" (click)="modal.close()"></i>
+      
+    </div>
+  
+  </div>
+
+  <div class="modal-body">
+
+    <div class="mt-3">
+
+      <div class="table-responsive">
+
+        <table class="table table-borderless align-middle table-striped">
+
+          <thead class="bg-light text-secondary">
+
+            <tr>
+
+              <th>Refund Date</th>
+
+              <th>Received Amount</th>
+
+              <th>Refund Amount</th>
+
+              <th>Balance Amount</th>
+
+              <th>Payment Mode</th>
+
+            </tr>
+
+          </thead>
+      
+          <tbody>
+
+            <ng-container *ngIf="(_.size(this.permissions.viewPermission.branchIds) > 0); else other">
+
+              <ng-container *ngIf="!_.isEmpty(masterList['refundHistory']) ;else other">
+
+                <tr *ngFor="let pay of this.masterList['refundHistory']">
+
+                  <td>{{ pay.paymentDate | date: 'dd-MM-yyyy' }}</td>
+
+                  <td>{{ this.service.currencyCode?.currencyCode }}. {{ (pay?.amountDue | number: '1.0' ) || '0' }}</td>
+
+                  <td>{{ this.service.currencyCode?.currencyCode }}. {{ (pay.refundAmount | number: '1.0') || '0' }}</td>
+
+                  <td>{{ this.service.currencyCode?.currencyCode }}. {{ (pay.amountOutstanding | number: '1.0') || '0' }}</td>
+
+                  <td class="d-flex justify-content-center th-action">{{ (pay.paymentMode | titlecase ) || '-' }}</td>
+
+                </tr>
+
+              </ng-container>
+
+              <ng-template #other>
+
+                <tr>
+
+                  <td colspan="10" style="text-align: center !important;">No  Records Found</td>
+
+                </tr>
+
+              </ng-template>
+
+            </ng-container>
+
+            <ng-template #other>
+
+              <tr>
+
+                <td colspan="10" style="text-align: center !important;"><img style="width: 16px !important;" class="me-2" src="images/lock2.png" alt="">Access Denied</td>
+
+              </tr>
+
+            </ng-template>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</ng-template>
+
+<!-- Filter Offcanvas -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" style="margin-top: 84px; background-color: #F6F9FC;">
+  
+  <div class="offcanvas-header border-bottom">
+      
+    <h5 class="offcanvas-title" id="offcanvasRightLabel">Filter</h5>
+    
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  
+  </div>
+
+  <div class="offcanvas-body ps-4 pe-4">
+  
+    <form [formGroup]="filterForm">
+
+      <!-- Accordion: Property -->
+      <div class="accordion mt-2" id="accordionProperty">
+  
+        <div class="accordion-item border-0 p-2">
+
+          <h2 class="accordion-header" id="headingProperty">
+
+            <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProperty" aria-expanded="true" aria-controls="collapseProperty" style="background-color: transparent;">Property Name</button>
+  
+          </h2>
+  
+          <div id="collapseProperty" class="accordion-collapse collapse" aria-labelledby="headingProperty" data-bs-parent="#accordionProperty">
+              
+            <div class="accordion-body w-100 p-0 mt-3">
+
+              <ng-select class="form-control" [items]="masterList['propertyList']" bindLabel="property" bindValue="_id" formControlName="propertyName" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body" placeholder="Select Property">
+
+                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                  <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                    
+                    <div class="d-flex">
+
+                      <span class="ng-value-label ellipsis ms-1">
+
+                        <span>{{ _.get(item,'propertyName') }}</span> 
+
+                      </span>
+
+                      <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                      <span style="width: 1px; height: 20px; background-color: black;"></span>
+                        
+                    </div>
+
+                  </div>
+
+                  <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                    <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                  </div>
+
+                </ng-template> 
+
+                <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                  <div class="form-check d-flex align-items-center"> 
+                      
+                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected('propertyName', item._id)"/>
+
+                    <label class="form-check-label mt-1">{{ item?.propertyName }}</label>
+
+                  </div>
+                      
+                </ng-template>
+            
+              </ng-select>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Accordion: Unit -->
+      <div class="accordion mt-2" id="accordionUnit">
+  
+        <div class="accordion-item border-0 p-2">
+
+          <h2 class="accordion-header" id="headingUnit">
+
+            <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUnit" aria-expanded="true" aria-controls="collapseUnit" style="background-color: transparent;">Unit</button>
+  
+          </h2>
+  
+          <div id="collapseUnit" class="accordion-collapse collapse" aria-labelledby="headingUnit" data-bs-parent="#accordionUnit">
+              
+            <div class="accordion-body w-100 p-0 mt-3">
+
+              <ng-select class="form-control" [items]="masterList['unitList']" bindLabel="unitName" bindValue="_id" formControlName="unitName" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body" placeholder="Select Unit">
+
+                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                  <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                    
+                    <div class="d-flex">
+
+                      <span class="ng-value-label ellipsis ms-1">
+
+                        <span>{{ _.get(item,'unitName') }}</span> 
+
+                      </span>
+
+                      <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                      <span style="width: 1px; height: 20px; background-color: black;"></span>
+                        
+                    </div>
+
+                  </div>
+
+                  <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                    <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                  </div>
+
+                </ng-template> 
+
+                <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                  <div class="form-check d-flex align-items-center"> 
+                      
+                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected('unitName', item._id)"/>
+
+                    <label class="form-check-label mt-1">{{ item?.unitName }}</label>
+
+                  </div>
+                      
+                </ng-template>
+            
+              </ng-select>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Accordion: Deposit Amount -->
+      <div class="accordion mt-2" id="accordionDepositAmt">
+
+        <div class="accordion-item border-0 p-2 rounded shadow-sm bg-white">
+        
+          <h2 class="accordion-header" id="headingDepositAmt">
+        
+            <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDepositAmt" 
+            aria-expanded="true" aria-controls="collapseDepositAmt" style="background-color: transparent">Deposit Amount</button>
+
+          </h2>
+          
+          <div id="collapseDepositAmt" class="accordion-collapse collapse" aria-labelledby="headingDepositAmt" data-bs-parent="#accordionDepositAmt">
+          
+            <div class="accordion-body w-100 p-0 mt-3">
+          
+              <div class="range-slider-container p-3 rounded">
+          
+                <!-- Sliders -->
+                <div class="range-slider">
+               
+                  <input type="range" class="amount-slider" [(ngModel)]="depositAmtMinValue" [ngModelOptions]="{standalone: true}" [min]="depositAmtSliderMin" [max]="depositAmtSliderMax" [step]="100" (input)="onDepositAmtSliderChange()"/>
+          
+                  <input type="range" class="amount-slider" [(ngModel)]="depositAmtMaxValue" [ngModelOptions]="{standalone: true}" [min]="depositAmtSliderMin" [max]="depositAmtSliderMax" [step]="100" (input)="onDepositAmtSliderChange()"/>
+          
+                </div>
+
+                <!-- Inputs -->
+                <div class="amount-inputs d-flex justify-content-between mt-3">
+         
+                  <div class="input-group">
+         
+                    <span class="input-group-text text-dark border-0">{{ this.service.currencyCode?.currencyCode }}.</span>
+         
+                    <input type="number" class="form-control border-0" [(ngModel)]="depositAmtMinValue" [ngModelOptions]="{standalone: true}" [min]="depositAmtSliderMin" [max]="depositAmtMaxValue" (input)="onDepositAmtSliderChange()"/>
+         
+                  </div>
+         
+                  <span class="mx-3 mt-2 fw-bold">—</span>
+         
+                  <div class="input-group">
+         
+                    <span class="input-group-text text-dark border-0">{{ this.service.currencyCode?.currencyCode }}.</span>
+         
+                    <input type="number" class="form-control border-0" [(ngModel)]="depositAmtMaxValue" [ngModelOptions]="{standalone: true}" [min]="depositAmtMinValue" [max]="depositAmtSliderMax" (input)="onDepositAmtSliderChange()"/>
+         
+                  </div>
+         
+                </div>
+         
+              </div>
+         
+            </div>
+         
+          </div>
+ 
+        </div>
+ 
+      </div>
+
+    </form>
+
+  </div>
+
+  <div class="offcanvas-footer d-flex justify-content-end border-bottom border-top p-3">
+    
+    <button class="btn btn-sm btn-outline-secondary me-3" data-bs-dismiss="offcanvas">Close</button>
+
+    <button class="btn btn-sm btn-secondary" (click)="getDepositList()" data-bs-dismiss="offcanvas">Apply</button>
+  
+  </div>
+
+</div>
