@@ -1,0 +1,517 @@
+<div class="container-fluid" style="height: 100%;">
+
+  <div class="d-flex justify-content-end mb-3">
+
+    <small><span class="text-primary">Rental</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-dark">Rental Unit List</span></small>
+
+  </div>
+
+  <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+    <div class="card-header bg-white">
+
+      <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+
+        <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119 ;">Rent Unit List</h6>
+        
+        <!-- <img src="images/download.png" style="width: 26px; height: auto; cursor: pointer;" alt="" (click)="xlDownload()"> -->
+      
+      </div>
+          
+    </div>
+
+    <div class="card-body">
+
+      <div class="card rounded-0">
+
+        <div class="card-body rounded-0">
+
+          <div class="d-flex justify-content-between">
+
+            <div class="d-flex">
+
+              <div class="position-relative">
+
+                <img src="images/searchBlack.png" class="position-absolute search-icon" style="width: 25px;top: 6px;left: 8px;">
+            
+                <input type="text" class="form-control" placeholder="Search here..." style="background: transparent !important; border-radius: 8px !important; padding-left: 40px;">
+      
+              </div>
+
+              <div style="border: 1px solid #D8D8D8; cursor: pointer;" class="px-3 ms-2 d-flex align-items-center rounded-3" aria-controls="offcanvasRight" data-bs-target="#offcanvasRight" data-bs-toggle="offcanvas">
+
+                <img src="images/filterVapour.png" style="width: 18px;" alt=""><span class="ms-2">Filter</span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="mt-3">
+
+            <div class="table-responsive table-wrapper">
+
+              <table class="table table-borderless align-middle table-scroll">
+
+                <thead class="bg-light text-secondary">
+
+                  <tr>
+
+                    <th style="min-width: 200px !important;" class="th-first-field">Property Name</th>
+
+                    <th style="min-width: 120px;">Unit</th>
+
+                    <th style="min-width: 190px;">Tenant Name</th>
+
+                    <th style="min-width: 175px;">Contract Amount</th>
+
+                    <th style="min-width: 140px;">Frequency</th>
+
+                    <th style="min-width: 150px;">Last Due Date</th>
+                    
+                    <th style="min-width: 150px !important; padding-right: 33px !important;" class="th-action">Action</th>
+
+                  </tr>
+
+                </thead>
+          
+                <tbody>
+
+                  <ng-container *ngIf="_.size(permissions.viewPermission.branchIds) > 0; else other">
+
+                    <ng-container *ngIf="!_.isEmpty(masterList['rentList']); else other">
+
+                      <tr *ngFor="let rent of this.masterList['rentList']">
+  
+                        <td class="td-first-field">{{ rent.propertyName[0]?.propertyName }}</td>
+
+                        <td>{{ rent.unitName?.unitName }}</td>
+
+                        <td>{{ rent.firstName + ' ' + rent.lastName }}</td>
+
+                        <td>{{ this.service.currencyCode?.currencyCode }}. {{ (rent.contractDetails[0]?.rentalAmt | number: '1.0') || '-' }}</td>
+
+                        <td>{{ rent.contractDetails[0]?.frequency || '-' }}</td>
+
+                        <td>{{( rent.contractDetails[0]?.nextDueDay | date: 'dd-MM-yyyy') || '-' }}</td>
+
+                        <td class="th-action">
+
+                          <button class="btn btn-sm payment-button fw-500" (click)="openRentDetailsModal(rent)">Payment</button>
+
+                        </td>
+  
+                      </tr>
+
+                    </ng-container>
+
+                    <ng-template #other>
+
+                      <tr>
+
+                        <td colspan="10" style="text-align: center !important;">No Records Found</td>
+
+                      </tr>
+
+                    </ng-template>
+
+                  </ng-container>
+
+                  <ng-template #other>
+
+                    <tr>
+
+                      <td colspan="10" style="text-align: center !important;"><img style="width: 16px !important;" class="me-2" src="images/lock2.png" alt="">Access Denied</td>
+
+                    </tr>
+
+                  </ng-template>
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+            <div *ngIf="totalCount > 0">
+
+              <mat-paginator 
+                class="custom-paginator"
+                appendTo="body"
+                [length]="totalCount"
+                [pageSize]="pageSize"
+                [pageIndex]="pageIndex"
+                [pageSizeOptions]="[5, 10, 25, 50]"
+                (page)="onPageChange($event)">
+              </mat-paginator>
+
+            </div>  
+
+          </div>
+
+        </div>
+          
+      </div>
+
+    </div>
+
+  </div>
+
+</div>  
+
+<!-- Filter Offcanvas -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" style="margin-top: 84px; background-color: #F6F9FC;">
+  
+  <div class="offcanvas-header border-bottom">
+      
+    <h5 class="offcanvas-title" id="offcanvasRightLabel">Filter</h5>
+    
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  
+  </div>
+
+  <div class="offcanvas-body ps-4 pe-4">
+  
+    <form [formGroup]="filterForm">
+
+      <!-- Accordion: Property -->
+      <div class="accordion mt-2" id="accordionProperty">
+  
+        <div class="accordion-item border-0 p-2">
+
+          <h2 class="accordion-header" id="headingProperty">
+
+            <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProperty" aria-expanded="true" aria-controls="collapseProperty" style="background-color: transparent;">Property Name</button>
+  
+          </h2>
+  
+          <div id="collapseProperty" class="accordion-collapse collapse" aria-labelledby="headingProperty" data-bs-parent="#accordionProperty">
+              
+            <div class="accordion-body w-100 p-0 mt-3">
+
+              <ng-select class="form-control" [items]="masterList['propertyList']" bindLabel="property" bindValue="_id" formControlName="propertyName" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body" placeholder="Select Property">
+
+                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                  <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                    
+                    <div class="d-flex">
+
+                      <span class="ng-value-label ellipsis ms-1">
+
+                        <span>{{ _.get(item,'propertyName') }}</span> 
+
+                      </span>
+
+                      <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                      <span style="width: 1px; height: 20px; background-color: black;"></span>
+                        
+                    </div>
+
+                  </div>
+
+                  <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                    <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                  </div>
+
+                </ng-template> 
+
+                <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                  <div class="form-check d-flex align-items-center"> 
+                      
+                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected('propertyName', item._id)"/>
+
+                    <label class="form-check-label mt-1">{{ item?.propertyName }}</label>
+
+                  </div>
+                      
+                </ng-template>
+            
+              </ng-select>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Accordion: Unit -->
+      <div class="accordion mt-2" id="accordionUnit">
+  
+        <div class="accordion-item border-0 p-2">
+
+          <h2 class="accordion-header" id="headingUnit">
+
+            <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUnit" aria-expanded="true" aria-controls="collapseUnit" style="background-color: transparent;">Unit</button>
+  
+          </h2>
+  
+          <div id="collapseUnit" class="accordion-collapse collapse" aria-labelledby="headingUnit" data-bs-parent="#accordionUnit">
+              
+            <div class="accordion-body w-100 p-0 mt-3">
+
+              <ng-select class="form-control" [items]="masterList['unitList']" bindLabel="unitName" bindValue="_id" formControlName="unitName" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body" placeholder="Select Unit">
+
+                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                  <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                    
+                    <div class="d-flex">
+
+                      <span class="ng-value-label ellipsis ms-1">
+
+                        <span>{{ _.get(item,'unitName') }}</span> 
+
+                      </span>
+
+                      <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                      <span style="width: 1px; height: 20px; background-color: black;"></span>
+                        
+                    </div>
+
+                  </div>
+
+                  <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                    <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                  </div>
+
+                </ng-template> 
+
+                <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                  <div class="form-check d-flex align-items-center"> 
+                      
+                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected('unitName', item._id)"/>
+
+                    <label class="form-check-label mt-1">{{ item?.unitName }}</label>
+
+                  </div>
+                      
+                </ng-template>
+            
+              </ng-select>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Accordion: Tenant -->
+      <div class="accordion mt-2" id="accordionTenant">
+  
+        <div class="accordion-item border-0 p-2">
+
+          <h2 class="accordion-header" id="headingTenanat">
+
+            <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTenant" aria-expanded="true" aria-controls="collapseTenant" style="background-color: transparent;">Tenant Name</button>
+  
+          </h2>
+  
+          <div id="collapseTenant" class="accordion-collapse collapse" aria-labelledby="headingTenanat" data-bs-parent="#accordionTenant">
+              
+            <div class="accordion-body w-100 p-0 mt-3">
+
+              <ng-select class="form-control" [items]="this.masterList['tenantList']" bindLabel="property" bindValue="_id" formControlName="tenantName" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body" placeholder="Select Tenant">
+                
+                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                  <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                    
+                    <div class="d-flex">
+
+                      <span class="ng-value-label ellipsis ms-1">
+
+                        <span>{{ _.get(item,'firstName') + ' ' + _.get(item,'lastName') }}</span> 
+
+                      </span>
+
+                      <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                      <span style="width: 1px; height: 20px; background-color: black;"></span>
+                        
+                    </div>
+
+                  </div>
+
+                  <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                    <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                  </div>
+
+                </ng-template> 
+
+                <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                  <div class="form-check d-flex align-items-center"> 
+                      
+                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected('tenantName', item._id)"/>
+
+                    <label class="form-check-label mt-1">{{ item?.firstName + ' ' + item.lastName }}</label>
+
+                  </div>
+                      
+                </ng-template>
+            
+              </ng-select>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Accordion: Contract Amount -->
+      <div class="accordion mt-2" id="accordionContractAmt">
+
+        <div class="accordion-item border-0 p-2 rounded shadow-sm bg-white">
+        
+          <h2 class="accordion-header" id="headingContractAmt">
+        
+            <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseContractAmt" 
+            aria-expanded="true" aria-controls="collapseContractAmt" style="background-color: transparent">Contract Amount</button>
+
+          </h2>
+          
+          <div id="collapseContractAmt" class="accordion-collapse collapse" aria-labelledby="headingContractAmt" data-bs-parent="#accordionContractAmt">
+          
+            <div class="accordion-body w-100 p-0 mt-3">
+          
+              <div class="range-slider-container p-3 rounded">
+
+                <div class="range-slider">
+               
+                  <input type="range" class="amount-slider" [(ngModel)]="contractAmtMinValue" [ngModelOptions]="{standalone: true}" [min]="contractAmtSliderMin" [max]="contractAmtSliderMax" [step]="100" (input)="onContractAmtSliderChange()" />
+          
+                  <input type="range" class="amount-slider" [(ngModel)]="contractAmtMaxValue" [ngModelOptions]="{standalone: true}" [min]="contractAmtSliderMin" [max]="contractAmtSliderMax" [step]="100" (input)="onContractAmtSliderChange()" />
+          
+                </div>
+
+
+                <div class="amount-inputs d-flex justify-content-between mt-3">
+         
+                  <div class="input-group">
+         
+                    <span class="input-group-text text-dark border-0">{{ this.service.currencyCode?.currencyCode }}.</span>
+         
+                    <input type="number" class="form-control border-0" [(ngModel)]="contractAmtMinValue" [ngModelOptions]="{standalone: true}" [min]="contractAmtSliderMin" [max]="contractAmtMaxValue" (input)="onContractAmtSliderChange()" />
+         
+                  </div>
+         
+                  <span class="mx-3 mt-2 fw-bold">—</span>
+         
+                  <div class="input-group">
+         
+                    <span class="input-group-text text-dark border-0">{{ this.service.currencyCode?.currencyCode }}.</span>
+         
+                    <input type="number" class="form-control border-0" [(ngModel)]="contractAmtMaxValue" [ngModelOptions]="{standalone: true}" [min]="contractAmtMinValue" [max]="contractAmtSliderMax" (input)="onContractAmtSliderChange()" />
+         
+                  </div>
+         
+                </div>
+         
+              </div>
+         
+            </div>
+         
+          </div>
+ 
+        </div>
+ 
+      </div>
+
+      <!-- Accordion: Frequency -->
+      <div class="accordion mt-2" id="accordionFrequency">
+
+        <div class="accordion-item border-0 p-2">
+        
+          <h2 class="accordion-header" id="headingFrequency">
+        
+            <button class="accordion-button p-2 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFrequency" aria-expanded="true" aria-controls="collapseFrequency" style="background-color: transparent;">Frequency</button>
+
+          </h2>
+
+          <div id="collapseFrequency" class="accordion-collapse collapse" aria-labelledby="headingFrequency" data-bs-parent="#accordionFrequency">
+
+            <div class="accordion-body w-100 p-0 mt-3">
+
+              <ng-select class="form-control" [items]="frequencyList" bindLabel="frequency" bindValue="value" formControlName="frequency" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body" placeholder="Select Frequency">
+
+                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                  <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                    
+                    <div class="d-flex">
+
+                      <span class="ng-value-label ellipsis ms-1">
+
+                        <span>{{ _.get(item,'value') }}</span> 
+
+                      </span>
+
+                      <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                      <span style="width: 1px; height: 20px; background-color: black;"></span>
+                        
+                    </div>
+
+                  </div>
+
+                  <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                    <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                  </div>
+
+                </ng-template> 
+
+                <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                  <div class="form-check d-flex align-items-center"> 
+                      
+                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected('frequency', item._id)"/>
+
+                    <label class="form-check-label mt-1">{{ item?.value }}</label>
+
+                  </div>
+                    
+                </ng-template>
+            
+              </ng-select>
+
+            </div>
+
+          </div>
+        
+        </div>
+      
+      </div>
+
+    </form>
+    
+  </div>
+
+  <div class="offcanvas-footer d-flex justify-content-end border-bottom border-top p-3">
+    
+    <button class="btn btn-sm btn-outline-secondary me-3" data-bs-dismiss="offcanvas">Close</button>
+
+    <button class="btn btn-sm btn-secondary" (click)="getRentList()" data-bs-dismiss="offcanvas">Apply</button>
+  
+  </div>
+
+</div>

@@ -1,0 +1,110 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 23px 20px;
+    z-index: 1000;
+    flex-wrap: wrap;
+    background: #2C5069 !important;
+}
+
+.left-section {
+    display: flex;
+    align-items: center;
+    gap: 108px;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    background: transparent;
+    border: 1px solid white;
+    border-radius: 20px;
+    padding: 5px 10px;
+}
+
+.search-box input {
+    background: transparent;
+    border: none;
+
+    outline: none;
+    color: white;
+
+}
+
+ input::placeholder {
+
+    color: #A2ACC3 !important;
+    font-size: 12px;
+    margin-left: 15px;
+
+}
+
+
+.right-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid white;
+}
+
+.trial-text {
+    font-size: 14px;
+}
+
+.upgrade-link {
+    color: #FDC500;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .left-section, .right-section {
+        justify-content: center;
+    }
+}
+.search-icon {
+    left: 12px; /* Adjust horizontal position */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Align exactly in the middle */
+    pointer-events: none; /* Prevent interaction with the image */
+}
+
+.header {
+    position: sticky; /* Make it stick */
+    top: 0; /* Stick to the top of the viewport */
+    z-index: 2000; /* Ensure it stays above other elements */
+    background: #fff; /* Add a background to prevent content overlap */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 23px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional for better visibility */
+  }
+  
+  .left-section,
+  .right-section {
+    display: flex;
+    align-items: center;
+  }
+  
+  .icon {
+    margin-left: 15px;
+  }
+  
