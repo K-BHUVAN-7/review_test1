@@ -23,5 +23,5 @@ jobs:
         run: pip install semgrep
 
       - name: Run Semgrep scan
-        run: semgrep --config .semgrep/rules.yaml --error
+        run: semgrep --config rules.yaml --error
         # --error makes the workflow FAIL if any violations are found
