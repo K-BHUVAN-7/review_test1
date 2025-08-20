@@ -1,13 +1,13 @@
 rules:
   - id: angular-project-structure
-    languages: [typescript]   # 👈 Required field
+    languages: [typescript]
     patterns:
       - pattern-either:
           # ❌ Components inside core/ (should be in shared/)
-          - pattern: $FILEPATH =~ "src/app/_core/.*component\.ts"
+          - pattern: $FILEPATH =~ "src/app/_core/.*\.component\.ts$"
 
           # ❌ Services/Guards inside shared/ (should be in core/)
-          - pattern: $FILEPATH =~ "src/app/shared/.*(service|guard)\.ts"
+          - pattern: $FILEPATH =~ "src/app/shared/.*\.(service|guard)\.ts$"
 
     message: >
       ❌ Angular project structure violation:
