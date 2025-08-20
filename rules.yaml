@@ -1,0 +1,14 @@
+rules:
+  - id: angular-project-structure
+    patterns:
+      - pattern-either:
+          # ❌ Components inside core/ (should be in shared/)
+          - pattern: $FILEPATH =~ "src/app/_core/.*component\.ts"
+
+          # ❌ Services/Guards inside shared/ (should be in core/)
+          - pattern: $FILEPATH =~ "src/app/shared/.*(service|guard)\.ts"
+    message: >
+      ❌ Angular project structure violation:
+      - Components should be in `shared/`
+      - Core services/guards should be in `_core/`
+    severity: ERROR
