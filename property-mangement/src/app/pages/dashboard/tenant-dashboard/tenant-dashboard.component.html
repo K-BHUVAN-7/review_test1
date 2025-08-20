@@ -1,0 +1,674 @@
+<div class="container-fluid">
+
+    <!-- Top Status -->
+    <div class="row mb-4 g-3">
+
+        <div class="d-flex flex-wrap justify-content-between">
+            
+            <div class="card-wrapper mt-1" *ngFor="let card of topStats">
+        
+                <div class="card shadow-sm border-0 text-center p-3 h-100 me-4 rounded-4">
+        
+                    <div class="d-flex justify-content-between">
+
+                        <!-- <h4 class="fw-semibold mb-1"></h4> -->
+                        
+                        <!-- <h4 class="fw-semibold mb-1">{{ card.label == 'Open Service Tickets' ? card.count : (this.currencyCode + '. ' + (card.count | number:'1.2-2')) }}</h4> -->
+
+                        <h4 class="fw-semibold mb-1">{{ (card.label == 'Open Service Tickets' || card.label == 'Contract Renewal Date') ? card?.count : (this.currencyCode + '. ' + (card?.count | number:'1.0')) }}</h4>
+
+                        <img [src]="card.icon" width="32" height="32" alt="icon"/>
+
+                    </div>
+                    
+                    <div class="text-start">
+                        
+                        <p class="text-muted mb-0" style="font-size: 12px;">{{ card.label }}</p>
+
+                    </div>
+        
+                </div>
+        
+            </div>
+    
+        </div>
+
+    </div>
+
+    <!-- Rent Collection Trend & Utility Collection Trend -->
+    <div class="row mt-4">
+
+        <!-- Rent Payment Trend -->
+        <div class="col-md-6">
+
+            <div class="card p-3 shadow-sm border-0" [formGroup]="filterForm">
+        
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                
+                    <h6 class="mb-0" style="border-left: 3px solid #D2A119; padding-left: 8px;">Rent Payment Trend :</h6>
+
+                    <div class="btn-group btn-group-sm" role="group">
+
+                        <button class="btn btn-sm me-2" [ngClass]="{ 'selected-btn': selectedRentDuration == '1week', 'btn-white': selectedRentDuration != '1week' }" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="getRentCollectionList('1week')"> <span style="font-size: 12px; font-weight: 400; color: #282828;">1 Week</span> </button>
+
+                        <button class="btn btn-sm me-2" [ngClass]="{ 'selected-btn': selectedRentDuration == '1month', 'btn-white': selectedRentDuration != '1month' }" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="getRentCollectionList('1month')"> <span style="font-size: 12px; font-weight: 400; color: #282828;">1 Month</span> </button>
+
+                        <button class="btn btn-sm me-2" [ngClass]="{ 'selected-btn': selectedRentDuration == '6month', 'btn-white': selectedRentDuration != '6month' }" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="getRentCollectionList('6month')"> <span style="font-size: 12px; font-weight: 400; color: #282828;">6 Month</span> </button>
+
+                        <button class="btn btn-sm me-2" [ngClass]="{ 'selected-btn': selectedRentDuration == '1year', 'btn-white': selectedRentDuration != '1year' }" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="getRentCollectionList('1year')"> <span style="font-size: 12px; font-weight: 400; color: #282828;">1 Year</span> </button>
+
+                        <!-- Navigation buttons -->
+                        <button class="btn btn-sm btn-outline-primary" *ngIf="selectedRentDuration == '1year' && rentNavigateNext" (click)="rentNavigateNextFun()" style="margin-right: 5px;">
+                        
+                            <i class="bi bi-arrow-right"></i>
+                    
+                        </button>
+                    
+                        <button class="btn btn-sm btn-outline-primary" *ngIf="selectedRentDuration == '1year' && rentNavigatePrev" (click)="rentNavigatePrevFun()">
+                    
+                            <i class="bi bi-arrow-left"></i>
+                    
+                        </button>
+                    
+                    </div>
+
+                </div>
+
+                <!-- Chart -->
+                <apx-chart
+                    *ngIf="rentPaymentTrend"
+                    [series]="rentPaymentTrend.series"
+                    [chart]="rentPaymentTrend.chart"
+                    [xaxis]="rentPaymentTrend.xaxis"
+                    [yaxis]="rentPaymentTrend.yaxis"
+                    [plotOptions]="rentPaymentTrend.plotOptions"
+                    [dataLabels]="rentPaymentTrend.dataLabels"
+                    [stroke]="rentPaymentTrend.stroke"
+                    [fill]="rentPaymentTrend.fill"
+                    [colors]="rentPaymentTrend.colors"
+                    [legend]="rentPaymentTrend.legend">
+                </apx-chart>
+
+            </div>
+
+        </div>
+
+        <!-- Utility Collection Trend -->
+        <div class="col-md-6">
+
+            <div class="card p-3 shadow-sm border-0" style="height: 396px;" [formGroup]="filterForm">
+        
+                <div class="d-flex justify-content-between align-items-center mb-3">
+            
+                    <h6 class="mb-0" style="border-left: 3px solid #D2A119; padding-left: 8px;">Utility Collection Trend :</h6>
+
+                    <div class="w-25 ms-3">
+
+                        <ng-select name="data" id="data" class="form-control" formControlName="utilityName" (change)="getUtilityPaymentCollectionList()" appendTo="body" [clearable]="false" placeholder="Select Utility">
+
+                            <ng-option *ngFor="let data of this.masterList['utilityList']" [value]="data?._id">{{ data.utilityName }}</ng-option>
+                
+                        </ng-select>
+
+                    </div>
+
+                    <div class="btn-group btn-group-sm" role="group">
+
+                        <button class="btn btn-sm me-2" [ngClass]="{ 'selected-btn': selectedUtilityDuration == '1week', 'btn-white': selectedUtilityDuration != '1week' }" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="getUtilityPaymentCollectionList('1week')"> <span style="font-size: 12px; font-weight: 400; color: #282828;">1 Week</span> </button>
+
+                        <button class="btn btn-sm me-2" [ngClass]="{ 'selected-btn': selectedUtilityDuration == '1month', 'btn-white': selectedUtilityDuration != '1month' }" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="getUtilityPaymentCollectionList('1month')"> <span style="font-size: 12px; font-weight: 400; color: #282828;">1 Month</span> </button>
+
+                        <button class="btn btn-sm me-2" [ngClass]="{ 'selected-btn': selectedUtilityDuration == '6month', 'btn-white': selectedUtilityDuration != '6month' }" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="getUtilityPaymentCollectionList('6month')"> <span style="font-size: 12px; font-weight: 400; color: #282828;">6 Month</span> </button>
+
+                        <button class="btn btn-sm me-2" [ngClass]="{ 'selected-btn': selectedUtilityDuration == '1year', 'btn-white': selectedUtilityDuration != '1year' }" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="getUtilityPaymentCollectionList('1year')"> <span style="font-size: 12px; font-weight: 400; color: #282828;">1 Year</span> </button>
+
+                        <!-- Navigation buttons -->
+                        <button class="btn btn-sm btn-outline-primary" *ngIf="selectedUtilityDuration == '1year' && utilityNavigateNext" (click)="utilityNavigateNextFun()" style="margin-right: 5px;">
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </button>
+
+                        <button class="btn btn-sm btn-outline-primary" *ngIf="selectedUtilityDuration == '1year' && utilityNavigatePrev" (click)="utilityNavigatePrevFun()">
+                        
+                            <i class="bi bi-arrow-left"></i>
+                    
+                        </button>
+                    
+                    </div>
+            
+                </div>
+
+                <!-- Chart -->
+                <apx-chart *ngIf="utilityTrendChart"
+                    [series]="utilityTrendChart.series"
+                    [chart]="utilityTrendChart.chart"
+                    [xaxis]="utilityTrendChart.xaxis"
+                    [yaxis]="utilityTrendChart.yaxis"
+                    [plotOptions]="utilityTrendChart.plotOptions"
+                    [dataLabels]="utilityTrendChart.dataLabels"
+                    [stroke]="utilityTrendChart.stroke"
+                    [fill]="utilityTrendChart.fill"
+                    [colors]="utilityTrendChart.colors"
+                    [legend]="utilityTrendChart.legend">
+                </apx-chart>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Overview & Tickets Summary -->
+    <div class="row mt-4">
+
+        <!-- Overview -->
+        <div class="col-md-8">
+
+            <div class="overview-tabel card p-0 shadow-sm border-0" style="height: 495px;">
+
+                <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+
+                    <div class="col-md-7 d-flex justify-content-start align-items-center">
+
+                        <h6 class="mb-0"><span class="border-start border-3 border-warning ps-2 pe-3">Overview :</span></h6>
+
+                        <div class="w-50" [formGroup]="filterForm">
+
+                            <ng-select name="data" id="data" class="form-control" formControlName="overviewPdc" (change)="getOverviewList()" appendTo="body" [clearable]="false">
+                    
+                                <ng-option value="notUtilizedPdc">Not Utilized PDC</ng-option>
+
+                                <ng-option value="contractOverview">Contract Overview</ng-option>
+
+                                <ng-option value="recentRentPayment">Recent Rent Payment</ng-option>
+
+                                <ng-option value="recentUtility">Recent Utility Payment</ng-option>
+                    
+                            </ng-select>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-4 ms-3 text-end">
+
+                        <button class="btn btn-sm" style="background-color: #F0F0F0;" (click)="openOverviewExpand()">
+
+                            <span class="fw-400 me-2" style="font-size: 12px;">View More</span> 
+                            
+                            <img src="images/icons/direction-left.svg" style="width: 18px;" alt="">
+                        
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- List -->
+                <div class="table-responsive">
+
+                    <table class="table table-borderless align-middle">
+
+                        <thead class="bg-light text-secondary">
+
+                            <tr style="font-size: 14px; font-weight: 500;">
+
+                                <!-- Not Utilized PDC Header -->
+                                <ng-container *ngIf="this.filterForm.get('overviewPdc')?.value == 'notUtilizedPdc'">
+
+                                    <th>PDC Cheque No</th>
+
+                                    <th>Cheque Date</th>
+
+                                    <th>Bank</th>
+
+                                    <th style="text-align: center !important; min-width: 210px !important;" class="th-action">Branch</th>
+
+                                </ng-container>
+
+                                <!-- Contract Overview Header -->
+                                <ng-container *ngIf="this.filterForm.get('overviewPdc')?.value == 'contractOverview'">
+
+                                    <th>Start Date</th>
+
+                                    <th>End Date</th>
+
+                                    <th>Agreed Rent</th>
+
+                                    <th style="text-align: center !important; min-width: 210px !important;" class="th-action">Deposit Amount</th>
+
+                                </ng-container>
+
+                                <!-- Recent Rent Payment Header -->
+                                <ng-container *ngIf="this.filterForm.get('overviewPdc')?.value == 'recentRentPayment'">
+
+                                    <th>Date</th>
+
+                                    <th>Amount Paid</th>
+
+                                    <th>Payment Mode</th>
+
+                                    <th style="text-align: center !important; min-width: 210px !important;" class="th-action">Status</th>
+
+                                </ng-container>
+
+                                <!-- Rent Utility Payment Header -->
+                                <ng-container *ngIf="this.filterForm.get('overviewPdc')?.value == 'recentUtility'">
+
+                                    <th>Date</th>
+
+                                    <th>Utility Name</th>
+
+                                    <th>Amount Paid</th>
+
+                                    <th>Payment Mode</th>
+
+                                    <th style="text-align: center !important; min-width: 210px !important;" class="th-action">Status</th>
+
+                                </ng-container>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <!-- Not Utilized PDC Data & Contract Overview Data -->
+                            <ng-container *ngIf="!_.isEmpty(this.masterList['ticketHistory']); else otherTicket">
+
+                                <tr *ngFor="let pdc of limitedOverviewList" style="font-size: 14px; font-weight: 400;">
+                                    
+                                    <!-- Not Utilized PDC Data -->
+                                    <ng-container *ngIf="this.filterForm.get('overviewPdc')?.value == 'notUtilizedPdc'">
+                                        
+                                        <td>{{ pdc.chequeNo }}</td>
+
+                                        <td>{{ pdc.chequeDate | date: 'dd-MM-yyyy' }}</td>
+
+                                        <td>{{ pdc.bankName }}</td>
+
+                                        <td class="d-flex justify-content-center th-action">{{ pdc.bankBranch }}</td>
+
+                                    </ng-container>
+
+                                    <!-- Contract Overview Data -->
+                                    <ng-container *ngIf="this.filterForm.get('overviewPdc')?.value == 'contractOverview'">
+
+                                        <td>{{ pdc.contractStartDate | date: 'dd-MM-yyyy' }}</td>
+
+                                        <td>{{ pdc.contractEndDate | date: 'dd-MM-yyyy' }}</td>
+
+                                        <td>{{ this.service.currencyCode?.currencyCode }}. {{ (pdc.rentAmount | number: '1.0') }}</td>
+
+                                        <td class="d-flex justify-content-center th-action">{{ this.service.currencyCode?.currencyCode }}. {{ (pdc.deposit | number: '1.0') }}</td>
+
+                                    </ng-container>
+
+                                </tr>
+
+                            </ng-container>
+
+                            <ng-template #otherTicket>
+
+                                <tr>
+
+                                    <td colspan="10" style="text-align: center !important;">No Records Found</td>
+
+                                </tr>
+
+                            </ng-template>
+                            
+                            <!-- Recent Rent Payment Data & Rent Utility Payment Header -->
+                            <ng-container *ngFor="let pdc of limitedOverviewList">
+
+                                <tr *ngFor="let rent of pdc?.paymentEntries" style="font-size: 14px; font-weight: 400;">
+
+                                    <!-- Recent Rent Payment Data -->
+                                    <ng-container *ngIf="this.filterForm.get('overviewPdc')?.value == 'recentRentPayment'">
+    
+                                        <td>{{ rent.paymentDate | date: 'dd-MM-yyyy' }}</td>
+    
+                                        <td>{{ this.service.currencyCode?.currencyCode }}. {{ (rent.amountPaid | number: '1.0' ) }}</td>
+    
+                                        <td>{{ rent.paymentMode }}</td>
+    
+                                        <td class="d-flex justify-content-center th-action">
+
+                                            <ng-container [ngSwitch]="getRentStatus(rent)">
+
+                                                <font *ngSwitchCase="'Upcoming'" color="#FF9500">Upcoming</font>
+
+                                                <font *ngSwitchCase="'Overdue'" color="#C92E2E">Overdue</font>
+
+                                                <font *ngSwitchCase="'Not yet Due'" color="#FF9500">Not yet Due</font>
+
+                                                <font *ngSwitchCase="'Paid'" color="#34C759">Paid</font>
+
+                                                <font *ngSwitchCase="'Free'" color="#34C759">Free</font>
+
+                                                <font *ngSwitchDefault>-</font>
+
+                                            </ng-container>
+                                            
+                                        </td>
+    
+                                    </ng-container>
+
+                                    <!-- Rent Utility Payment Header -->
+                                    <ng-container *ngIf="this.filterForm.get('overviewPdc')?.value == 'recentUtility'">
+    
+                                        <td>{{ rent.paymentDate | date: 'dd-MM-yyyy' }}</td>
+    
+                                        <td>{{ rent.utility?.utilityName }}</td>
+
+                                        <td>{{ this.service.currencyCode?.currencyCode }}. {{ (rent.amountPaid | number: '1.0' ) }}</td>
+    
+                                        <td>{{ rent.paymentMode }}</td>
+    
+                                        <td class="d-flex justify-content-center th-action">
+
+                                            <ng-container [ngSwitch]="getUtilityStatus(rent)">
+
+                                                <font *ngSwitchCase="'Overdue'" color="#C92E2E">Overdue</font>
+
+                                                <font *ngSwitchCase="'Upcoming'" color="#FFA500">Upcoming</font>
+
+                                                <font *ngSwitchCase="'Not yet Due'" color="#FF9500">Not yet Due</font>
+
+                                                <font *ngSwitchCase="'Paid'" color="#34C759">Paid</font>
+
+                                                <font *ngSwitchDefault>-</font>
+
+                                            </ng-container>
+
+                                        </td>
+    
+                                    </ng-container>
+
+                                </tr>
+
+                            </ng-container>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Tickets Sumary -->
+        <div class="col-md-4">
+        
+            <div class="card border-0 shadow-sm">
+            
+                <div class="card-body py-4"  [formGroup]="filterForm">
+                
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+
+                        <div class="fw-semibold" style="border-left: 3px solid #D2A119; padding-left: 8px;">Tickets Sumary</div>
+
+                        <ng-select class="form-control w-auto" formControlName="ticketSummary" (change)="changeValue({ fieldName: 'ticketSummary' })" appendTo="body" [clearable]="false">
+
+                            <ng-option value="1week">1 Week</ng-option>
+
+                            <ng-option value="1month">1 Month</ng-option>
+
+                            <ng-option value="6month">6 Month</ng-option>
+
+                            <ng-option value="1year">1 Year</ng-option>
+
+                        </ng-select>
+
+                    </div>
+                    
+                    <div class="d-flex justify-content-center">
+                    
+                        <div class="mt-4" style="width: 400px; height: 376px;">
+                    
+                            <apx-chart
+                                *ngIf="ticketSymaryChartOption"
+                                [chart]="ticketSymaryChartOption.chart"
+                                [labels]="ticketSymaryChartOption.labels"
+                                [series]="ticketSymaryChartOption.series"
+                                [colors]="ticketSymaryChartOption.colors"
+                                [dataLabels]="ticketSymaryChartOption.dataLabels"
+                                [tooltip]="ticketSymaryChartOption.tooltip"
+                                [legend]="ticketSymaryChartOption.legend"
+                                [plotOptions]="ticketSymaryChartOption.plotOptions"
+                                [responsive]="ticketSymaryChartOption.responsive">
+                            </apx-chart>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Open Overview Expand -->
+<ng-template #openOverviewExpandModal let-modal>
+
+    <div class="modal-header">
+
+        <div class="d-flex justify-content-between align-items-center w-100" style="height: 40px;">
+
+            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Full Overview List :</h6>
+            
+            <i class="bi bi-x-lg pe-2 fw-bold" style="cursor: pointer;" (click)="modal.close()"></i>
+        
+        </div>
+
+    </div>
+
+    <div class="modal-body p-3">
+
+        <div class="table-responsive">
+
+            <table class="table table-borderless align-middle">
+
+                <thead class="bg-light text-secondary">
+
+                    <tr style="font-size: 14px; font-weight: 500;">
+
+                        <!-- Not Utilized PDC Header -->
+                        <ng-container *ngIf="this.filterForm.get('overviewPdc')?.value == 'notUtilizedPdc'">
+
+                            <th>PDC Cheque No</th>
+
+                            <th>Cheque Date</th>
+
+                            <th>Bank</th>
+
+                            <th style="text-align: center !important; min-width: 210px !important;" class="th-action">Branch</th>
+
+                        </ng-container>
+
+                        <!-- Contract Overview Header -->
+                        <ng-container *ngIf="this.filterForm.get('overviewPdc')?.value == 'contractOverview'">
+
+                            <th>Start Date</th>
+
+                            <th>End Date</th>
+
+                            <th>Agreed Rent</th>
+
+                            <th style="text-align: center !important; min-width: 210px !important;" class="th-action">Deposit Amount</th>
+
+                        </ng-container>
+
+                        <!-- Recent Rent Payment Header -->
+                        <ng-container *ngIf="this.filterForm.get('overviewPdc')?.value == 'recentRentPayment'">
+
+                            <th>Date</th>
+
+                            <th>Amount Paid</th>
+
+                            <th>Payment Mode</th>
+
+                            <th style="text-align: center !important; min-width: 210px !important;" class="th-action">Status</th>
+
+                        </ng-container>
+
+                        <!-- Rent Utility Payment Header -->
+                        <ng-container *ngIf="this.filterForm.get('overviewPdc')?.value == 'recentUtility'">
+
+                            <th>Date</th>
+
+                            <th>Utility Name</th>
+
+                            <th>Amount Paid</th>
+
+                            <th>Payment Mode</th>
+
+                            <th style="text-align: center !important; min-width: 210px !important;" class="th-action">Status</th>
+
+                        </ng-container>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <!-- Not Utilized PDC Data & Contract Overview Data -->
+                    <ng-container *ngIf="!_.isEmpty(this.masterList['ticketHistory']); else otherTicket">
+
+                        <tr *ngFor="let pdc of this.masterList['ticketHistory']" style="font-size: 14px; font-weight: 400;">
+                            
+                            <!-- Not Utilized PDC Data -->
+                            <ng-container *ngIf="this.filterForm.get('overviewPdc')?.value == 'notUtilizedPdc'">
+                                
+                                <td>{{ pdc.chequeNo }}</td>
+
+                                <td>{{ pdc.chequeDate | date: 'dd-MM-yyyy' }}</td>
+
+                                <td>{{ pdc.bankName }}</td>
+
+                                <td class="d-flex justify-content-center th-action">{{ pdc.bankBranch }}</td>
+
+                            </ng-container>
+
+                            <!-- Contract Overview Data -->
+                            <ng-container *ngIf="this.filterForm.get('overviewPdc')?.value == 'contractOverview'">
+
+                                <td>{{ pdc.contractStartDate | date: 'dd-MM-yyyy' }}</td>
+
+                                <td>{{ pdc.contractEndDate | date: 'dd-MM-yyyy' }}</td>
+
+                                <td>{{ this.service.currencyCode?.currencyCode }}. {{ (pdc.rentAmount | number: '1.0') }}</td>
+
+                                <td class="d-flex justify-content-center th-action">{{ this.service.currencyCode?.currencyCode }}. {{ (pdc.deposit | number: '1.0' ) }}</td>
+
+                            </ng-container>
+
+                        </tr>
+
+                    </ng-container>
+
+                    <ng-template #otherTicket>
+
+                        <tr>
+
+                            <td colspan="10" style="text-align: center !important;">No Records Found</td>
+
+                        </tr>
+
+                    </ng-template>
+                    
+                    <!-- Recent Rent Payment Data & Rent Utility Payment Header -->
+                    <ng-container *ngFor="let pdc of this.masterList['ticketHistory']">
+
+                        <tr *ngFor="let rent of pdc?.paymentEntries" style="font-size: 14px; font-weight: 400;">
+
+                            <!-- Recent Rent Payment Data -->
+                            <ng-container *ngIf="this.filterForm.get('overviewPdc')?.value == 'recentRentPayment'">
+
+                                <td>{{ rent.paymentDate | date: 'dd-MM-yyyy' }}</td>
+
+                                <td>{{ this.service.currencyCode?.currencyCode }}. {{ (rent.amountPaid | number: '1.0' ) }}</td>
+
+                                <td>{{ rent.paymentMode }}</td>
+
+                                <td class="d-flex justify-content-center th-action">
+
+                                    <ng-container [ngSwitch]="getRentStatus(rent)">
+
+                                        <font *ngSwitchCase="'Upcoming'" color="#FF9500">Upcoming</font>
+
+                                        <font *ngSwitchCase="'Overdue'" color="#C92E2E">Overdue</font>
+
+                                        <font *ngSwitchCase="'Not yet Due'" color="#FF9500">Not yet Due</font>
+
+                                        <font *ngSwitchCase="'Paid'" color="#34C759">Paid</font>
+
+                                        <font *ngSwitchCase="'Free'" color="#34C759">Free</font>
+
+                                        <font *ngSwitchDefault>-</font>
+
+                                    </ng-container>
+                                    
+                                </td>
+
+                            </ng-container>
+
+                            <!-- Rent Utility Payment Header -->
+                            <ng-container *ngIf="this.filterForm.get('overviewPdc')?.value == 'recentUtility'">
+
+                                <td>{{ rent.paymentDate | date: 'dd-MM-yyyy' }}</td>
+
+                                <td>{{ rent.utility?.utilityName }}</td>
+
+                                <td>{{ this.service.currencyCode?.currencyCode }}. {{ (rent.amountPaid | number: '1.0') }}</td>
+
+                                <td>{{ rent.paymentMode }}</td>
+
+                                <td class="d-flex justify-content-center th-action">
+
+                                    <ng-container [ngSwitch]="getUtilityStatus(rent)">
+
+                                        <font *ngSwitchCase="'Overdue'" color="#C92E2E">Overdue</font>
+
+                                        <font *ngSwitchCase="'Upcoming'" color="#FFA500">Upcoming</font>
+
+                                        <font *ngSwitchCase="'Not yet Due'" color="#FF9500">Not yet Due</font>
+
+                                        <font *ngSwitchCase="'Paid'" color="#34C759">Paid</font>
+
+                                        <font *ngSwitchDefault>-</font>
+
+                                    </ng-container>
+
+                                </td>
+
+                            </ng-container>
+
+                        </tr>
+
+                    </ng-container>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+        <button class="btn btn-secondary" (click)="modal.close()">Close</button>
+
+    </div>
+
+</ng-template>
