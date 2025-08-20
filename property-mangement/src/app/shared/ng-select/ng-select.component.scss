@@ -1,0 +1,103 @@
+::ng-deep .custom-multi-select {
+
+  .ng-select.ng-select-multiple .ng-select-container .ng-value-container {
+
+    padding: 0rem 0.35rem !important;
+    height: 40px;
+
+    .ng-value { margin-bottom: 0px !important }
+
+    .ng-input { margin-bottom: 0px !important }
+
+    .ng-placeholder { 
+      top: 0px !important;
+      padding: 0.5rem 0rem 0.5rem 0.25rem !important;
+      font-size: 0.875rem !important;
+    }
+
+  }
+
+  .ng-value {
+
+    font-size: 0.8rem !important
+
+  }
+
+  .ng-dropdown-panel {
+
+      background: var(--theme-color);
+      box-shadow: 0px 1px 4px 2px #d7d1d1;
+  
+      .ng-dropdown-panel-items{
+  
+          border-radius: 6px 0px 6px 0px;
+          box-shadow: none;
+  
+          .ng-option {
+
+          display: flex;
+          align-items: center; 
+      
+          }
+      
+      }    
+  
+      .ng-dropdown-footer { 
+          
+          border-top:1px solid #dddcdc;
+          padding: 0px;
+      }
+
+  }
+
+  .ng-optgroup { padding: 0px 10px !important }
+
+  .custom-control-label::after {
+
+    border-radius: 5px;
+    top: 1px;
+
+  }
+
+  .custom-checkbox .custom-control-label::before { top : 1px }
+
+  .custom-control-input:checked~.custom-control-label::before {
+
+    border-color: #ffffff;
+    background-color: #ffffff;
+    cursor: pointer;
+    border-radius: 8px;
+
+  }
+
+  .custom-checkbox .custom-control-input:checked~.custom-control-label::after {
+
+    background-color: #5245B5;
+    cursor: pointer;
+
+  }
+
+  .multiple .ng-value-label {
+
+      display: block !important;
+      max-width: 90px !important;
+      padding: 4px 5px !important;
+      line-height: 1.25;
+      border-radius: 3px;
+      background: #D1D1D1;
+      color: #000000;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      overflow: hidden;
+
+  }
+
+  .ng-select-disabled .ng-arrow-wrapper { display: none }
+
+}
+
+.btn-sm {
+line-height: 1.3 !important;
+font-size: .8rem;
+padding: 0.1rem 0.35rem !important;
+}

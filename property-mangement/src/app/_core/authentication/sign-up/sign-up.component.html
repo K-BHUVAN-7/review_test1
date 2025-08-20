@@ -1,0 +1,205 @@
+
+<div class="auth-bg">
+
+    <div class="card auth-card" [formGroup]="signupForm">
+
+        <div class="card-header bg-white border-0 p-4 d-flex align-items-center">
+
+            <!-- <a routerLink="/auth/validate-inn"><i class="bi bi-chevron-left fs-5 fw-bolder mb-3"></i></a> -->
+
+            <img src="/images/logo.png" style="width: 120px;" alt="logo" class="m-auto d-block my-1">
+
+        </div>
+        
+        <div class="card-body p-4">
+
+            <h2 class="text-app-secondary text-center">Welcome </h2>
+
+            <p class="text-center" style="color: #C1C1C1;">Secure, Simple, Seamless Management</p>
+
+            <div class="row">
+
+                <div class="col-md-6 mb-2">
+
+                    <div class="form-group ">
+            
+                        <label for="firstName" class="form-label required" style="font-weight: 500 !important;">First Name <span class="text-danger">*</span></label>
+            
+                        <input class="form-control" type="text" id="firstName" placeholder="Enter First Name " formControlName="firstName" [ngClass]="{ 'is-invalid': formSubmitted && f.firstName.errors }">
+            
+                        <div *ngIf="formSubmitted && f.firstName.errors" class="invalid-feedback">
+    
+                            <div *ngIf="f.firstName.errors.required">First Name is required</div>
+                            
+                        </div>  
+            
+                    </div>
+
+                </div>
+
+                <div class="col-md-6 mb-2">
+
+                    <div class="form-group ">
+            
+                        <label for="lastName" class="form-label required" style="font-weight: 500 !important;">Last Name <span class="text-danger">*</span></label>
+            
+                        <input class="form-control" type="text" id="lastName" placeholder="Enter Last Name " formControlName="lastName" [ngClass]="{ 'is-invalid': formSubmitted && f.lastName.errors }">
+            
+                        <div *ngIf="formSubmitted && f.lastName.errors" class="invalid-feedback">
+    
+                            <div *ngIf="f.lastName.errors.required"> Last Name is required</div>
+                            
+                        </div>  
+            
+                    </div>
+
+                </div>
+                
+                <div class="form-group mb-1">
+        
+                    <label for="email" class="form-label required" style="font-weight: 500 !important;">Email ID <span class="text-danger">*</span></label>
+        
+                    <input class="form-control" type="text" id="email" placeholder="Enter Email ID" formControlName="email" [ngClass]="{ 'is-invalid': formSubmitted && f.email.errors }">
+        
+                     <div *ngIf="(formSubmitted || f.email.touched) && f.email.errors" class="invalid-feedback">
+
+                        <div *ngIf="f.email.errors.required && !f.email.errors.email">Email is required</div>
+
+                        <div *ngIf="f.email.errors.email && !f.email.errors.required">Email must be a valid email address</div>
+    
+                    </div>
+        
+                </div>
+
+                <div class="form-group required mb-2 col-md-12">
+    
+                    <label for="mobileNo" class="form-label required" style="font-weight: 500 !important;">Mobile Number</label>
+
+                    <div class="input-group">
+
+                        <div class="input-group-prepend me-1">
+
+                            <ng-select formControlName="dialCode" [clearable]="false"  [ngClass]="{ 'is-invalid': (formSubmitted || f.dialCode.touched) && f.dialCode.errors }">
+
+                                <ng-option *ngFor="let dialCodeDet of countryList" [value]="dialCodeDet.dialCode" >
+                                    
+                                    <span class="mt-2">
+
+                                        <img class="country-flag"  alt="{{ dialCodeDet.iso2 }}" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/{{ dialCodeDet['iso2'] }}.svg"/> &nbsp; <span class="text-secondary"> | </span> &nbsp; {{ dialCodeDet.dialCode }}
+
+                                    </span>
+                            
+                                </ng-option>
+
+                            </ng-select>
+
+                        </div>
+
+                        <input type="text" class="form-control" id="mobileNo" formControlName="mobileNo" placeholder="Enter Mobile No" [ngClass]="{ 'is-invalid': (formSubmitted || f.mobileNo.touched) && f.mobileNo.errors }" numbersOnly maxlength="10">
+
+                        <div *ngIf="(formSubmitted || f.mobileNo.touched) && f.mobileNo.errors" class="invalid-feedback">
+
+                            <div *ngIf="f.mobileNo.errors.required">Mobile number is required</div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="form-group mb-2">
+        
+                    <label for="password" class="form-label fw-bold" style="font-weight: 500 !important;">Password <span class="text-danger">*</span></label>
+        
+                    <div class="password-input-group">
+        
+                        <input type="password" class="form-control" #password id="password" formControlName="password" placeholder="Password" [ngClass]="{ 'is-invalid': (formSubmitted || f.password.touched) && f.password.errors }">
+
+                        <i class="bi text-primary" [ngClass]="password.type == 'text' ? 'bi-eye' : 'bi-eye-slash'" (click)="password.type = password.type == 'text' ? 'password' : 'text'"></i>
+
+                    </div>
+                 
+                    <!-- <input class="form-control mb-2" type="password" id="password" placeholder="Enter password" formControlName="password" [ngClass]="{ 'is-invalid': formSubmitted && f.password.errors }"> -->
+        
+                    <div *ngIf="formSubmitted && f.password.errors" class="invalid-feedback">
+        
+                        <div *ngIf="f.password.errors.required">Password is required</div>
+
+                        <div *ngIf="f.password.errors.min">Password must have minimum 8 characters</div>
+                        
+                    </div>
+        
+                </div>
+
+                <div class="form-group mb-2">
+        
+                    <label for="confirmPassword" class="form-label required" style="font-weight: 500 !important;">Confirm Password <span class="text-danger">*</span>    </label>
+
+                    <div class="password-input-group">
+        
+                        <input type="password" #confirmPassword class="form-control" id="confirmPassword" formControlName="confirmPassword" placeholder="Password again" [ngClass]="{ 'is-invalid': (formSubmitted || f.confirmPassword.touched) && f.confirmPassword.errors }">
+
+                        <i class="bi text-primary" [ngClass]="confirmPassword.type == 'text' ? 'bi-eye' : 'bi-eye-slash'" (click)="confirmPassword.type = confirmPassword.type == 'text' ? 'password' : 'text'"></i>
+
+                    </div>
+                    
+                    <div *ngIf="(formSubmitted || f.confirmPassword.touched) && f.confirmPassword.errors" class="invalid-feedback">
+
+                        <div *ngIf="f.confirmPassword.errors.required">Confirm password is required</div>
+
+                    </div>
+
+                </div>
+    
+            </div>
+    
+            <button class="btn btn-primary btn-lg w-100 mt-4 mb-3 fs-6" [disabled]="(formSubmitted && signupForm.invalid) || isLoading" (click)="submit()">
+                                
+                <ng-container *ngIf="!isLoading">Sign Up</ng-container>
+    
+                <div class="spinner-border text-white-50" *ngIf="isLoading" role="status">
+    
+                    <span class="visually-hidden">Loading...</span>
+    
+                </div>
+            
+            </button>
+    
+            <div class="divider">
+    
+                <hr>
+    
+                <span class="position-absolute text-muted small">OR</span>
+    
+            </div>
+    
+            <div class="d-block pt-1">
+
+                <div class="d-flex justify-content-center">
+
+                    <div id="google-btn"></div>
+
+
+                </div>
+                
+                <!-- <button class="btn btn-md d-flex align-items-center bg-white border mat-elevation-z3 mt-3 mx-auto px-4 py-2 rounded-3 text-dark fs-6" (click)="loginWithGoogle()">
+                    
+                    <img src="images/google.png" style="height: 25px" alt="" class="me-2"> <span class="mb-1">Continue with Google</span>
+    
+                </button> -->
+    
+            </div>
+
+            <p class="mt-4 text-center" style="color: #C1C1C1;">Already have a account?<span class="text-app-secondary" style="cursor: pointer;" routerLink="/auth/login"> Login </span>here</p>
+
+            <div class="text-center">
+
+                <button class="btn text-white rounded-pill py-3 px-5" style="background: linear-gradient(90deg, rgba(242, 178, 0, 0) -50.7%, #D2A119 51.59%, rgba(242, 178, 0, 0) 144.89%);">Experience a one-week free trial—start today</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

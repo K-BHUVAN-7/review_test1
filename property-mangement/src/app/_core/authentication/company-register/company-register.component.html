@@ -1,0 +1,201 @@
+
+<div class="auth-bg">
+
+    <div class="card auth-card" [formGroup]="companyRegisterForm">
+
+        <div class="card-header bg-white border-0 p-4 d-flex align-items-center">
+
+            <!-- <a routerLink="/auth/validate-inn"><i class="bi bi-chevron-left fs-5 fw-bolder mb-3"></i></a> -->
+
+            <img src="/images/logo.png" style="width: 120px;" alt="logo" class="m-auto d-block my-1">
+
+        </div>
+        
+        <div class="card-body p-4">
+
+            <h2 class="text-app-secondary text-center">Welcome Back</h2>
+
+            <p class="text-center" style="color: #C1C1C1;">Secure, Simple, Seamless Management</p>
+
+            <div class="row">
+
+                <div class="col-md-12 mb-2">
+
+                    <div class="form-group ">
+            
+                        <label for="name" class="form-label required" style="font-weight: 500 !important;">Company / Individual<span class="text-danger">*</span></label>
+            
+                        <input class="form-control" type="text" id="name" placeholder="Enter Company / Individual Name " formControlName="name" [ngClass]="{ 'is-invalid': formSubmitted && f.name.errors }">
+            
+                        <div *ngIf="formSubmitted && f.name.errors" class="invalid-feedback">
+    
+                            <div *ngIf="f.name.errors.required">Company is required</div>
+                            
+                        </div>  
+            
+                    </div>
+
+                </div>
+
+                <div class="col-md-12 mb-2">
+
+                    <div class="form-group ">
+            
+                        <label for="taxNo" class="form-label required" style="font-weight: 500 !important;">VAT / GST</label>
+            
+                        <input class="form-control" type="text" id="taxNo" placeholder="Enter VAT/GST No" formControlName="taxNo" [ngClass]="{ 'is-invalid': formSubmitted && f.taxNo.errors }">
+            
+                        <div *ngIf="formSubmitted && f.taxNo.errors" class="invalid-feedback">
+    
+                            <div *ngIf="f.taxNo.errors.required">GST No is Required</div>
+                            
+                        </div>  
+            
+                    </div>
+
+                </div>
+                
+                <div class="form-group mb-1">
+        
+                    <label for="address" class="form-label required" style="font-weight: 500 !important;">Address <span class="text-danger">*</span></label>
+        
+                    <input class="form-control" type="text" id="address" placeholder="Enter Address" formControlName="address" [ngClass]="{ 'is-invalid': formSubmitted && f.address.errors }">
+        
+                    <div *ngIf="formSubmitted && f.address.errors" class="invalid-feedback">
+
+                        <div *ngIf="f.address.errors.required">Address is required</div>
+                        
+                    </div>
+        
+                </div>
+
+                <div class="form-group col-md-6 mb-1">
+        
+                    <label for="state" class="form-label required" style="font-weight: 500 !important;">City <span class="text-danger">*</span></label>
+        
+                    <input class="form-control" type="text" id="city" placeholder="Enter City" formControlName="city" [ngClass]="{ 'is-invalid': formSubmitted && f.city.errors }">
+        
+                    <div *ngIf="formSubmitted && f.city.errors" class="invalid-feedback">
+
+                        <div *ngIf="f.city.errors.required">City is required</div>
+                        
+                    </div>
+        
+                </div>
+
+                <div class="form-group col-md-6 mb-1">
+        
+                    <label for="pincode" class="form-label required" style="font-weight: 500 !important;">Pincode <span class="text-danger">*</span></label>
+        
+                    <input class="form-control" type="text" id="pincode" placeholder="Enter Pincode " formControlName="pincode" [ngClass]="{ 'is-invalid': formSubmitted && f.pincode.errors }">
+        
+                    <div *ngIf="formSubmitted && f.pincode.errors" class="invalid-feedback">
+
+                        <div *ngIf="f.pincode.errors.required">pincode is required</div>
+                        
+                    </div>
+        
+                </div>
+
+                <div class="form-group col-md-6 mb-1">
+        
+                    <label for="state" class="form-label required" style="font-weight: 500 !important;">State <span class="text-danger">*</span></label>
+        
+                    <input class="form-control" type="text" id="state" placeholder="Enter State" formControlName="state" [ngClass]="{ 'is-invalid': formSubmitted && f.state.errors }">
+        
+                    <div *ngIf="formSubmitted && f.state.errors" class="invalid-feedback">
+
+                        <div *ngIf="f.state.errors.required">State is required</div>
+                        
+                    </div>
+        
+                </div>
+
+                <div class="col-md-6 form-group mb-1">
+
+                    <label for="countryId" class="form-label required" style="font-weight: 500 !important;">Country <span class="text-danger">*</span></label>
+
+                    <ng-select class="form-control" formControlName="countryId" id="countryId" [ngClass]="{ 'is-invalid': formSubmitted && f.countryId.errors }" appendTo="body" [clearable]="false">
+
+                        <ng-option *ngFor="let item of this.masterList['countryList']" [value]="item?._id">{{ item.name }}</ng-option>
+
+                    </ng-select>
+
+                    <div *ngIf="formSubmitted && f.countryId.errors" class="invalid-feedback">
+
+                        <div *ngIf="f.countryId.errors.required">Country is required</div>
+                        
+                    </div>
+
+                </div> 
+
+                <div class="col-md-6 form-group mb-1">
+
+                    <label for="countryId" class="form-label required" style="font-weight: 500 !important;">Currency <span class="text-danger">*</span></label>
+                
+                    <ng-select class="form-control" formControlName="currencyCode" id="currencyCode" (change)="changeCountry('change')" (focus)="storePreviousCurrencyCode()" appendTo="body" [clearable]="false">
+
+                        <ng-option *ngFor="let item of this.masterList['currencyCodeList']" [value]="item._id">{{ item.currencyCode + ' - ' + item?.currencyName }}</ng-option>
+        
+                    </ng-select>
+
+                    <div *ngIf="formSubmitted && f.currencyCode.errors" class="invalid-feedback">
+
+                        <div *ngIf="f.currencyCode.errors.required">Currency is required</div>
+                        
+                    </div>
+
+                </div>
+
+            </div>
+    
+            <button class="btn btn-primary btn-lg w-100 mt-4 mb-3 fs-6" [disabled]="(formSubmitted && companyRegisterForm.invalid) || isLoading" (click)="submit()">
+                                
+                <ng-container *ngIf="!isLoading">Sign Up</ng-container>
+    
+                <div class="spinner-border text-white-50" *ngIf="isLoading" role="status">
+    
+                    <span class="visually-hidden">Loading...</span>
+    
+                </div>
+            
+            </button>
+    
+            <div class="divider">
+    
+                <hr>
+    
+                <span class="position-absolute text-muted small">OR</span>
+    
+            </div>
+    
+            <div class="d-block pt-1">
+
+                <div class="d-flex justify-content-center">
+
+                    <div id="google-btn"></div>
+
+
+                </div>
+                
+                <!-- <button class="btn btn-md d-flex align-items-center bg-white border mat-elevation-z3 mt-3 mx-auto px-4 py-2 rounded-3 text-dark fs-6" (click)="loginWithGoogle()">
+                    
+                    <img src="images/google.png" style="height: 25px" alt="" class="me-2"> <span class="mb-1">Continue with Google</span>
+    
+                </button> -->
+    
+            </div>
+
+            <p class="mt-4 text-center" style="color: #C1C1C1;">Already have a account?<span class="text-app-secondary"  routerLink="/auth/login"> Login </span>here</p>
+
+            <div class="text-center">
+
+                <button class="btn text-white rounded-pill py-3 px-5" style="background: linear-gradient(90deg, rgba(242, 178, 0, 0) -50.7%, #D2A119 51.59%, rgba(242, 178, 0, 0) 144.89%);">Experience a one-week free trial—start today</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

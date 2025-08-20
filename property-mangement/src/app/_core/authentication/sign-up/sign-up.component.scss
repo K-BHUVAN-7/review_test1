@@ -1,0 +1,15 @@
+::ng-deep  .ng-dropdown-panel .scroll-host {
+    overflow: hidden;
+    overflow-y: auto;
+    position: relative;
+    display: block;
+    background: white;
+    -webkit-overflow-scrolling: touch;
+}
+
+::ng-deep .country-flag {
+    height: 18px !important;
+    margin-right: 2px;
+    margin-left: 6px;
+    border-radius: 2px;
+} 

@@ -1,0 +1,477 @@
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h5 class="text-dark">{{ mode }} Owner</h5>
+
+        <small><span class="text-primary">Owner</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-primary" style="cursor: pointer;" (click)="this.service.navigate({ 'url': 'app/owner' })">Owner List</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-dark">{{ this.mode == 'Create' ? 'Create' : 'Update' }} Owner</span> </small>
+
+    </div>
+
+    <div class="row">
+
+        <!-- Basic Details -->
+        <div class="col-md-8">
+
+            <form *ngIf="!_.isEmpty(ownerForm.value)" [formGroup]="ownerForm" class="horizontal-form-fields">
+
+                <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                    <div class="card-header bg-white">
+
+                        <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Basic Details :</h6>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="row">
+
+                            <div class="col-md-6">
+
+                                <div class="form-group required mb-3">
+    
+                                    <label for="firstName" class="mb-2">First Name</label>
+
+                                    <input type="text" class="form-control" id="firstName" formControlName="firstName" placeholder="Enter First Name" [ngClass]="{ 'is-invalid': (f.firstName?.touched || formSubmitted) && f.firstName.errors }">
+
+                                    <div *ngIf="(f.firstName?.touched || formSubmitted) && f.firstName.errors" class="invalid-feedback">
+
+                                        <div *ngIf="f.firstName.errors.required">First Name is required</div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="lastName" class="mb-2">Last Name</label>
+
+                                    <input type="text" class="form-control" id="lastName" formControlName="lastName" placeholder="Enter Last Name" [ngClass]="{ 'is-invalid': (f.lastName?.touched || formSubmitted) && f.lastName.errors }">
+
+                                    <div *ngIf="(f.lastName?.touched || formSubmitted) && f.lastName.errors" class="invalid-feedback">
+
+                                        <div *ngIf="f.lastName.errors.required">Last Name is required</div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="mobileNo" class="mb-2">Contact Number</label>
+
+                                    <input type="text" class="form-control" id="mobileNo" formControlName="mobileNo" placeholder="Enter Contact Number" [ngClass]="{ 'is-invalid': (f.mobileNo?.touched || formSubmitted) && f.mobileNo.errors }" numbersOnly>
+
+                                    <div *ngIf="(f.mobileNo?.touched || formSubmitted) && f.mobileNo.errors" class="invalid-feedback">
+
+                                        <div *ngIf="f.mobileNo.errors.required">Contact Number is required</div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="email" class="mb-2">Email</label>
+
+                                    <input type="text" class="form-control" id="email" formControlName="email" placeholder="Enter Email" [ngClass]="{ 'is-invalid': (f.email?.touched || formSubmitted) && f.email.errors }">
+
+                                    <div *ngIf="(f.email?.touched || formSubmitted) && f.email.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.email.errors.required">Email is required</div>
+
+                                        <div *ngIf="f.email.errors.email && !f.email.errors.required">Email must be a valid email address</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <!-- for address line one -->
+
+                            <div class="col-md-6">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="addressLineOne" class="mb-2">Address</label>
+
+                                    <input type="text" class="form-control" id="addressLineOne" formControlName="addressLineOne" placeholder="Enter Address Line 1" [ngClass]="{ 'is-invalid': (f.addressLineOne?.touched || formSubmitted) && f.addressLineOne.errors }">
+
+                                    <div *ngIf="(f.addressLineOne?.touched || formSubmitted) && f.addressLineOne.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.addressLineOne.errors.required">Address Line 1 is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">  
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="addressLineTwo" class="mb-2 opacity-0">Address Line 2</label>
+
+                                    <input type="text" class="form-control" id="addressLineTwo" formControlName="addressLineTwo" placeholder="Enter Address Line 2">
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-3">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="countryId" class="mb-2">Country</label>
+
+                                    <ng-select name="countryId" id="countryId" class="form-control" placeholder="Select Country" formControlName="countryId" [ngClass]="{ 'is-invalid': (f.countryId?.touched || formSubmitted) && f.countryId.errors }" appendTo="body" [clearable]="false">
+
+                                        <ng-option *ngFor="let countryId of masterList['countryIdList']" [value]="countryId?._id">{{ countryId?.name }}</ng-option>
+
+                                    </ng-select>
+
+                                    <div *ngIf="(f.countryId?.touched || formSubmitted) && f.countryId.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.countryId.errors.required">Country is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-3">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="state" class="mb-2">State/Province</label>
+
+                                    <input type="text" class="form-control" id="state" formControlName="state" placeholder="Enter State" [ngClass]="{ 'is-invalid': (f.state?.touched || formSubmitted) && f.state.errors }">
+
+                                    <div *ngIf="(f.state?.touched || formSubmitted) && f.state.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.state.errors.required">State is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-3">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="city" class="mb-2">City</label>
+
+                                    <input type="text" class="form-control" id="city" formControlName="city" placeholder="Enter City" [ngClass]="{ 'is-invalid': (f.city?.touched || formSubmitted) && f.city.errors }">
+
+                                    <div *ngIf="(f.city?.touched || formSubmitted) && f.city.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.city.errors.required">City is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-3">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="pincode" class="mb-2">Pincode</label>
+
+                                    <input type="text" class="form-control" id="pincode" formControlName="pincode" placeholder="Enter Pincode" [ngClass]="{ 'is-invalid': (f.pincode?.touched || formSubmitted) && f.pincode.errors }">
+
+                                    <div *ngIf="(f.pincode?.touched || formSubmitted) && f.pincode.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.pincode.errors.required">Pincode is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="role" class="mb-2">Role</label>
+
+                                    <ng-select name="role" id="role" class="form-control" formControlName="role" placeholder="Select Role" [ngClass]="{ 'is-invalid': (f.role?.touched || formSubmitted) && f.role.errors }" appendTo="body" [clearable]="false">
+
+                                        <ng-container *ngFor="let role of masterList['rolesList']">
+
+                                            <ng-option [value]="role?._id" *ngIf="role.roleCategoryId?.category == 'Owner'">{{ role?.roleName }}</ng-option>
+
+                                        </ng-container>
+
+                                    </ng-select>
+
+                                    <div *ngIf="(f.role?.touched || formSubmitted) && f.role.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.role.errors.required">Role is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+    
+                        </div>
+    
+                    </div>
+    
+                </div>
+    
+            </form>
+            
+        </div>
+
+        <!-- Manager List -->
+        <div class="col-md-12" *ngIf="this.mode == 'Update'">
+
+            <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                <div class="card-header bg-white d-flex justify-content-between">
+    
+                    <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+      
+                        <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Mapped Manager :</h6>
+                      
+                    </div>
+
+                </div>
+    
+                <div class="card-body p-0">
+    
+                    <div class="table-responsive">
+
+                        <table class="table table-borderless align-middle table-striped">
+
+                            <thead class="bg-light text-secondary">
+
+                                <tr>
+
+                                    <th>Manager Name</th>
+
+                                    <th>Property Name</th>
+
+                                    <th>Contact Number</th>
+
+                                    <th style="text-align: start !important;">Email</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <ng-container *ngIf="!_.isEmpty(this.masterList['managerList']); else other">
+
+                                    <ng-container *ngFor="let manager of this.masterList['managerList']; let i = index; let last = last; let first = first">
+
+                                        <tr>
+
+                                            <td>{{ manager.firstName + ' ' + manager.lastName }}</td>
+
+                                            <!-- <td>{{ manager.propertyNames.join(', ') }}</td> -->
+
+                                            <td>
+
+                                                {{ manager.propertyName }}
+
+                                                <!-- Tooltip on eye icon for remaining propertyNames -->
+                                                <!-- <img *ngIf="manager.propertyNames.length > 1" src="images/icons/view_eye.svg" style="width: 26px; height: auto;"
+                                                alt="" [matTooltip]="getRemainingPropertyTooltip(manager.propertyNames)" matTooltipPosition="above"
+                                                matTooltipClass="custom-tooltip"/> -->
+
+                                                <!-- <span *ngIf="manager.propertyNames?.length">{{ manager.propertyNames[0] }}</span> -->
+
+                                                <!-- <span *ngIf="manager.propertyNames.length > 1">, <span class="text-primary">+{{ manager.propertyNames.length - 1 }}</span></span> -->
+
+                                            </td>
+
+                                            <td>{{ manager.mobileNo || '' }}</td>
+
+                                            <td style="text-align: start !important;">{{ manager.email || '' }}</td>
+
+                                        </tr>
+
+                                    </ng-container>
+
+                                </ng-container>
+                                
+                                <ng-template #other>
+                                
+                                    <tr>
+
+                                        <td colspan="11" style="text-align: center !important;">No  Records Found</td>
+
+                                    </tr>
+
+                                </ng-template>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Property List -->
+        <div class="col-md-12" *ngIf="this.mode == 'Update'">
+
+            <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                <div class="card-header bg-white d-flex justify-content-between">
+
+                    <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+
+                        <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Property :</h6>
+
+                    </div>
+
+                    <div>
+
+                        <button class="btn btn-secondary" (click)=" this.service.navigate({ 'url': 'app/property/create-property' })">+ Add New</button>
+
+                    </div>
+
+                </div>
+
+                <div class="card-body p-0">
+
+                    <div class="table-responsive">
+
+                        <table class="table table-borderless align-middle table-striped">
+
+                            <thead class="bg-light text-secondary">
+
+                                <tr>
+
+                                    <th>No</th>
+
+                                    <th>Property Name</th>
+
+                                    <th>Image</th>
+
+                                    <th>Address</th>
+
+                                    <th style="text-align: center !important;">No.Of.Units</th>
+
+                                    <th style="text-align: center !important;">Occupied Units</th>
+
+                                    <th style="text-align: center !important;">Tenant</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <ng-container *ngIf="!_.isEmpty(this.masterList['propertyList']); else other">
+
+                                    <ng-container *ngFor="let property of this.masterList['propertyList']; let i = index; let last = last; let first = first">
+
+                                        <tr>
+
+                                            <td>{{ i + 1 }}</td>
+
+                                            <td>{{ property.propertyName }}</td>
+
+                                            <td>
+
+                                                <ng-container *ngIf="property.propertyImages?.length > 0; else empty">
+
+                                                    <img [src]="service.getFullImagePath({ imgUrl : property.propertyImages[0]?.path })" alt="Property Image" style="width: 43px;height: 28px; border-radius: 4%; object-fit: cover;"> {{ '' }}
+
+                                                </ng-container>
+
+                                                <ng-template #empty>
+
+                                                    {{ ' - ' }}
+                                                    
+                                                </ng-template>
+
+                                            </td>
+
+                                            <td>
+
+                                                <img *ngIf="property.addressLineOne" src="images/icons/view_eye.svg" style="width: 26px; height: auto;" alt="" matTooltip="{{ property.addressLineOne + ', ' +  property.addressLineTwo + ', ' + property.city + ', ' + property.state + ', ' + property.country?.name + ' - ' + property.pincode }}" matTooltipPosition="above" matTooltipClass="custom-tooltip"/>
+
+                                                {{ property.addressLineOne.length > 20 ? (property.addressLineOne | slice:0:20) + '...' : property.addressLineOne }}
+
+                                            </td>
+
+                                            <td style="text-align: center !important;">{{ property.noOfUnits || 0 }}</td>
+
+                                            <td style="text-align: center !important;">{{ property.occupiedUnits || 0 }}</td>
+
+                                            <td style="text-align: center !important;">{{ property.tenantCount || 0 }}</td>
+
+                                        </tr>
+
+                                    </ng-container>
+
+                                </ng-container>
+                                
+                                <ng-template #other>
+                                
+                                    <tr>
+
+                                        <td colspan="11" style="text-align: center !important;">No  Records Found</td>
+
+                                    </tr>
+
+                                </ng-template>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="d-flex justify-content-end mt-3 mb-3">
+
+            <button class="btn btn-outline-secondary mt-3 ms-2" (click)=" this.service.navigate({ 'url': 'app/owner' })">Discard</button>
+
+            <button class="btn btn-secondary mt-3 mx-2" (click)="submit()">Save</button>
+
+        </div>
+
+    </div>
+
+</div>

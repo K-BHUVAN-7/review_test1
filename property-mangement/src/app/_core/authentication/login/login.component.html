@@ -1,0 +1,108 @@
+
+<div class="auth-bg">
+
+    <div class="card auth-card" [formGroup]="loginForm">
+
+        <div class="card-header bg-white border-0 p-4 d-flex align-items-center">
+
+            <!-- <a routerLink="/auth/validate-inn"><i class="bi bi-chevron-left fs-5 fw-bolder mb-3"></i></a> -->
+
+            <img src="/images/logo.png" style="width: 120px;" alt="logo" class="m-auto d-block my-1">
+
+        </div>
+        
+        <div class="card-body p-4">
+
+            <h2 class="text-app-secondary text-center">Welcome Back</h2>
+
+            <p class="text-center" style="color: #C1C1C1;">Secure, Simple, Seamless Management</p>
+
+            <div >
+                
+                <div class="form-group mb-3">
+        
+                    <label for="email" class="form-label required" style="font-weight: 500 !important;">Email ID <span class="text-danger">*</span></label>
+        
+                    <input class="form-control" type="text" id="email" placeholder="Enter Email ID" formControlName="email" [ngClass]="{ 'is-invalid': formSubmitted && f.email.errors }">
+        
+                    <div *ngIf="formSubmitted && f.email.errors" class="invalid-feedback">
+
+                        <div *ngIf="f.email.errors.required">email is required</div>
+                        
+                    </div>
+        
+                </div>
+        
+                <div class="form-group ">
+        
+                    <label for="password" class="form-label fw-bold" style="font-weight: 500 !important;">Password <span class="text-danger">*</span></label>
+
+                    <div class="password-input-group">
+
+                        <input class="form-control mb-2" #password  type="password" id="password" placeholder="Enter password" formControlName="password" [ngClass]="{ 'is-invalid': formSubmitted && f.password.errors }">
+    
+                        <i class="bi text-primary" [ngClass]="password.type == 'text' ? 'bi-eye' : 'bi-eye-slash'" (click)="password.type = password.type == 'text' ? 'password' : 'text'"></i>
+
+                    </div>
+
+                    <div *ngIf="formSubmitted && f.password.errors" class="invalid-feedback">
+        
+                        <div *ngIf="f.password.errors.required">Password is required</div>
+                        
+                    </div>
+
+                    <p class="text-end opacity-50" style="cursor: pointer;"  routerLink="/auth/forget-password">Forget Password ?</p>
+        
+                </div>
+
+            </div>
+    
+            <button class="btn btn-primary btn-lg w-100 mt-4 mb-3 fs-6" [disabled]="(formSubmitted && loginForm.invalid) || isLoading" (click)="submit()">
+                                
+                <ng-container *ngIf="!isLoading">Sign In</ng-container>
+    
+                <div class="spinner-border text-white-50" *ngIf="isLoading" role="status">
+    
+                    <span class="visually-hidden">Loading...</span>
+    
+                </div>
+            
+            </button>
+    
+            <div class="divider">
+    
+                <hr>
+    
+                <span class="position-absolute text-muted small">OR</span>
+    
+            </div>
+    
+            <div class="d-block pt-1">
+
+                <div class="d-flex justify-content-center   ">
+
+                    <div id="google-btn"></div>
+
+                </div>
+                
+                <!-- <button class="btn btn-md d-flex align-items-center bg-white border mat-elevation-z3 mt-3 mx-auto px-4 py-2 rounded-3 text-dark fs-6" (click)="loginWithGoogle()">
+                    
+                    <img src="images/google.png" style="height: 25px" alt="" class="me-2"> <span class="mb-1">Continue with Google</span>
+    
+                </button> -->
+    
+            </div>
+
+            <p class="mt-4 text-center" style="color: #C1C1C1;">To create new property management account&nbsp;<span class="text-app-secondary" (click)="route()" style="cursor: pointer;">Sign Up</span>&nbsp;here</p>
+
+            <div class="text-center">
+
+                <button class="btn text-white rounded-pill py-3 px-5" style="background: linear-gradient(90deg, rgba(242, 178, 0, 0) -50.7%, #D2A119 51.59%, rgba(242, 178, 0, 0) 144.89%);">Experience a one-week free trial—start today</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

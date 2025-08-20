@@ -1,0 +1,79 @@
+<div class="auth-bg" style="overflow: hidden !important;">
+
+    <div class="card auth-card">
+
+        <div class="card-header bg-white border-0 p-4">
+
+            <img src="/images/full-logo.png" alt="logo" class="m-auto d-block my-4">
+
+        </div>
+
+        <div class="card-body px-4 px-lg-5">
+
+            <p class="card-title">Select Language</p>
+
+            <p class="text-center px-4">choose your preferred language for the app.you can adjust it later in the more menu</p>
+
+            <div class="mx-auto mt-5" style="max-width: 360px;">
+
+                <mat-radio-group  [(ngModel)]="selectedLanguage">
+
+                    <div class="d-flex align-items-center justify-content-between" *ngFor="let item of languages; let last = last" [ngClass]="{ 'mb-3 pb-2 border-bottom border-2': !last }">
+
+                        <div class="d-flex align-items-center">
+
+                            <div class="ln-badge me-2">{{item.label | slice:0:1 }}</div>
+
+                            <p class="text-dark fw-bold mb-0">{{item.label}}</p>
+
+                        </div>
+
+                        <mat-radio-button [value]="item.code"></mat-radio-button>
+
+                    </div>
+
+                </mat-radio-group>
+
+            </div>
+
+        </div>
+        
+        <div class="card-footer bg-white border-0 text-center p-5">
+
+            <a class="btn btn-lg btn-success w-100" routerLink="/auth/validate-mobile">Submit</a>
+
+            <div class="d-flex justify-content-between mx-auto mt-4 pt-5 pb-3" style="max-width: 360px;">
+
+                <a href="https://abn.kg/" target="_blank">
+                    
+                    <img src="/images/about-abn.png" alt="logo" class="d-block mb-2">
+
+                    <p class="text-app-secondary">About</p>
+
+                </a>
+
+                <a href="https://abn.kg/#!/tab/678312214-1" target="_blank">
+
+                    <img src="/images/product.png" alt="logo" class="d-block mb-2">
+                    
+                    <p class="text-app-secondary">Products</p>
+
+                </a>
+
+                <a href="https://abn.kg/about" target="_blank">
+
+                    <img src="/images/abn24.png" alt="logo" class="d-block mb-2">
+
+                    <p class="text-app-secondary">ABN24</p>
+
+                </a>
+
+            </div>
+
+            <a href="https://abn.kg/" target="_blank" class="text-app-primary small">click here for learn more about ABN</a>
+
+        </div>
+
+    </div>
+    
+</div>

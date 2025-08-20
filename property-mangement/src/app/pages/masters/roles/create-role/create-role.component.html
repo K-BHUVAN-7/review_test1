@@ -1,0 +1,758 @@
+<div class="container-fluid">
+
+  <div class="d-flex justify-content-between mb-3">
+  
+    <h5 class="text-dark mb-2">{{mode}} Role</h5>
+
+    <small>
+        
+        <span class="text-primary">Role</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-primary" (click)="this.service.navigate({ 'url': 'app/masters/roles' });" style="cursor: pointer;">Role List</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-dark">{{ this.mode == 'Create' ? 'Create' : 'Update' }} Role</span>
+    
+    </small>
+
+</div>
+
+  <div class="row" >
+
+    <form *ngIf="!_.isEmpty(roleForm.value)" [formGroup]="roleForm" class="horizontal-form-fields">
+
+      <div class="col-md-8 mb-4">
+
+        <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+          <div class="card-header bg-white">
+
+            <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+
+              <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Basic Role Details</h6>
+              
+              <!-- <img src="images/download.png" style="width: 26px; height: auto;" alt=""> -->
+              
+            </div>
+              
+          </div>
+
+          <div class="card-body rounded-0">
+                  
+            <div class="row">
+
+              <div class="col-md-6 form-group required">
+
+                <label for="roleName" class="form-label">Role Name</label>
+
+                <input type="text" class="form-control" id="roleName" formControlName="roleName" autocomplete="off" placeholder="Enter Role Name" [ngClass]="{ 'is-invalid': (f.roleName?.touched || formSubmitted) && f.roleName.errors }"/>
+
+                <div *ngIf="(f.roleName?.touched || formSubmitted) && f.roleName.errors" class="invalid-feedback">
+
+                  <div *ngIf="f.roleName.errors.required">Role Name is required</div>
+
+                </div> 
+
+              </div>  
+
+              <div class="col-md-6 form-group">
+
+                <label for="roleName" class="form-label">Role Category</label>
+
+                <ng-select name="roleCategoryId" class="form-control" id="roleCategoryId" formControlName="roleCategoryId" (change)="changeValue({'fieldName': 'roleCategoryId'})" [ngClass]="{ 'is-invalid': (f.roleCategoryId?.touched || formSubmitted) && f.roleCategoryId.errors }" [attr.disabled]="mode == 'Update' ? 'disabled': null" appendTo="body" [clearable]="false" placeholder="Select Role Category">
+
+                  <ng-option *ngFor="let role of this.masterList['rolesCategoryList']" [value]="role?._id">{{ role.category }}</ng-option>
+
+                </ng-select>
+                  
+                <div *ngIf="(f.roleCategoryId?.touched || formSubmitted) && f.roleCategoryId.errors" class="invalid-feedback">
+
+                  <div *ngIf="f.roleCategoryId.errors.required">Role Category is required</div>
+
+                </div> 
+
+              </div>
+
+              <div class="col-md-12 mt-3">
+
+                <label for="description" class="form-label text-dark">Description</label>
+    
+                <textarea class="form-control" id="description" formControlName="description" placeholder="Enter Description..." rows="3"></textarea>
+                
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-md-12" formArrayName="branches"  *ngIf="bf.at(selectedTabIndex); else select">
+
+        <!-- <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+          <div class="card-header bg-white">
+
+            <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+
+              <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Privileges</h6>
+
+            </div>
+
+          </div>
+      
+          <div class="card-body rounded-0 p-0" *ngIf="!_.isEmpty(roleForm.value)" [formGroup]="roleForm">
+      
+            <div class="table-responsive">
+
+              <table class="table align-middle table-striped table-bordered">
+
+                <thead class="bg-light text-secondary">
+
+                  <tr>
+
+                    <th class="text-dark ps-5" style="text-align: start !important; width: 50% !important;">Module</th>
+
+                    <th class="text-dark" style="width: 10%!important">Allow</th>
+
+                    <th class="text-dark" style="width: 10% !important;">Create</th>
+
+                    <th class="text-dark" style="width: 10% !important;">Update</th>
+
+                    <th class="text-dark" style="width: 10% !important;">Delete</th>
+
+                    <th class="text-dark" style="width: 10% !important;">View</th>
+
+                  </tr>
+
+                </thead>
+      
+                <tbody formArrayName="permissions">
+
+                  <ng-container *ngFor="let permissionForm of pf.controls; index as levelOneIndex">
+
+                    <ng-container [formGroup]="permissionForm" *ngIf="permissionForm.controls as pfc">
+
+                      <tr>
+
+                        <td class="ps-5" style="text-align: start !important;">{{ pfc.label.value }}</td>
+      
+                        <td>
+
+                          <div class="form-check form-switch d-flex justify-content-center">
+
+                            <input class="form-check-input" type="checkbox" role="switch" formControlName="allow" (change)="onAllowChange(permissionForm)">
+
+                          </div>
+
+                        </td>
+      
+                        <ng-container formArrayName="branches" *ngIf="_.isEmpty(pfc.subMenu.value) else others">
+
+                          <ng-container *ngFor="let branchForm of permissionForm.get('branches').controls; let i = index">
+
+                            <ng-container [formGroupName]="i">
+                              
+                              <td>
+
+                                <div class="form-check d-flex justify-content-center"  *ngIf="pfc.allow.value else other">
+
+                                  <input class="form-check-input" type="checkbox" formControlName="create" (change)="togglePermission(branchForm, 'create')">
+
+                                </div>
+
+                                <ng-template #other>-</ng-template>
+
+                              </td>
+                        
+                              <td>
+
+                                <div class="form-check d-flex justify-content-center"  *ngIf="pfc.allow.value else other">
+
+                                  <input class="form-check-input" type="checkbox" formControlName="edit" (change)="togglePermission(branchForm, 'edit')" *ngIf="pfc.allow.value">
+
+                                </div>
+
+                                <ng-template #other>-</ng-template>
+
+                              </td>
+                        
+                              <td>
+
+                                <div class="form-check d-flex justify-content-center"  *ngIf="pfc.allow.value else other">
+
+                                  <input
+
+                                    class="form-check-input"
+
+                                    type="checkbox"
+
+                                    formControlName="delete"
+
+                                    (change)="togglePermission(branchForm, 'delete')"
+
+                                    *ngIf="pfc.allow.value">
+
+                                </div>
+
+                                <ng-template #other>-</ng-template>
+
+                              </td>
+                        
+                              <td>
+
+                                <div class="form-check d-flex justify-content-center"  *ngIf="pfc.allow.value else other">
+
+                                  <input
+
+                                    class="form-check-input"
+
+                                    type="checkbox"
+
+                                    formControlName="view"
+
+                                    (change)="togglePermission(branchForm, 'view')"
+
+                                    *ngIf="pfc.allow.value">
+
+                                </div>
+
+                                <ng-template #other>-</ng-template>
+
+                              </td>
+
+                            </ng-container>
+
+                          </ng-container>
+
+                        </ng-container>
+
+                        <ng-template #others>
+
+                          <td colspan="4"> </td>
+
+                        </ng-template>
+
+                      </tr>
+
+                      <ng-container formArrayName="subMenu" *ngFor="let subMenuForm1 of permissionForm.get('subMenu').controls">
+
+                        <ng-container [formGroup]="subMenuForm1">
+
+                          <tr>
+
+                            <td class="ps-5" style="text-align: start !important;">{{ subMenuForm1.get('label').value }}</td>
+
+                            <td>
+
+                              <div class="form-check form-switch d-flex justify-content-center">
+
+                                <input class="form-check-input" type="checkbox" formControlName="allow" (change)="onAllowChange(subMenuForm1)">
+
+                              </div>
+
+                            </td>
+      
+                            <ng-container formArrayName="branches">
+
+                              <ng-container *ngFor="let branchForm of subMenuForm1.get('branches').controls">
+
+                                <ng-container [formGroup]="branchForm">
+
+                                  <td>
+
+                                    <div class="form-check d-flex justify-content-center">
+
+                                      <input class="form-check-input" type="checkbox" (change)="togglePermission(branchForm, 'create')"
+
+                                        [checked]="branchForm.get('permission').value.includes('create')" 
+
+                                        [disabled]="!subMenuForm1.get('allow').value">
+
+                                    </div>
+
+                                  </td>
+      
+                                  <td>
+
+                                    <div class="form-check d-flex justify-content-center">
+
+                                      <input class="form-check-input" type="checkbox" (change)="togglePermission(branchForm, 'edit')"
+
+                                        [checked]="branchForm.get('permission').value.includes('edit')" 
+
+                                        [disabled]="!subMenuForm1.get('allow').value">
+
+                                    </div>
+
+                                  </td>
+      
+                                  <td>
+
+                                    <div class="form-check d-flex justify-content-center">
+
+                                      <input class="form-check-input" type="checkbox" (change)="togglePermission(branchForm, 'delete')"
+
+                                        [checked]="branchForm.get('permission').value.includes('delete')" 
+
+                                        [disabled]="!subMenuForm1.get('allow').value">
+
+                                    </div>
+
+                                  </td>
+      
+                                  <td>
+                                    
+                                    <div class="form-check d-flex justify-content-center">
+
+                                      <input class="form-check-input" type="checkbox" (change)="togglePermission(branchForm, 'view')"
+
+                                        [checked]="branchForm.get('permission').value.includes('view')"
+
+                                        [disabled]="!subMenuForm1.get('allow').value">
+
+                                    </div>
+
+                                  </td>
+
+                                </ng-container>
+
+                              </ng-container>
+
+                            </ng-container>
+
+                          </tr>
+
+                        </ng-container>
+
+                      </ng-container>
+
+                      <ng-container formArrayName="subMenu">
+
+                        <ng-container *ngFor="let subMenuForm1 of permissionForm.get('subMenu').controls; let i = index">
+
+                          <ng-container [formGroupName]="i">
+
+                            <tr>
+
+                              <td  style="text-align: start !important;" class="ps-5">{{ subMenuForm1.get('label').value }} </td>
+
+                              <td>
+
+                                <div class="form-check form-switch d-flex justify-content-center">
+
+                                  <input class="form-check-input" type="checkbox" formControlName="allow" (change)="onAllowChange(subMenuForm1)">
+
+                                </div>
+
+                              </td>
+                      
+                              <ng-container formArrayName="branches">
+
+                                <ng-container *ngFor="let branchForm of subMenuForm1.get('branches').controls; let j = index">
+
+                                  <ng-container [formGroupName]="j">
+
+                                    <td>
+
+                                      <div class="form-check d-flex justify-content-center" *ngIf="subMenuForm1.get('allow').value else other">
+
+                                        <input class="form-check-input" type="checkbox" formControlName="create" (change)="togglePermission(branchForm, 'create')" 
+
+                                          [attr.disabled]="!subMenuForm1.get('allow').value ? 'disabled' : null">
+
+                                      </div>
+
+                                      <ng-template #other>-</ng-template>
+
+                                    </td>
+                      
+                                    <td>
+
+                                      <div class="form-check d-flex justify-content-center" *ngIf="subMenuForm1.get('allow').value else other">
+
+                                        <input class="form-check-input" type="checkbox" formControlName="edit" (change)="togglePermission(branchForm, 'edit')" 
+
+                                        [attr.disabled]="!subMenuForm1.get('allow').value ? 'disabled' : null">
+
+                                      </div>
+
+                                      <ng-template #other>-</ng-template>
+
+                                    </td>
+                      
+                                    <td>
+
+                                      <div class="form-check d-flex justify-content-center" *ngIf="subMenuForm1.get('allow').value else other">
+
+                                        <input class="form-check-input" type="checkbox" formControlName="delete" (change)="togglePermission(branchForm, 'delete')" 
+
+                                        [attr.disabled]="!subMenuForm1.get('allow').value ? 'disabled' : null">
+
+                                      </div>
+
+                                      <ng-template #other>-</ng-template>
+
+                                    </td>
+                      
+                                    <td>
+
+                                      <div class="form-check d-flex justify-content-center" *ngIf="subMenuForm1.get('allow').value else other">
+
+                                        <input class="form-check-input" type="checkbox" formControlName="view" (change)="togglePermission(branchForm, 'view')" 
+
+                                          [attr.disabled]="!subMenuForm1.get('allow').value ? 'disabled' : null">
+
+                                      </div>
+
+                                      <ng-template #other>-</ng-template>
+
+                                    </td>
+
+                                  </ng-container>
+
+                                </ng-container>
+
+                              </ng-container>
+                      
+                            </tr>
+
+                          </ng-container>
+
+                        </ng-container>
+
+                      </ng-container>
+
+                    </ng-container>
+
+                  </ng-container>
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+          </div>
+
+        </div> -->
+
+        <div class="card border-0" style="box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;">
+
+          <div class="card-header bg-white">
+
+            <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+
+              <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Privileges</h6>
+
+            </div>
+
+          </div>
+
+          <div class="card-body rounded-0 p-0" [formGroup]="bf.at(selectedTabIndex)">
+
+            <div class="table-responsive">
+
+              <div formArrayName="permissions">
+
+                <table class="table align-middle table-striped table-bordered">
+
+                  <thead class="bg-light text-secondary">
+
+                    <tr>
+
+                      <th class="text-dark ps-3" style="text-align: start !important;">Menu</th>
+
+                      <th class="text-dark" style="text-align: center !important;">Allow</th>
+
+                      <th class="text-dark" style="text-align: center !important;">Create</th>
+
+                      <th class="text-dark" style="text-align: center !important;">Update</th>
+
+                      <th class="text-dark" style="text-align: center !important;">Delete</th>
+
+                      <th class="text-dark" style="text-align: center !important;">View</th>
+
+                      <th class="text-dark" style="text-align: center !important;">Approve</th>
+
+                    </tr>
+
+                  </thead>
+
+                  <tbody>
+
+                    <ng-container *ngFor="let menuGroup of bf.at(selectedTabIndex).get('permissions').controls; let j = index" [formGroupName]="j">
+
+                      <tr>
+
+                        <td class="ps-3" style="text-align: start !important;">{{ menuGroup.value.label }}</td>
+
+                        <td>
+
+                          <div class="form-check form-switch d-flex justify-content-center p-0">
+
+                            <input class="form-check-input" type="checkbox" role="switch" formControlName="allow" (change)="onToggleChange(menuGroup)">
+
+                          </div>
+
+                        </td>
+
+                        <td>
+
+                          <div class="form-check d-flex justify-content-center p-0" *ngIf="menuGroup.value.allow && menuGroup.value.permission.includes('create') && menuGroup.value.subMenu.length == 0 else other">
+
+                            <input class="form-check-input" type="checkbox" formControlName="create">
+
+                          </div>
+
+                          <ng-template #other>
+
+                            <div class="form-check d-flex justify-content-center p-0">
+
+                              <input *ngIf="menuGroup.get('subMenu')?.controls?.length == 0" class="form-check-input" type="checkbox" disabled>
+
+                            </div>
+                            
+                          </ng-template>
+
+                        </td>
+
+                        <td>
+
+                          <div class="form-check d-flex justify-content-center p-0"  *ngIf="menuGroup.value.allow && menuGroup.value.permission.includes('edit') && menuGroup.value.subMenu.length == 0 else other">
+
+                            <input class="form-check-input" type="checkbox" formControlName="edit">
+
+                          </div>
+
+                          <ng-template #other>
+
+                            <div class="form-check d-flex justify-content-center p-0">
+
+                              <input class="form-check-input" type="checkbox" disabled>
+
+                            </div>
+
+                          </ng-template>
+
+                        </td>
+
+                        <td>
+
+                          <div class="form-check d-flex justify-content-center p-0"  *ngIf="menuGroup.value.allow && menuGroup.value.permission.includes('delete') && menuGroup.value.subMenu.length == 0 else other">
+
+                            <input class="form-check-input" type="checkbox" formControlName="delete">
+
+                          </div>
+
+                          <ng-template #other>
+                            
+                            <div class="form-check d-flex justify-content-center p-0">
+
+                              <input class="form-check-input" type="checkbox" disabled>
+
+                            </div>
+
+                          </ng-template>
+                        
+                        </td>
+
+                        <td>
+
+                          <div class="form-check d-flex justify-content-center p-0"  *ngIf="menuGroup.value.allow && menuGroup.value.permission.includes('view') && menuGroup.value.subMenu.length == 0 else other">
+
+                            <input class="form-check-input" type="checkbox" formControlName="view">
+
+                          </div>
+
+                          <ng-template #other>
+                            
+                            <div class="form-check d-flex justify-content-center p-0">
+
+                              <input class="form-check-input" type="checkbox" disabled>
+
+                            </div>
+
+                          </ng-template>
+                        
+                        </td>
+
+                        <td>
+
+                          <div class="form-check d-flex justify-content-center p-0"  *ngIf="menuGroup.value.allow && menuGroup.value.permission.includes('approve') && menuGroup.value.subMenu.length == 0 else other">
+
+                            <input class="form-check-input" type="checkbox" formControlName="approve">
+
+                          </div>
+
+                          <ng-template #other>
+                            
+                            <div class="form-check d-flex justify-content-center p-0">
+
+                              <input class="form-check-input" type="checkbox" disabled>
+
+                            </div>
+
+                          </ng-template>
+                        
+                        </td>
+
+
+                      </tr>
+
+                      <ng-container *ngIf="menuGroup.value.allow && menuGroup.get('subMenu')?.controls?.length" formArrayName="subMenu">
+
+                        <tr *ngFor="let subMenuGroup of menuGroup.get('subMenu')?.controls; let k = index" [formGroupName]="k">
+
+                          <td style="text-align: start !important;" class="ps-5 bg-secondary-subtle">{{ subMenuGroup.value.label }}</td>
+
+                          <td class="bg-secondary-subtle">
+
+                            <div class="form-check form-switch d-flex justify-content-center p-0">
+
+                              <input class="form-check-input" type="checkbox" role="switch" formControlName="allow" (change)="onToggleChange(menuGroup,subMenuGroup)">
+
+                            </div>
+
+                          </td>
+
+                          <td class="bg-secondary-subtle">
+
+                            <div class="form-check d-flex justify-content-center p-0"  *ngIf="subMenuGroup.value.allow else other">
+
+                              <input class="form-check-input" type="checkbox" formControlName="create">
+
+                            </div>
+
+                            <ng-template #other>
+                              
+                              <div class="form-check d-flex justify-content-center p-0">
+
+                                <input class="form-check-input" type="checkbox" disabled>
+
+                              </div>
+                          
+                            </ng-template>
+
+                          </td>
+
+                          <td class="bg-secondary-subtle">
+
+                            <div class="form-check d-flex justify-content-center p-0"  *ngIf="subMenuGroup.value.allow else other">
+
+                              <input class="form-check-input" type="checkbox" formControlName="edit">
+
+                            </div>
+
+                            <ng-template #other>
+                              
+                              <div class="form-check d-flex justify-content-center p-0">
+
+                                <input class="form-check-input" type="checkbox" disabled>
+
+                              </div>
+
+                            </ng-template>
+                          
+                          </td>
+
+                          <td class="bg-secondary-subtle">
+
+                            <div class="form-check d-flex justify-content-center p-0"  *ngIf="subMenuGroup.value.allow else other">
+
+                              <input class="form-check-input" type="checkbox" formControlName="delete">
+
+                            </div>
+
+                            <ng-template #other>
+                              
+                              <!-- <div class="form-check d-flex justify-content-center p-0">
+
+                                <input class="form-check-input" type="checkbox" disabled>
+
+                              </div> -->
+
+                            </ng-template>
+
+                          </td>
+
+                          <td class="bg-secondary-subtle">
+
+                            <div class="form-check d-flex justify-content-center p-0" *ngIf="subMenuGroup.value.allow else other">
+
+                              <input class="form-check-input" type="checkbox" formControlName="view">
+
+                            </div>
+
+                            <ng-template #other>
+                              
+                              <div class="form-check d-flex justify-content-center p-0">
+
+                                <input class="form-check-input" type="checkbox" disabled>
+
+                              </div>
+
+                            </ng-template>
+                          
+                          </td>
+
+                          <td class="bg-secondary-subtle">
+
+                            <div class="form-check d-flex justify-content-center p-0" *ngIf="subMenuGroup.value.allow else other">
+
+                              <input class="form-check-input" type="checkbox" formControlName="approve">
+
+                            </div>
+
+                            <ng-template #other>
+                              
+                              <div class="form-check d-flex justify-content-center p-0">
+
+                                <input class="form-check-input" type="checkbox" disabled>
+
+                              </div>
+
+                            </ng-template>
+                          
+                          </td>
+
+                        </tr>
+
+                      </ng-container>
+
+                    </ng-container>
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            </div> 
+
+          </div>
+
+        </div>
+
+        <div class="d-flex justify-content-end mt-3 mb-3">
+    
+          <button (click)="this.service.navigate({ 'url': 'app/masters/roles' });" class="btn btn-outline-secondary">Cancel</button>
+
+          <button (click)="submit()" class="btn btn-secondary ms-3" [disabled]="!submitEnabled && this.mode == 'Create'">Submit</button>
+    
+        </div>
+
+      </div>
+
+      <ng-template #select>
+
+        <div class="col-md-8 text-center">
+
+          <p style="color: #FFC403; font-size: 18px;">Pleace select one role category.</p>
+
+        </div>
+
+      </ng-template>
+
+    </form>
+
+  </div>
+
+</div>

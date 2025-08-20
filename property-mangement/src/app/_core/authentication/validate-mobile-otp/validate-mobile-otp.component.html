@@ -1,0 +1,77 @@
+<div class="auth-bg">
+
+    <div class="card auth-card">
+
+        <div class="card-header bg-white border-0 p-4 d-flex align-items-center">
+
+            <a routerLink="/auth/validate-mobile"><i class="bi bi-chevron-left fs-5 fw-bolder mb-3"></i></a>
+
+            <img src="/images/full-logo.png" alt="logo" class="m-auto d-block my-4">
+
+        </div>
+
+        <div class="card-body px-4 px-lg-5">
+
+            <p class="text-center card-title">OTP</p>
+
+            <p class="text-center">You'll need to verify your identity. We've sent a <br>verification code to ******{{mobileNumber | slice: -3 }}</p>
+
+            <div class="mx-auto mt-5" style="width: 100%;">
+
+                <div class="d-flex justify-content-center mb-3">
+
+                    <ng-otp-input [config]="{ length: 4 , allowNumbersOnly: true }" [(ngModel)]="otp" ></ng-otp-input>
+
+                </div>
+
+                <p class="text-center pt-2" *ngIf="time > 0">OTP Expires in <span class="text-dark fw-600">{{ Math.floor(time / 60) }}:{{ time%60 | number: '2.0-0' }}</span></p>
+
+                <div class="text-center" *ngIf="time == 0"> 
+
+                    <a class="text-app-secondary" (click)="startTimer()">Resend OTP?</a> 
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-footer bg-white border-0 text-center p-5">
+
+            <button class="btn btn-lg btn-success mb-4 w-100" (click)="verifyOTP()" [disabled]="(submitted && otp.length < 4) || time == 0">Verify OTP</button>
+
+            <div class="d-flex justify-content-between mx-auto mt-4 pt-5 pb-3" style="max-width: 360px;">
+
+                <a href="https://abn.kg/" target="_blank">
+
+                    <img src="/images/about-abn.png" alt="logo" class="d-block mb-2">
+
+                    <p class="text-app-secondary">About</p>
+
+                </a>
+
+                <a href="https://abn.kg/#!/tab/678312214-1" target="_blank">
+
+                    <img src="/images/product.png" alt="logo" class="d-block mb-2">
+
+                    <p class="text-app-secondary">Products</p>
+
+                </a>
+
+                <a href="https://abn.kg/about" target="_blank">
+
+                    <img src="/images/abn24.png" alt="logo" class="d-block mb-2">
+
+                    <p class="text-app-secondary">ABN24</p>
+
+                </a>
+
+            </div>
+
+            <a href="https://abn.kg/" target="_blank" class="text-app-primary small">click here for learn more about ABN</a>
+
+        </div>
+
+    </div>
+
+</div>

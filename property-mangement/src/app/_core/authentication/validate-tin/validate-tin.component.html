@@ -1,0 +1,87 @@
+<div class="auth-bg">
+
+    <div class="card auth-card" [formGroup]="validationForm">
+
+        <div class="card-header bg-white border-0 p-4 d-flex align-items-center">
+
+            <a routerLink="/auth/select-ln"><i class="bi bi-chevron-left fs-5 fw-bolder mb-3"></i></a>
+
+            <img src="/images/full-logo.png" alt="logo" class="m-auto d-block my-4">
+
+        </div>
+
+        <div class="card-body px-4 px-lg-5">
+
+            <p class="text-start card-title">INN Number</p>
+
+            <p>Please enter your INN number</p>
+
+            <div class="mx-auto mt-5" style="width: 100%;">
+                
+                <div class="input-group mb-3">
+
+                    <span class="input-group-text"><i class="bi bi-postcard"></i></span>
+
+                    <div class="form-floating">
+
+                        <input type="text" class="form-control" id="innNo" placeholder="" maxlength="14" formControlName="innNo" [ngClass]="{ 'is-invalid': submitted && f.innNo.errors }">
+
+                        <label for="innNo">INN Number <span class="text-danger">*</span></label>
+
+                    </div>
+
+                    <div *ngIf="submitted && f.innNo.errors" class="invalid-feedback">
+
+                        <span *ngIf="f.innNo.errors.required">INN is required.</span>
+
+                        <span *ngIf="f.innNo.errors.pattern">INN must be exactly 14 digits {{ ["1","2"].includes(f.innNo.value[0]) ? "" : "and start with 1 or 2." }}</span>
+
+                        <span *ngIf="f.innNo.errors.invalidDate">Invalid INN.</span>
+
+                    </div> 
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-footer bg-white border-0 text-center p-5">
+
+            <a class="btn btn-lg btn-success w-100" (click)="submit()">Submit</a>
+
+            <div class="d-flex justify-content-between mx-auto mt-4 pt-5 pb-3" style="max-width: 360px;">
+
+                <a href="https://abn.kg/" target="_blank">
+
+                    <img src="/images/about-abn.png" alt="logo" class="d-block mb-2">
+
+                    <p class="text-app-secondary">About</p>
+
+                </a>
+
+                <a href="https://abn.kg/#!/tab/678312214-1" target="_blank">
+
+                    <img src="/images/product.png" alt="logo" class="d-block mb-2">
+
+                    <p class="text-app-secondary">Products</p>
+
+                </a>
+
+                <a href="https://abn.kg/about" target="_blank">
+
+                    <img src="/images/abn24.png" alt="logo" class="d-block mb-2">
+
+                    <p class="text-app-secondary">ABN24</p>
+
+                </a>
+
+            </div>
+
+            <a href="https://abn.kg/" target="_blank" class="text-app-primary small">click here for learn more about ABN</a>
+
+        </div>
+
+    </div>
+
+</div>
