@@ -3,8 +3,7 @@ rules:
     languages: [typescript]
     message: "❌ Angular project structure violation: Components should not be in the `_core/` directory."
     severity: ERROR
-    paths:
-      # This pattern tells Semgrep to look for any file ending in .component.ts
-      # ONLY inside the src/app/_core/ directory and any of its subdirectories.
-      include:
-        - "src/app/_core/**/*.component.ts"
+    patterns: # Add this patterns key
+      - paths: # Nest the paths key inside
+          include:
+            - "src/app/_core/**/*.component.ts"
