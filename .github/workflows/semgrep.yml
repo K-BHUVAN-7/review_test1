@@ -1,4 +1,4 @@
-name: Semgrep PR Bot
+name: Semgrep with Gemini
 
 on:
   pull_request:
@@ -8,8 +8,7 @@ jobs:
   semgrep:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Run Semgrep
         uses: returntocorp/semgrep-action@v1
@@ -22,3 +21,29 @@ jobs:
         with:
           name: semgrep-results
           path: results.json
+
+  review:
+    needs: semgrep
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download Semgrep Results
+        uses: actions/download-artifact@v4
+        with:
+          name: semgrep-results
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: pip install requests
+
+      - name: Run Gemini Processor
+        run: python process_results.py
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
