@@ -6,9 +6,10 @@ on:
   pull_request:
     branches: [ main, master ]
 
+# Permissions needed to read code and write PR comments
 permissions:
-  contents: read      # To checkout the code
-  pull-requests: write # To comment on the PR
+  contents: read
+  pull-requests: write
 
 jobs:
   semgrep_scan:
@@ -28,11 +29,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install semgrep google-generativeai requests
 
-      # Run Semgrep and output results to a JSON file
+      # This step is updated to use your root rules.yaml and a standard ruleset
       - name: Run Semgrep
-        run: semgrep scan --json -o semgrep_results.json || true
+        run: |
+          semgrep scan \
+            --config "p/default" \
+            --config "rules.yaml" \
+            --json -o semgrep_results.json || true
 
-      # Run the Python script to summarize and post the comment
       - name: Summarize and Comment
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
