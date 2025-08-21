@@ -1,19 +1,10 @@
 rules:
-  - id: angular-project-structure
+  - id: no-components-in-core
     languages: [typescript]
-    message: >
-      ❌ Angular project structure violation:
-      - Components should not be in `_core/`. Place them in a feature or shared module.
+    message: "❌ Angular project structure violation: Components should not be in the `_core/` directory."
     severity: ERROR
     paths:
-      # This tells Semgrep to ONLY look inside the _core directory
+      # This pattern tells Semgrep to look for any file ending in .component.ts
+      # ONLY inside the src/app/_core/ directory and any of its subdirectories.
       include:
-        - "src/app/_core/"
-      # This part of the rule looks for any file ending in .component.ts
-    patterns:
-      - pattern-inside: |
-          ...
-      - paths:
-          # Match files ending with .component.ts
-          include:
-            - "*.component.ts"
+        - "src/app/_core/**/*.component.ts"
