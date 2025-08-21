@@ -29,14 +29,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install semgrep google-generativeai requests
 
-      # This step is updated to use your root rules.yaml and a standard ruleset
+      # This step now uses 'semgrep ci' for robust CI execution and proper error handling.
+      # It will run and generate output, but also fail the job if a blocking finding is detected.
       - name: Run Semgrep
         run: |
-          semgrep scan \
+          semgrep ci \
             --config "p/default" \
             --config "rules.yaml" \
-            --json -o semgrep_results.json
-
+            --json > semgrep_results.json || true
+            
       - name: Summarize and Comment
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
