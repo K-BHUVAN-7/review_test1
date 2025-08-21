@@ -3,7 +3,7 @@ rules:
     languages: [typescript]
     message: "❌ Angular project structure violation: Components should not be in the `_core/` directory."
     severity: ERROR
-    patterns: # Add this patterns key
-      - paths: # Nest the paths key inside
-          include:
-            - "src/app/_core/**/*.component.ts"
+    paths:
+      include:
+        - "src/app/_core/**/*.component.ts"
+    pattern-regex: "."
