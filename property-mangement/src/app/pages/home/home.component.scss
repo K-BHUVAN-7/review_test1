@@ -1,0 +1,18 @@
+.dashboard {
+  background-color: var(--header-bg);
+}
+.dashboard .card {
+  border: 1px solid var(--secondary-color) !important;
+  border-radius: 8px;
+  // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  overflow: hidden;
+}
+ 
+.text-primary{
+  color: var(--secondary-color) !important; 
+}
+
+.bi-arrow-up::before, .bi-arrow-down::before {
+  font-weight: 900 !important;
+}
