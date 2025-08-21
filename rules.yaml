@@ -3,15 +3,17 @@ rules:
     languages: [typescript]
     message: >
       ❌ Angular project structure violation:
-      - Components should be in `shared/`
-      - Core services/guards should be in `_core/`
-
+      - Components should not be in `_core/`. Place them in a feature or shared module.
     severity: ERROR
-
-    # Path-based checks
     paths:
-      exclude:
-        - "src/app/_core/**/*.component.ts"
-        - "src/app/_core/**/*.component"
-        - "src/app/shared/**/*.service.ts"
-        - "src/app/shared/**/*.guard.ts"
+      # This tells Semgrep to ONLY look inside the _core directory
+      include:
+        - "src/app/_core/"
+      # This part of the rule looks for any file ending in .component.ts
+    patterns:
+      - pattern-inside: |
+          ...
+      - paths:
+          # Match files ending with .component.ts
+          include:
+            - "*.component.ts"
