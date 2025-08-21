@@ -35,7 +35,7 @@ jobs:
           semgrep scan \
             --config "p/default" \
             --config "rules.yaml" \
-            --json -o semgrep_results.json || true
+            --json -o semgrep_results.json
 
       - name: Summarize and Comment
         env:
