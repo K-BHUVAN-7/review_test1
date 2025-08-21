@@ -1,0 +1,184 @@
+<div class="sidebar border-end" [ngClass]="{ 'close': !isMenuOpen, 'salary-sidebar': isSalaryPage }">
+
+    <div class="sidebar-logo d-flex align-items-center justify-content-center" >
+
+        <div class="menu-bt-sidebar ">
+
+            <!-- <img src="images/logo.png" class="rounded-normal light-logo" style="width: 90px;" alt="logo" (click)="isMenuOpen = !isMenuOpen; menuEvent.emit(isMenuOpen);"> <span class=" ms-2 text-white fw-bold" [ngClass]="{'d-none' : !isMenuOpen}" >Payroll</span> -->
+
+            <!-- <p style="font-weight: 600 !important;opacity: 0;">Main Menu</p> -->
+
+        </div>
+
+    </div>
+
+    <div class="data-scrollbar">
+
+        <div>
+            
+            <p style="font-size: 11px; font-weight: 400 !important; margin: 40px 0px -2px 38px;">Main Menu</p>
+        
+        </div>
+
+        <div class="scroll-content">
+
+            <nav class="sidebar-menu" style="overflow-x: hidden !important;">
+                
+                <ng-container>
+                    
+                    <ul id="sidebar-toggle" class="menu">
+
+                        <ng-container *ngFor="let menuDet of menuList;">
+
+                            <li *ngIf="menuDet.label == 'Masters'">
+
+                                <p class="section-title">Support</p>
+
+                            </li>
+
+                            <li *ngIf="menuDet.allow">
+        
+                                <a [ngClass]="{ 'active': menuDet.isSelected == true }" *ngIf="menuDet.allow" [routerLink]="_.size(menuDet.subMenu) > 0 || menuDet.label == 'logout' ? [] : menuDet.url" [routerLinkActive]="_.size(menuDet.subMenu) > 0 || menuDet.label == 'logout' ? '' :'active'" (click)="openMenu({ 'path': menuDet.url, 'menuLevel': 0 });"style="text-decoration: none;">
+
+                                <!-- <img src="images/{{menuDet.label+'yellow'}}.png" style="width: 17px !important;" > -->
+
+                                    <img [src]="'images/' + menuDet.label + (isActive(menuDet.url) ? 'yellow' : '') + '.png'" style="width: 17px !important;" alt="{{ menuDet.label }}">
+        
+                                    <span class="ms-3" style="font-weight: 300;">{{ menuDet.label }}</span>
+
+                                    <span style="margin-left: auto !important;" *ngIf="menuDet.subMenu?.length < 1">
+
+                                        <img [src]="isActive(menuDet.url) ? 'images/minus.png' : 'images/Plus.png'" style="width: 12px;" alt="">
+
+                                    </span>
+        
+                                    <i *ngIf="_.size(menuDet.subMenu) > 0" class="bi bi-chevron-up arrow-right" [ngClass]="{ 'open': menuDet.isExpand }"> </i>
+        
+                                </a>
+        
+                                <ul class="submenu" *ngIf="(_.size(menuDet.subMenu) > 0 && menuDet.isExpand)" [@dropInOutAnim]>
+        
+                                    <li *ngFor="let subMenuOneDet of menuDet.subMenu">
+        
+                                        <a [ngClass]="{ 'active': subMenuOneDet.isSelected }" [routerLink]="_.size(subMenuOneDet.subMenu) > 0 ? [] : subMenuOneDet.url" [routerLinkActive]="_.size(subMenuOneDet.subMenu) > 0 ? '' : 'active'" (click)="openMenu({ 'path': subMenuOneDet.url, 'menuLevel': 1 });" style="text-decoration: none;">
+        
+                                            <img [src]="'images/' + subMenuOneDet.label + (isSubMenuActive(subMenuOneDet.url) ? 'yellow' : '') + '.png'" style="width: 17px !important;"alt="{{ subMenuOneDet.label }}">
+        
+                                            <span [ngClass]="{ 'ms-3': subMenuOneDet.icon }" style="font-weight: 300;">{{ subMenuOneDet.label }}</span>
+                                            
+                                            <i *ngIf="_.size(subMenuOneDet.subMenu) > 0"  class="bi bi-chevron-up arrow-right" [ngClass]="{ 'open':  subMenuOneDet.isExpand }"> </i>
+        
+                                        </a>
+        
+                                        <ul class="submenu" *ngIf="_.size(subMenuOneDet.subMenu) > 0 && subMenuOneDet.isExpand"  [@dropInOutAnim]>
+        
+                                            <li *ngFor="let subMenuTwoDet of subMenuOneDet.subMenu">
+        
+                                                <a [ngClass]="{ 'active': subMenuTwoDet.isSelected }" [routerLink]="subMenuTwoDet.url" routerLinkActive="active" (click)="openMenu({ 'path': subMenuTwoDet.url, 'menuLevel': 2 })">
+        
+                                                    <i class="bi bi-dash me-2"></i>
+        
+                                                    <span>{{ subMenuTwoDet.label }}</span>
+        
+                                                </a>
+        
+                                            </li>
+        
+                                        </ul>
+        
+                                    </li>
+        
+                                </ul>
+        
+                            </li>
+
+                        </ng-container>
+
+                        <li><a>
+
+                            <!-- <img src="images/{{menuDet.label+'yellow'}}.png" style="width: 17px !important;" > -->
+
+                                <img src="images/logout.png" style="width: 17px !important">
+
+                                <span class="ms-3" style="font-weight: 300;" (click)="this.service.logout()">Logout</span>
+
+                            </a>
+                        
+                        </li>
+    
+                    </ul>
+    
+                </ng-container>
+                  
+            </nav>
+
+        </div>
+    
+    </div>
+
+    <div class="profile">
+
+        <div class="d-flex mb-3">
+
+            <div class="mt-2"><i class="bi bi-person-circle fs-2 p-3 mt-2"></i></div>
+
+            <div class="mb-4">
+
+                <span class="fw-600 mt-3" style="color: #282828; font-size: 14px;">{{ this.userDetails?.firstName | titlecase }}</span> <br>
+                
+                <small style="color: #D2A119; font-size: 12px; font-weight: 400;">{{ this.userDetails?.userType | titlecase }}</small> 
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div> 
+
+<!-- <div *ngIf="isSalaryPage" class="salary-page">
+
+    <div class="salary-sidebar border-end">
+
+        <div class="card-header text-center bg-white">
+
+            <h5 class="fw-bold mb-0">Build Your Template</h5>
+
+            <small class="text-muted">Include active Salary components</small>
+
+        </div>
+
+        <nav class="sidebar-menu">
+
+            <ul id="salary-menu-toggle" class="menu">
+
+                <li *ngFor="let menuItem of salaryMenuList">
+
+                    <div (click)="onMenuClick(menuItem)"style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+
+                        <span>{{ menuItem.label }}</span>
+
+                        <i [ngClass]="{'bi bi-chevron-down': menuItem.isExpanded,'bi bi-chevron-right': !menuItem.isExpanded}"></i>
+
+                    </div>
+
+                    <ul class="submenu" *ngIf="menuItem.isExpanded" style="padding-left: 15px; margin-top: 5px;">
+
+                        <li *ngFor="let subMenuItem of menuItem.subMenu" style="display: flex; align-items: center; justify-content: space-between;">
+
+                            {{ subMenuItem.label }}
+
+                            <i class="bi" [ngClass]="{'bi-plus-circle': !subMenuItem.isSelected, 'bi-check-circle': subMenuItem.isSelected}"class="text-primary cursor-pointer"(click)="onPlusIconClick(subMenuItem)"></i>
+
+                        </li>
+
+                    </ul>
+                    
+                </li>
+            </ul>
+
+        </nav>
+        
+    </div>
+
+</div> -->
