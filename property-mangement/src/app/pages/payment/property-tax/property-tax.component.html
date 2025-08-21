@@ -1,0 +1,937 @@
+<div class="container-fluid" style="height: 100%;">
+
+    <div class="d-flex justify-content-between mb-3">
+        
+        <h5></h5>
+
+        <small><span class="text-primary">Property</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-dark">Property Tax List</span></small>
+
+    </div>
+
+    <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+        <div class="card-header bg-white">
+
+            <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+
+                <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Property Tax List</h6>
+
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="card rounded-0">
+
+                <div class="card-body rounded-0">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div class="d-flex">
+
+                            <div class="position-relative">
+
+                                <img src="images/searchBlack.png" class="position-absolute search-icon" style="width: 25px;top: 6px;left: 8px;">
+
+                                <input type="text" class="form-control" placeholder="Search here..." style="background: transparent !important; border-radius: 8px !important; padding-left: 40px;">
+
+                            </div>
+
+                            <div style="border: 1px solid #D8D8D8;cursor: pointer;" class="px-3 ms-2 d-flex align-items-center rounded-3" aria-controls="offcanvasRight" data-bs-target="#offcanvasRight"  data-bs-toggle="offcanvas">
+
+                                <img src="images/filterVapour.png" style="width: 18px;" alt=""><span class="ms-2">Filter</span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="mt-3">
+
+                        <div class="table-responsive table-wrapper">
+
+                            <table class="table table-borderless align-middle table-scroll">
+
+                                <thead class="bg-light text-secondary">
+
+                                    <tr>
+
+                                        <th>Property Name</th>
+
+                                        <th style="min-width: 130px !important;">Unit</th>
+
+                                        <th style="min-width: 150px !important;">Due Date</th>
+
+                                        <th style="min-width: 130px !important;">Tax Amount</th>
+
+                                        <th style="min-width: 130px !important;">Paid Amount</th>
+
+                                        <th style="min-width: 130px !important;">Outstanding</th>
+
+                                        <th style="min-width: 130px !important;">Status</th>
+
+                                        <th style="text-align: center !important; min-width: 210px !important;" class="th-action">Action</th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    <ng-container *ngIf="(_.size(this.permissions.viewPermission.branchIds) > 0); else other">
+
+                                        <ng-container *ngIf="!_.isEmpty(masterList['propertyTaxList']); else other">
+
+                                            <tr *ngFor="let tax of masterList['propertyTaxList']">
+
+                                                <td>{{ tax.property?.propertyName }}</td>
+
+                                                <td>{{ tax.unit?.unitName }}</td>
+
+                                                <td>{{ tax.dueDate | date: 'dd-MM-yyyy' }}</td>
+
+                                                <td>{{ this.service.currencyCode?.currencyCode }}. {{ (tax.amountDue | number: '1.0') || '0' }}</td>
+
+                                                <td>{{ this.service.currencyCode?.currencyCode }}. {{ (tax.amountPaid | number: '1.0') || '0' }}</td>
+
+                                                <td>{{ this.service.currencyCode?.currencyCode }}. {{ (tax.amountOutstanding | number: '1.0') || '0' }}</td>
+
+                                                <td class="td-status">
+
+                                                    <ng-container [ngSwitch]="getPropertyTaxStatus(tax)">
+
+                                                        <font *ngSwitchCase="'Overdue'" color="#C92E2E">Overdue</font>
+
+                                                        <font *ngSwitchCase="'Upcoming'" color="#FFA500">Upcoming</font>
+
+                                                        <font *ngSwitchCase="'Not yet Due'" color="#FF9500">Not yet Due</font>
+
+                                                        <font *ngSwitchCase="'Paid'" color="#34C759">Paid</font>
+
+                                                        <font *ngSwitchDefault>-</font>
+
+                                                    </ng-container>
+
+                                                </td>
+
+                                                <td class="d-flex justify-content-between th-action">
+
+                                                    <img src="images/icons/history-outline.svg" style="width: 26px; height: auto; cursor: pointer; margin-left: 100px;" alt="" (click)="openHistoryModal(tax)">
+
+                                                    <div class="me-5">
+
+                                                        <ng-container *ngIf="shouldShowApprovePending(tax)">
+
+                                                            <small style="color: #a0a0a0; font-size: 13px; margin-right: -38px !important;">
+
+                                                                Approve Pending
+
+                                                            </small>
+
+                                                        </ng-container>
+
+                                                        <ng-container *ngIf="shouldShowApproveButton(tax)">
+
+                                                            <button class="btn btn-sm btn-secondary" style="margin-right: -17px !important;" (click)="openPropertyTaxApproveModal(tax)">
+
+                                                                Approve
+
+                                                            </button>
+
+                                                        </ng-container>
+
+                                                        <button *ngIf="shouldShowPayButton(tax)" class="btn btn-sm payment-button fw-500" style="margin-left: 21px !important;" (click)="openPayPropertyTaxModal(tax?._id)">
+
+                                                            Pay
+
+                                                        </button>
+
+                                                    </div>
+
+                                                    <!-- <ng-container *ngIf="getPropertyTaxStatus(tax) != 'Paid'; else notPay">
+
+                                                        <button class="payment-button btn btn-sm fw-500" style="cursor: pointer; margin-right: 100px;" (click)="openPayPropertyTaxModal(tax?._id)">Pay</button>
+
+                                                    </ng-container> -->
+
+                                                    <ng-template #notPay> </ng-template>
+
+                                                </td>
+
+                                            </tr>
+
+                                        </ng-container>
+
+                                        <ng-template #other>
+
+                                            <tr>
+
+                                                <td colspan="10" style="text-align: center !important;">No Records Found</td>
+
+                                            </tr>
+
+                                        </ng-template>
+
+                                    </ng-container>
+
+                                    <ng-template #other>
+
+                                        <tr>
+
+                                            <td colspan="11" style="text-align: center !important;"><img style="width: 16px !important;" class="me-2" src="images/lock2.png" alt="">Access Denied</td>
+
+                                        </tr>
+
+                                    </ng-template>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                        <div *ngIf="totalCount > 0">
+    
+                            <mat-paginator
+                                class="custom-paginator"
+                                appendTo="body"
+                                [length]="totalCount"
+                                [pageSize]="pageSize"
+                                [pageIndex]="pageIndex"
+                                [pageSizeOptions]="[5, 10, 25, 50]"
+                                (page)="onPageChange($event)">
+                            </mat-paginator>
+
+                        </div>  
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Property Tax History Modal -->
+<ng-template #propertyTaxHistory let-modal>
+
+    <div class="modal-header">
+
+        <div class="d-flex justify-content-between align-items-center w-100" style="height: 40px;">
+
+            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Payment History</h6>
+
+            <i class="bi bi-x-lg pe-2 fw-bold" (click)="modal.close()"></i>
+
+        </div>
+
+    </div>
+
+    <div class="modal-body">
+
+        <div class="mt-3">
+
+            <div class="table-responsive">
+
+                <table class="table table-borderless align-middle table-striped">
+
+                    <thead class="bg-light text-secondary">
+
+                        <tr>
+
+                            <th>Payment Date</th>
+
+                            <th>Amount</th>
+
+                            <th>Payment Mode</th>
+
+                            <th style="text-align: center !important; min-width: 210px !important;" class="th-action">Reference Number</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <ng-container *ngIf="(_.size(this.permissions.viewPermission.branchIds) > 0); else other">
+
+                            <ng-container *ngIf="!_.isEmpty(masterList['taxHistoryList']); else other">
+
+                                <tr *ngFor="let tax of this.masterList['taxHistoryList']">
+
+                                    <td>{{ tax.paymentDate | date: 'dd-MM-yyyy' }}</td>
+
+                                    <td>{{ this.service.currencyCode?.currencyCode }}. {{ (tax?.amountPaid | number: '1.0') }}</td>
+
+                                    <td>{{ (tax.paymentMode | titlecase  ) }}</td>
+
+                                    <td class="d-flex justify-content-center th-action">{{ tax.refNo || '-' }}</td>
+
+                                </tr>
+
+                            </ng-container>
+
+                            <ng-template #other>
+
+                                <tr>
+
+                                    <td colspan="10" style="text-align: center !important;">No  Records Found</td>
+
+                                </tr>
+
+                            </ng-template>
+
+                        </ng-container>
+
+                        <ng-template #other>
+
+                            <tr>
+
+                                <td colspan="11" style="text-align: center !important;"><img style="width: 16px !important;" class="me-2" src="images/lock2.png" alt="">Access Denied</td>
+
+                            </tr>
+
+                        </ng-template>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</ng-template>
+
+<!-- Filter Offcanvas -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" style="margin-top: 84px; background-color: #F6F9FC;">
+
+    <div class="offcanvas-header border-bottom">
+
+        <h5 class="offcanvas-title" id="offcanvasRightLabel">Filter</h5>
+
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+
+    </div>
+
+    <div class="offcanvas-body ps-4 pe-4">
+
+        <form [formGroup]="filterForm">
+
+            <!-- Accordion: Property -->
+            <div class="accordion mt-2" id="accordionProperty">
+        
+                <div class="accordion-item border-0 p-2">
+
+                    <h2 class="accordion-header" id="headingProperty">
+
+                        <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProperty" aria-expanded="true" aria-controls="collapseProperty" style="background-color: transparent;">Property</button>
+            
+                    </h2>
+            
+                    <div id="collapseProperty" class="accordion-collapse collapse" aria-labelledby="headingProperty" data-bs-parent="#accordionProperty">
+                        
+                        <div class="accordion-body w-100 p-0 mt-3">
+
+                        <ng-select class="form-control" [items]="masterList['propertyList']" bindLabel="property" bindValue="_id" formControlName="property" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body" placeholder="Select Property">
+
+                            <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                            <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                                
+                                <div class="d-flex">
+
+                                <span class="ng-value-label ellipsis ms-1">
+
+                                    <span>{{ _.get(item,'propertyName') }}</span> 
+
+                                </span>
+
+                                <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                                <span style="width: 1px; height: 20px; background-color: black;"></span>
+                                
+                                </div>
+
+                            </div>
+
+                            <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                                <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                            </div>
+
+                            </ng-template>    
+
+                            <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                                <div class="form-check d-flex align-items-center"> 
+                                    
+                                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected('property', item._id)"/>
+
+                                    <label class="form-check-label mt-1">{{ item?.propertyName }}</label>
+
+                                </div>
+                                
+                            </ng-template>
+                        
+                        </ng-select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Accordion: Unit -->
+            <div class="accordion mt-2" id="accordionUnit">
+        
+                <div class="accordion-item border-0 p-2">
+
+                    <h2 class="accordion-header" id="headingUnit">
+
+                        <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUnit" aria-expanded="true" aria-controls="collapseUnit" style="background-color: transparent;">Unit</button>
+            
+                    </h2>
+            
+                    <div id="collapseUnit" class="accordion-collapse collapse" aria-labelledby="headingUnit" data-bs-parent="#accordionUnit">
+                        
+                        <div class="accordion-body w-100 p-0 mt-3">
+
+                        <ng-select class="form-control" [items]="masterList['unitList']" bindLabel="unit" bindValue="_id" formControlName="unit" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body" placeholder="Select Unit">
+
+                            <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                            <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                                
+                                <div class="d-flex">
+
+                                <span class="ng-value-label ellipsis ms-1">
+
+                                    <span>{{ _.get(item,'unitName') }}</span> 
+
+                                </span>
+
+                                <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                                <span style="width: 1px; height: 20px; background-color: black;"></span>
+                                
+                                </div>
+
+                            </div>
+
+                            <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                                <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                            </div>
+
+                            </ng-template>    
+
+                            <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                                <div class="form-check d-flex align-items-center"> 
+                                    
+                                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected('unit', item._id)"/>
+
+                                    <label class="form-check-label mt-1">{{ item?.unitName }}</label>
+
+                                </div>
+                                
+                            </ng-template>
+                        
+                        </ng-select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Accordian: Due Date -->
+            <div class="accordion mt-2" id="accordionDueDate">
+        
+                <div class="accordion-item border-0 p-2">
+
+                    <h2 class="accordion-header" id="headingDueDate">
+
+                        <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDueDate" aria-expanded="true" aria-controls="collapseDueDate" style="background-color: transparent;">Due Date</button>
+            
+                    </h2>
+
+                    <div class="row">
+
+                        <div class="col-md-6">
+
+                        <div id="collapseDueDate" class="accordion-collapse collapse" aria-labelledby="headingDueDate" data-bs-parent="#accordionDueDate">
+                    
+                            <div class="accordion-body w-100 p-0 mt-3">
+
+                            <div class="input-group">
+                            
+                                <input type="text" class="form-control" id="dueStartDate" autocomplete="off" formControlName="dueStartDate"[matDatepicker]="picker" placeholder="From Date">
+                        
+                                <mat-datepicker-toggle matSuffix [for]="picker" class="input-group-text border" style="border-radius: 0px 5px 5px 0px !important; height: 38px">
+
+                                <ng-container matDatepickerToggleIcon>
+                                    
+                                    <i class="bi bi-calendar4-week fs-5 text-center"></i>
+                                
+                                </ng-container>
+                                
+                                </mat-datepicker-toggle>
+                        
+                                <mat-datepicker #picker></mat-datepicker>
+
+                            </div>
+
+                            </div>
+
+                        </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                        <div id="collapseDueDate" class="accordion-collapse collapse" aria-labelledby="headingDueDate" data-bs-parent="#accordionDueDate">
+                    
+                            <div class="accordion-body w-100 p-0 mt-3">
+
+                            <div class="input-group">
+                            
+                                <input type="text" class="form-control" id="dueEndDate" autocomplete="off" formControlName="dueEndDate"[matDatepicker]="picker1" placeholder="To Date">
+                        
+                                <mat-datepicker-toggle matSuffix [for]="picker1" class="input-group-text border" style="border-radius: 0px 5px 5px 0px !important; height: 38px">
+
+                                <ng-container matDatepickerToggleIcon>
+                                        
+                                    <i class="bi bi-calendar4-week fs-5 text-center"></i>
+                                    
+                                </ng-container>
+                                    
+                                </mat-datepicker-toggle>
+                        
+                                <mat-datepicker #picker1></mat-datepicker>
+
+                            </div>
+
+                            </div>
+
+                        </div>
+                            
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Accordian: Payment Date -->
+            <div class="accordion mt-2" id="accordionPaymentDate">
+        
+                <div class="accordion-item border-0 p-2">
+
+                <h2 class="accordion-header" id="headingPaymentDate">
+
+                    <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePaymentDate" aria-expanded="true" aria-controls="collapsePaymentDate" style="background-color: transparent;">Payment Date</button>
+        
+                </h2>
+
+                <div class="row">
+
+                    <div class="col-md-6">
+
+                    <div id="collapsePaymentDate" class="accordion-collapse collapse" aria-labelledby="headingPaymentDate" data-bs-parent="#accordionPaymentDate">
+                
+                        <div class="accordion-body w-100 p-0 mt-3">
+
+                        <div class="input-group">
+                        
+                            <input type="text" class="form-control" id="paymentStartDate" autocomplete="off" formControlName="paymentStartDate"[matDatepicker]="picker2" placeholder="From Date">
+                    
+                            <mat-datepicker-toggle matSuffix [for]="picker2" class="input-group-text border" style="border-radius: 0px 5px 5px 0px !important; height: 38px">
+
+                            <ng-container matDatepickerToggleIcon>
+                                
+                                <i class="bi bi-calendar4-week fs-5 text-center"></i>
+                            
+                            </ng-container>
+                            
+                            </mat-datepicker-toggle>
+                    
+                            <mat-datepicker #picker2></mat-datepicker>
+
+                        </div>
+
+                        </div>
+
+                    </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                    <div id="collapsePaymentDate" class="accordion-collapse collapse" aria-labelledby="headingPaymentDate" data-bs-parent="#accordionPaymentDate">
+                
+                        <div class="accordion-body w-100 p-0 mt-3">
+
+                        <div class="input-group">
+                        
+                            <input type="text" class="form-control" id="paymentEndDate" autocomplete="off" formControlName="paymentEndDate"[matDatepicker]="picker3" placeholder="To Date">
+                    
+                            <mat-datepicker-toggle matSuffix [for]="picker3" class="input-group-text border" style="border-radius: 0px 5px 5px 0px !important; height: 38px">
+
+                            <ng-container matDatepickerToggleIcon>
+                                    
+                                <i class="bi bi-calendar4-week fs-5 text-center"></i>
+                                
+                            </ng-container>
+                                
+                            </mat-datepicker-toggle>
+                    
+                            <mat-datepicker #picker3></mat-datepicker>
+
+                        </div>
+
+                        </div>
+
+                    </div>
+                        
+                    </div>
+
+                </div>
+
+                </div>
+
+            </div>
+
+            <!-- Accordion: Tax Amount -->
+            <div class="accordion mt-2" id="accordionTaxAmt">
+
+                <div class="accordion-item border-0 p-2 rounded shadow-sm bg-white">
+                    
+                    <h2 class="accordion-header" id="headingTaxAmt">
+                    
+                        <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTaxAmt" 
+                        aria-expanded="true" aria-controls="collapseTaxAmt" style="background-color: transparent">Tax Amount</button>
+
+                    </h2>
+                    
+                    <div id="collapseTaxAmt" class="accordion-collapse collapse" aria-labelledby="headingTaxAmt" data-bs-parent="#accordionTaxAmt">
+                    
+                        <div class="accordion-body w-100 p-0 mt-3">
+                    
+                        <div class="range-slider-container p-3 rounded">
+                    
+                            <!-- Sliders -->
+                            <div class="range-slider">
+                        
+                            <input type="range" class="amount-slider" [(ngModel)]="taxAmtMinValue" [ngModelOptions]="{standalone: true}" [min]="taxAmtSliderMin" [max]="taxAmtSliderMax" [step]="100" (input)="onTaxAmtSliderChange()" />
+                    
+                            <input type="range" class="amount-slider" [(ngModel)]="taxAmtMaxValue" [ngModelOptions]="{standalone: true}" [min]="taxAmtSliderMin" [max]="taxAmtSliderMax" [step]="100" (input)="onTaxAmtSliderChange()" />
+                    
+                            </div>
+
+                            <!-- Inputs -->
+                            <div class="amount-inputs d-flex justify-content-between mt-3">
+                    
+                            <div class="input-group">
+                    
+                                <span class="input-group-text text-dark border-0">{{ this.service.currencyCode?.currencyCode }}.</span>
+                    
+                                <input type="number" class="form-control border-0" [(ngModel)]="taxAmtMinValue" [ngModelOptions]="{standalone: true}" [min]="taxAmtSliderMin" [max]="taxAmtMaxValue" (input)="onTaxAmtSliderChange()" />
+                    
+                            </div>
+                    
+                            <span class="mx-3 mt-2 fw-bold">—</span>
+                    
+                            <div class="input-group">
+                    
+                                <span class="input-group-text text-dark border-0">{{ this.service.currencyCode?.currencyCode }}.</span>
+                    
+                                <input type="number" class="form-control border-0" [(ngModel)]="taxAmtMaxValue" [ngModelOptions]="{standalone: true}" [min]="taxAmtMinValue" [max]="taxAmtSliderMax" (input)="onTaxAmtSliderChange()" />
+                    
+                            </div>
+                    
+                            </div>
+                    
+                        </div>
+                    
+                        </div>
+                    
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Accordion: Paid Amount -->
+            <div class="accordion mt-2" id="accordionPaidAmt">
+
+                <div class="accordion-item border-0 p-2 rounded shadow-sm bg-white">
+                
+                <h2 class="accordion-header" id="headingPaidAmt">
+                
+                    <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePaidAmt" 
+                    aria-expanded="true" aria-controls="collapsePaidAmt" style="background-color: transparent">Paid Amount</button>
+
+                </h2>
+                
+                <div id="collapsePaidAmt" class="accordion-collapse collapse" aria-labelledby="headingPaidAmt" data-bs-parent="#accordionPaidAmt">
+                
+                    <div class="accordion-body w-100 p-0 mt-3">
+                
+                    <div class="range-slider-container p-3 rounded">
+                
+                        <!-- Sliders -->
+                        <div class="range-slider">
+                    
+                        <input type="range" class="amount-slider" [(ngModel)]="paidAmtMinValue" [ngModelOptions]="{standalone: true}" [min]="paidAmtSliderMin" [max]="paidAmtSliderMax" [step]="100" (input)="onPaidAmtSliderChange()" />
+                
+                        <input type="range" class="amount-slider" [(ngModel)]="paidAmtMaxValue" [ngModelOptions]="{standalone: true}" [min]="paidAmtSliderMin" [max]="paidAmtSliderMax" [step]="100" (input)="onPaidAmtSliderChange()" />
+                
+                        </div>
+
+                        <!-- Inputs -->
+                        <div class="amount-inputs d-flex justify-content-between mt-3">
+                
+                        <div class="input-group">
+                
+                            <span class="input-group-text text-dark border-0">{{ this.service.currencyCode?.currencyCode }}.</span>
+                
+                            <input type="number" class="form-control border-0" [(ngModel)]="paidAmtMinValue" [ngModelOptions]="{standalone: true}" [min]="paidAmtSliderMin" [max]="paidAmtMaxValue" (input)="onPaidAmtSliderChange()" />
+                
+                        </div>
+                
+                        <span class="mx-3 mt-2 fw-bold">—</span>
+                
+                        <div class="input-group">
+                
+                            <span class="input-group-text text-dark border-0">{{ this.service.currencyCode?.currencyCode }}.</span>
+                
+                            <input type="number" class="form-control border-0" [(ngModel)]="paidAmtMaxValue" [ngModelOptions]="{standalone: true}" [min]="paidAmtMinValue" [max]="paidAmtSliderMax" (input)="onPaidAmtSliderChange()" />
+                
+                        </div>
+                
+                        </div>
+                
+                    </div>
+                
+                    </div>
+                
+                </div>
+
+                </div>
+
+            </div>
+
+            <!-- Accordion: Outs Amount -->
+            <div class="accordion mt-2" id="accordionOutsAmt">
+
+                <div class="accordion-item border-0 p-2 rounded shadow-sm bg-white">
+                
+                <h2 class="accordion-header" id="headingOutsAmt">
+                
+                    <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOutsAmt" 
+                    aria-expanded="true" aria-controls="collapseOutsAmt" style="background-color: transparent">Outstanding Amount</button>
+
+                </h2>
+                
+                <div id="collapseOutsAmt" class="accordion-collapse collapse" aria-labelledby="headingOutsAmt" data-bs-parent="#accordionOutsAmt">
+                
+                    <div class="accordion-body w-100 p-0 mt-3">
+                
+                    <div class="range-slider-container p-3 rounded">
+                
+                        <!-- Sliders -->
+                        <div class="range-slider">
+                    
+                        <input type="range" class="amount-slider" [(ngModel)]="outsAmtMinValue" [ngModelOptions]="{standalone: true}" [min]="outsAmtSliderMin" [max]="outsAmtSliderMax" [step]="100" (input)="onOutsAmtSliderChange()" />
+                
+                        <input type="range" class="amount-slider" [(ngModel)]="outsAmtMaxValue" [ngModelOptions]="{standalone: true}" [min]="outsAmtSliderMin" [max]="outsAmtSliderMax" [step]="100" (input)="onOutsAmtSliderChange()" />
+                
+                        </div>
+
+                        <!-- Inputs -->
+                        <div class="amount-inputs d-flex justify-content-between mt-3">
+                
+                        <div class="input-group">
+                
+                            <span class="input-group-text text-dark border-0">{{ this.service.currencyCode?.currencyCode }}.</span>
+                
+                            <input type="number" class="form-control border-0" [(ngModel)]="outsAmtMinValue" [ngModelOptions]="{standalone: true}" [min]="outsAmtSliderMin" [max]="outsAmtMaxValue" (input)="onOutsAmtSliderChange()" />
+                
+                        </div>
+                
+                        <span class="mx-3 mt-2 fw-bold">—</span>
+                
+                        <div class="input-group">
+                
+                            <span class="input-group-text text-dark border-0">{{ this.service.currencyCode?.currencyCode }}.</span>
+                
+                            <input type="number" class="form-control border-0" [(ngModel)]="outsAmtMaxValue" [ngModelOptions]="{standalone: true}" [min]="outsAmtMinValue" [max]="outsAmtSliderMax" (input)="onOutsAmtSliderChange()" />
+                
+                        </div>
+                
+                        </div>
+                
+                    </div>
+                
+                    </div>
+                
+                </div>
+
+                </div>
+
+            </div>
+
+            <!-- Accordion: Status -->
+            <div class="accordion mt-2" id="accordionStatus">
+
+                <div class="accordion-item border-0 p-2">
+                
+                <h2 class="accordion-header" id="headingStatus">
+                
+                    <button class="accordion-button p-2 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="true" aria-controls="collapseStatus" style="background-color: transparent;">Status</button>
+
+                </h2>
+
+                <div id="collapseStatus" class="accordion-collapse collapse" aria-labelledby="headingStatus" data-bs-parent="#accordionStatus">
+
+                    <div class="accordion-body w-100 p-0 mt-3">
+
+                    <div class="d-flex align-items-center mt-3" *ngFor="let status of statusOptions">
+
+                        <div class="form-check">
+                        
+                        <input class="form-check-input me-3 custom-checkbox" type="checkbox" [value]="status.value" [(ngModel)]="status.checked" [ngModelOptions]="{ standalone: true }">
+
+                        </div>
+
+                        <h6 class="mb-0">{{ status.label }}</h6>
+                    
+                    </div>
+
+                    </div>
+
+                </div>
+                
+                </div>
+            
+            </div>
+
+        </form>
+
+    </div>
+
+    <div class="offcanvas-footer d-flex justify-content-end border-bottom border-top p-3">
+        
+        <button class="btn btn-sm btn-outline-secondary me-3" data-bs-dismiss="offcanvas">Close</button>
+
+        <button class="btn btn-sm btn-secondary" (click)="getPropertyTaxList()" data-bs-dismiss="offcanvas">Apply</button>
+    
+    </div>
+
+</div>
+
+<!-- Utility Approvel Modal -->
+<ng-template #propertyTaxApproveModal let-modal>
+
+    <div class="modal-header">
+
+        <div class="d-flex justify-content-between align-items-center w-100" style="height: 40px;">
+
+        <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119 ;">Utility Details</h6>
+        
+        <i class="bi bi-x-lg pe-2 fw-bold" (click)="modal.close()"></i>
+        
+        </div>
+
+    </div>
+
+    <div class="modal-body pb-2" style="color: black;">
+
+        <div class="row">
+
+            <div class="col-5"> <small>Property Name</small> </div>
+            
+            <div class="col-1"> : </div>
+            
+            <div class="col-6"> <small>{{ selectedData.property?.propertyName }}</small> </div>
+
+        </div>
+
+        <div class="row mt-2">
+
+            <div class="col-5"> <small>Unit</small> </div>
+            
+            <div class="col-1"> : </div>
+            
+            <div class="col-6"> <small>{{ selectedData.unit?.unitName }}</small> </div>
+
+        </div>
+
+        <!-- <div class="row mt-2">
+
+            <div class="col-5"> <small>Tenant Name</small> </div>
+            
+            <div class="col-1"> : </div>
+            
+            <div class="col-6"> <small>{{ selectedData.tenantId?.firstName + ' ' + selectedData.tenantId?.lastName }}</small> </div>
+
+        </div> -->
+
+        <div class="row mt-2">
+
+            <div class="col-5"> <small>Contract Amount</small> </div>
+            
+            <div class="col-1"> : </div>
+            
+            <div class="col-6"> <small>{{ this.service.currencyCode?.currencyCode }}. {{ (selectedData.amountDue) | number: '1.0' }}</small> </div>
+
+        </div>
+
+        <div class="row mt-2">
+
+            <div class="col-5"> <small>Paid Amount</small> </div>
+            
+            <div class="col-1"> : </div>
+            
+            <div class="col-6"> <small>{{ this.service.currencyCode?.currencyCode }}. {{ (selectPaymentEntry.amountPaid) | number: '1.0' }}</small> </div>
+
+        </div>
+
+        <div class="row mt-2">
+
+            <div class="col-5"> <small>Amount Outstanding</small> </div>
+            
+            <div class="col-1"> : </div>
+            
+            <div class="col-6"> <small>{{ this.service.currencyCode?.currencyCode }}. {{ (selectPaymentEntry.amountOutstanding | number: '1.0') }}</small> </div>
+
+        </div>
+
+    </div>
+
+    <div class="modal-footer d-flex justify-content-end me-2">
+
+        <button class="btn btn-sm btn-outline-secondary" (click)="rejectPropertyTax(selectedData)">Reject</button>
+
+        <button class="btn btn-sm btn-secondary" (click)="approvePropertyTax(selectedData)">Approve</button>
+
+    </div>
+
+</ng-template>

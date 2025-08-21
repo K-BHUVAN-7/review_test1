@@ -1,0 +1,651 @@
+/* You can add global styles to this file, and also import other style files */
+@import "../../public/fonts/poppins.css";
+@import url("./pages.scss");
+
+html {
+    --primary-color: #2C5069;;
+    --primary-bg: #CDE2DA;
+    --secondary-color: #D2A119;
+    --secondary-bg: #F0E6C1;
+    --text-color: #767676;
+    --text-dark: #282828;
+    --text-blue: #00B2FF;
+    --danger-color: #D46B45;
+    --danger-bg: #FDE1D7;
+    --success-color: #98DC5D;
+    --success-bg: #E9FDD7;
+    --header-bg: #FCFAF4;
+
+    --mat-checkbox-label-text-font: "Poppins", serif;
+    --mat-menu-container-color: #fff;
+    --mat-menu-item-label-text-color: var(--text-dark);
+    --mat-menu-item-hover-state-layer-color: var(--secondary-color);
+    --mat-menu-item-label-text-weight: 400;
+    --mat-menu-item-label-text-font: "Poppins", serif;
+    --mdc-slider-active-track-color: var(--primary-color);
+    --mdc-slider-handle-color: var(--primary-color);
+    --mdc-slider-focus-handle-color: var(--primary-color);
+    --mdc-slider-handle-color: var(--primary-color);
+    --mdc-slider-hover-handle-color: var(--primary-color);
+}
+
+.mat-accent.mat-mdc-radio-button {
+    --mdc-radio-selected-focus-icon-color: var(--secondary-color);
+    --mdc-radio-selected-hover-icon-color: var(--secondary-color);
+    --mdc-radio-selected-icon-color: var(--secondary-color);
+    --mdc-radio-selected-pressed-icon-color: var(--secondary-color);
+    --mat-radio-checked-ripple-color: var(--secondary-color);
+}
+
+.mat-mdc-radio-button .mat-internal-form-field {
+
+    color:  var(--secondary-color)  ;
+
+}
+
+.mat-accent.mat-mdc-checkbox {
+    --mdc-checkbox-selected-pressed-icon-color: var(--primary-color);
+    --mdc-checkbox-selected-focus-icon-color: var(--primary-color);
+    --mdc-checkbox-selected-hover-icon-color: var(--primary-color);
+    --mdc-checkbox-selected-icon-color: var(--primary-color);
+    --mdc-checkbox-selected-focus-state-layer-color: var(--primary-color);
+    --mdc-checkbox-selected-hover-state-layer-color: var(--primary-color);
+    --mdc-checkbox-unselected-pressed-state-layer-color: var(--primary-color);    
+}
+
+.mat-mdc-slider-visual-thumb .mat-ripple {
+    width: 0;
+    height: 0;
+}
+
+.mat-mdc-radio-button .mdc-radio{
+    padding: 0px !important;
+}
+
+.mat-mdc-menu-content {
+    padding: 0px 0px !important;
+}
+.mat-mdc-menu-item:not([disabled]):hover {
+    color: #fff;
+}
+.mat-mdc-menu-item:not(:last-child) {
+    border-bottom: 2px solid var(--bs-gray-200) !important;
+}
+.mat-mdc-menu-item-text {
+    display: flex;
+    align-items: center;
+}
+.mat-mdc-menu-item .mat-mdc-menu-item-text svg path {
+    fill: #000000;
+}
+.mat-mdc-menu-item:hover .mat-mdc-menu-item-text svg path, .nav-link.active svg path {
+    fill: White;
+}
+.mat-datepicker-content-container {
+    background: #fff;
+    border: 1px solid #eaeaea;
+    border-radius: 16px;
+    box-shadow: 0px 6px 7px -4px rgba(0, 0, 0, 0.2), 0px 11px 15px 1px rgba(0, 0, 0, 0.14), 0px 4px 20px 3px rgba(0, 0, 0, 0.12);
+}
+
+body {
+    font: 400 1rem / 1.5rem "Poppins", serif !important;
+    color: #767676;
+    margin: 0;
+    position: relative;
+}
+
+.payment-button{
+    color: #2C5069;
+    background-color: #B6C9D7;
+    box-shadow: #2c50697e 0px 0px 2px 1px;
+
+    --bs-btn-hover-bg: #B6C9D7;
+    --bs-btn-hover-color: #2C5069;
+    --bs-btn-hover-border-color: #B6C9D7;
+
+    --bs-btn-active-color: #2C5069;
+    --bs-btn-active-bg: #B6C9D7;
+    --bs-btn-active-border-color: #B6C9D7;
+}
+
+.action-buttons{
+    background-color: transparent;
+    color: black;
+    font-size: 14px;
+    cursor: pointer;
+    p{
+        &:hover{
+            color: white;
+            background-color: var(--secondary-color);
+            border-radius: 3px;
+        }
+    }
+}
+
+.btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #2C5069;
+    --bs-btn-border-color: #2C5069;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #2C5069;
+    --bs-btn-hover-border-color: #2C5069;
+    --bs-btn-focus-shadow-rgb: 49, 132, 253;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #2C5069;
+    --bs-btn-active-border-color: #2C5069;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #2C5069;
+    --bs-btn-disabled-border-color: #2C5069;
+}
+
+.btn-success {
+    --bs-btn-bg: var(--primary-color);
+    --bs-btn-border-color: var(--primary-color);
+    --bs-btn-disabled-bg: var(--primary-color);
+    --bs-btn-disabled-border-color: var(--primary-color);
+}
+
+.btn-secondary {
+    --bs-btn-bg: var(--secondary-color);
+    --bs-btn-border-color: var(--secondary-color);
+    --bs-btn-hover-bg: #c3a63a;
+    --bs-btn-hover-border-color: #ab8e20;
+    --bs-btn-active-bg: #ab8e20;
+    --bs-btn-active-border-color: #ab8e20;
+    --bs-btn-disabled-bg: var(--secondary-color);
+    --bs-btn-disabled-border-color: var(--secondary-color);
+}
+.btn-outline-primary {
+    --bs-btn-color: var(--primary-color);
+    --bs-btn-border-color: var(--primary-color);
+    --bs-btn-hover-bg: var(--primary-color);
+    --bs-btn-hover-border-color: var(--primary-color);
+    --bs-btn-active-bg: var(--primary-color);
+    --bs-btn-active-border-color: var(--primary-color);
+    --bs-btn-disabled-color: var(--primary-color);
+    --bs-btn-disabled-border-color: var(--primary-color);
+}
+.btn-outline-secondary {
+    --bs-btn-color: var(--secondary-color);
+    --bs-btn-border-color: var(--secondary-color);
+    --bs-btn-hover-bg: var(--secondary-color);
+    --bs-btn-hover-border-color: var(--secondary-color);
+    --bs-btn-active-bg: var(--secondary-color);
+    --bs-btn-active-border-color: var(--secondary-color);
+    --bs-btn-disabled-color: var(--secondary-color);
+    --bs-btn-disabled-border-color: var(--secondary-color);
+}
+
+.text-app-primary {
+    color: var(--primary-color) !important;
+}
+.text-app-secondary {
+    color: var(--secondary-color) !important;
+}
+.text-app-success {
+    color: var(--success-color) !important;
+}
+.text-app-danger {
+    color: var(--danger-color) !important
+}
+
+.bg-app-secondary {
+    background: var(--secondary-bg) !important;
+}
+.bg-header-color {
+    background: var(--header-bg) !important;
+}
+.bg-app-success {
+    background: var(--success-bg) !important
+}
+.bg-app-danger {
+    background: var(--danger-bg) !important;
+}
+.bg-danger-color {
+    background: var(--danger-color) !important;
+}
+
+
+.text-dark {
+    color: var(--text-dark) !important;
+}
+
+.fw-500 {
+    font-weight: 500 !important;
+}
+.fw-600 {
+    font-weight: 600 !important;
+}
+
+a {
+    color: var(--text-dark);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.form-floating > label {
+    color: var(--text-color);
+    padding: 1.75rem .75rem;
+    font-weight: 400;
+}
+
+.input-group-text {
+    background: #fff;
+    border-radius: 0px;
+    border: none;
+    border-bottom: 1px solid #CDCDCD;
+    padding: 0;
+    align-items: end;
+    padding-bottom: 6px;
+    color: var(--secondary-color);
+}
+
+.form-floating > .form-control-plaintext ~ label, .form-floating > .form-control:focus ~ label, .form-floating > .form-control:not(:placeholder-shown) ~ label, .form-floating > .form-select ~ label {
+    transform: scale(0.85) translateY(-1.35rem) translateX(0.15rem);
+}
+
+.form-floating > .form-control-plaintext:focus, .form-floating > .form-control-plaintext:not(:placeholder-shown), .form-floating > .form-control:focus, .form-floating > .form-control:not(:placeholder-shown) {
+    padding-bottom: 0px;
+}
+
+.form-floating > .form-select {
+    padding-bottom: 0px;
+}
+
+.form-control.is-invalid, .was-validated .form-control:invalid {
+    background-image: none !important;
+}
+
+.form-control.ng-select {
+    border: none !important;
+    padding: 0 !important;
+}
+
+// NG SELECT STYLES
+
+.ng-select .ng-select-container {
+    border: 1px solid #dee2e6;
+    padding-top: .3735rem;
+    padding-bottom: .3735rem;
+    border-radius: var(--bs-border-radius);
+}
+
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-input {
+    padding: 0px;
+}
+
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value {
+    background-color: transparent;
+    margin-bottom: 0px;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked {
+    background-color: var(--secondary-color);
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected, .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected.ng-option-marked {
+    background-color: #fff2d066;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option .form-check-input:checked {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.ng-select.is-invalid .ng-select-container, .was-validated .ng-select:invalid .ng-select-container {
+    border-color: var(--bs-form-invalid-border-color) !important;
+}
+
+.ng-select .ng-select-container .ng-placeholder {
+    font-size: 14px !important;
+    color: #D8D8D8 !important;
+    padding-top: 3px;
+}
+
+// .form-control, .form-select {
+//     // border: 0px;
+//     // border-radius: 0px;
+//     // box-shadow: none !important;
+//     // border-bottom: 1px solid #CDCDCD;
+//     // &:hover,&:active,&:focus {
+//     //     border-color: #CDCDCD;
+//     // }
+// }
+
+.horizontal-label {
+    min-width: 168px;
+    color: rgba(33, 37, 41, 0.75);
+}
+
+.bi-chevron-left::before {
+    font-weight: bolder !important;
+}
+
+.otp-input {
+    // border-color: var(--primary-color) !important;
+    // border-bottom: 2px solid !important;
+    background: #F4EEDD !important;
+    border: 2px solid var(--secondary-color) !important;
+    border-radius: 3px !important;
+    outline: none;
+    font-size: 16px !important;
+}
+
+.text-primary{
+    color: #C7AE51 !important; 
+}
+
+.invalid-feedback{
+
+    display: block !important;
+    text-align: end !important;
+}
+
+.table-responsive {
+    border-radius: 6px; 
+    border-spacing: 0; 
+    border-radius: 0px; 
+    margin: 0 !important;
+}
+
+.table-wrapper {
+    max-height: 700px; /* Adjust height based on your design */
+    overflow-y: auto; /* Enable vertical scrolling for table body */
+    position: relative; /* Positioning context for sticky thead */
+    display: block; /* Ensure table wrapper behaves as a block for scrolling */
+}
+
+.custom-paginator {
+    position: relative; /* Ensure paginator is not affected by table scrolling */
+}
+
+.table thead {
+    position: sticky; /* Make header sticky */
+    top: 0; /* Stick to top of .table-wrapper */
+    z-index: 1; /* Ensure header stays above table body */
+}
+
+.table thead th {
+    font-weight: 500;
+    // text-transform: capitalize;
+    background: #F8F8F8;
+    color: #B1B1B1;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.295);
+    padding: 1rem 1rem; 
+    text-align: start !important;
+    // padding-left: 19px !important;
+}
+
+.table thead tr th:last-child {   
+    text-align: end !important;
+}
+
+.table tbody td {
+    vertical-align: middle;
+    // border-top: 1px solid grey;
+    border-bottom:1px solid rgba(128, 128, 128, 0.295);
+    text-align: center !important; 
+    font-weight: 500;
+    padding: 1rem 1rem;
+    text-align: start !important;
+    background-color: #ffffff;
+}
+
+.table tbody tr td:first-child {
+    vertical-align: middle;
+    border-left: 1px solid rgba(128, 128, 128, 0.295);
+}
+
+.table tbody tr td:last-child {   
+    border-right: 1px solid rgba(128, 128, 128, 0.295);
+    text-align: end !important;
+}
+
+.table > tbody > tr:nth-of-type(even) {
+    --bs-table-accent-bg: #F8F8F8 !important; /* your desired color */
+}
+
+/* Sticky first column (Ticket Id) */
+.th-first-field, .td-first-field {
+    position: sticky;
+    left: 0px;
+    background: #F8F8F8;
+    // z-index: 1; /* Higher for first column */
+    min-width: 200px;
+}
+
+.th-secound-field, .td-secound-filed {
+    position: sticky;
+    left: 205px;
+    background: #F8F8F8;
+    // z-index: 2; /* Higher for first column */
+    min-width: 160px;
+}
+
+/* Sticky Status column */
+.th-status, .td-status {
+    position: sticky;
+    right: 120px; /* width of Action column */
+    background: #F8F8F8;
+    // z-index: 2;
+    min-width: 120px;
+}
+
+/* Sticky Action column (last column) */
+.th-action, .td-action {
+    position: sticky;
+    right: 0;
+    background: #F8F8F8;
+    // z-index: 3;
+    min-width: 120px;
+}
+
+.table > tbody > tr:nth-of-type(odd) {
+    --bs-table-accent-bg: #FFFFFF !important; /* your desired color */
+}
+
+.divider {
+    position: relative;
+    span {
+        top: -0.68rem;
+        left: 50%;
+        right: 50%;
+        transform: translateX(-50px);
+        background: #fff;
+        width: 75px;
+        height: 20px;
+        text-align: center;
+    }
+}
+
+.input-group {
+
+    .input-group-prepend {
+
+        .ng-select.is-invalid {
+
+            .ng-select-container {
+                border-color: var(--bs-form-invalid-border-color);
+            }
+        }
+
+        .ng-select.ng-select-single {
+
+            .ng-select-container {
+                height: 40px;
+                border-radius: 0;
+                border-top-left-radius: 0.25rem;
+                border-bottom-left-radius: 0.25rem;                             
+                width: 150px;
+
+                .ng-value-container .ng-input {
+                    top: 10px;
+                    padding-right: 30px;
+                    padding-left: 0.75rem;
+                }                        
+            }
+
+            .ng-value {
+                width: 95px;
+            }
+
+            .ng-value-label {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+        }
+        .ng-select.ng-select-focused:not(.ng-select-opened)>.ng-select-container {
+            box-shadow: none;
+            border-color: #660787;   
+        }
+
+        .ng-select.ng-select-opened>.ng-select-container {
+            border-color: #660787;               
+        }
+
+        .ng-dropdown-panel.ng-select-bottom {
+            top: 102%;
+        }
+        
+        .ng-select {
+
+            .ng-select-container {
+                min-width: 100px;
+                border: 1px solid #dee2e6
+            }                    
+
+            .ng-dropdown-panel {
+                border: 1px solid #dee2e6;
+                border-bottom-left-radius: 0.25rem;
+                border-bottom-right-radius: 0.25rem;
+            }                    
+
+        }
+
+    }
+
+}
+
+.required > label {
+    position: relative;
+}
+
+.required > label:after { 
+    content: " *";
+    position: absolute;
+    top: 0;
+    color: var(--bs-danger);
+    margin-left: 3px;
+}
+
+
+.password-input-group {
+    position: relative;
+
+    .bi {
+        position: absolute;
+        top: 0.6rem;
+        right: 0.65rem;
+        font-size: 1.15rem;
+        color: #949396 !important;
+        cursor: pointer;
+    }
+}  
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  color: #D8D8D8 !important;
+  opacity: 1;
+  font-size: 14px;
+}
+
+/* Wrapper for horizontal scroll */
+ 
+  .table-wrapper {
+    overflow-x: auto;
+    width: 100%;
+  }
+  
+  .table-scroll {
+    min-width: 1200px;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  
+  .table-scroll th,
+  .table-scroll td {
+    white-space: nowrap;
+    vertical-align: middle;
+    padding: 1rem;
+    background: #fff;
+  }
+  
+input[readonly]{
+    background-color: #e3e2e2;
+}
+
+.cdk-overlay-container {
+  z-index: 1060 !important; /* Higher than Bootstrap modal (1050) */
+}
+
+.cdk-global-overlay-wrapper {
+  z-index: 1060 !important;
+}
+
+
+// .form-control:read-only {
+//   background-color: #e9ecef;
+// }
+
+// .form-select:disabled{
+//   background-color: #e9ecef;
+// }
+
+.custom-checkbox:checked {
+    background-color: #2C5069;
+    border-color: #2C5069;
+    accent-color: #2C5069;
+  }
+
+  .custom-checkbox:checked + label {
+    color: #2C5069;
+  }
+
+.custom-switch-color:checked{
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    accent-color: var(--secondary-color);
+    box-shadow: 0 0 0 0;
+
+    &:focus{
+      box-shadow: 0 0 0  0;
+      border-color: var(--secondary-color);
+    }
+  }
+
+  ::ng-deep .custom-tooltip {
+  white-space: pre-line !important;
+}
+
+::ng-deep .mat-mdc-paginator-container {
+  background-color: #fff!important; /* Light pink background */
+}
+  
+.custom-tooltip {
+  font-size: 14px;
+  background-color: #333;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: normal;
+  max-width: 200px;
+}
