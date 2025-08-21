@@ -1,0 +1,8 @@
+.custom-switch-color:checked {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+::ng-deep .mat-mdc-paginator-container {
+  background-color: #fff!important; /* Light pink background */
+}
