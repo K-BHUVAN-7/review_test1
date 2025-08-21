@@ -1,0 +1,1 @@
+export { NgSelectComponent } from './ng-select/ng-select.component';
