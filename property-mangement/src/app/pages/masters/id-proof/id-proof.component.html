@@ -1,0 +1,458 @@
+<!-- Id Proof List -->
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-end mb-3">
+  
+        <small><span class="text-primary">ID Proof</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-dark">ID Proof List</span></small>
+  
+    </div>
+
+    <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+        <div class="card-header bg-white">
+
+            <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+
+                <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">ID Proof List</h6>
+                
+                <img src="images/download.png" style="width: 26px; height: auto; cursor: pointer;" alt="" (click)="xlDownload()">
+              
+            </div>
+              
+        </div>
+
+        <div class="card-body">
+
+            <div class="card rounded-0">
+
+                <div class="card-body rounded-0">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div class="d-flex">
+
+                            <div class="position-relative">
+
+                                <img src="images/searchBlack.png" class="position-absolute search-icon" style="width: 25px;top: 6px;left: 8px;">
+                                
+                                <input type="text" class="form-control" placeholder="Search ID Proof Name" style="background: transparent !important; border-radius: 8px !important; padding-left: 40px;" [(ngModel)]="searchValue" (change)="this.getIDProofList();">
+
+                            </div>
+
+                            <!-- <div style="border: 1px solid #D8D8D8; cursor: pointer;" class="px-3 ms-2 d-flex align-items-center rounded-3" aria-controls="offcanvasRight" data-bs-target="#offcanvasRight"  data-bs-toggle="offcanvas">
+
+                                <img src="images/filterVapour.png" style="width: 18px;" alt=""><span class="ms-2">Filter</span>
+
+                            </div> -->
+
+                        </div>
+
+                        <div>
+
+                            <!-- <button class="btn btn-secondary" (click)="openModal()"  *ngIf="_.includes(permissions,'create')">+ Add New</button> -->
+                            <button class="btn btn-secondary" (click)="openModal()">+ Add New</button>
+
+                        </div>
+
+                    </div>
+
+                    <div class="mt-3">
+
+                        <div class="table-responsive table-wrapper">
+
+                            <table class="table table-borderless align-middle">
+
+                                <thead class="bg-light text-secondary">
+
+                                    <tr>
+
+                                        <th>S.no</th>
+
+                                        <th style="width: 20%;">ID Proof Name</th>
+
+                                        <th style="text-align: center !important;">Expiry date</th>
+
+                                        <th style="text-align: center !important;">Required</th>
+
+                                        <th>Action</th>
+
+                                    </tr>
+
+                                </thead>
+                        
+                              <tbody>
+
+                                <ng-container  *ngIf="(_.size(this.permissions.viewPermission.branchIds) > 0); else others">
+
+                                    <ng-container *ngIf="!_.isEmpty(masterList['idProofList']); else other">
+    
+                                        <tr *ngFor="let property of masterList['idProofList']; let i = index ">
+        
+                                            <td>{{ (pageIndex * pageSize) + i + 1 | number: '2.0-0'  }}</td>
+        
+                                            <td >{{ property?.proofName }}</td>
+        
+                                            <td style="text-align: center !important;">{{ property.isExpiry ? 'Yes' : 'No' }}</td>
+
+                                            <td style="text-align: center !important;">{{ property.isRequired ? 'Yes' : 'No' }}</td>
+        
+                                            <td>
+        
+                                                <img src="images/bin.png" alt="Delete" (click)="deleteIdProof(property)" style="width: 18px; cursor: pointer;" class="me-2">
+                                                
+                                                <img src="images/edit.png" alt="Edit" (click)="openModal(property)" style="width: 18px; cursor: pointer">
+                                                
+                                            </td>
+        
+                                        </tr>
+    
+                                    </ng-container>
+    
+                                    <ng-template #other>
+    
+                                        <tr>
+    
+                                            <td colspan="5" style="text-align: center !important;">No Records Found</td>
+    
+                                        </tr>
+    
+                                    </ng-template>
+
+                                </ng-container>
+
+                                <ng-template #others>
+
+                                    <tr>
+
+                                        <td colspan="5" style="text-align: center !important;"><img style="width: 16px !important;" class="me-2" src="images/lock2.png" alt="">Access Denied </td>
+
+                                    </tr>
+
+                                </ng-template>
+                                
+                              </tbody>
+
+                            </table>
+
+                            <div *ngIf="totalCount > 0">
+
+                                <mat-paginator 
+                                    class="custom-paginator"
+                                    appendTo="body"
+                                    [length]="totalCount"
+                                    [pageSize]="pageSize"
+                                    [pageIndex]="pageIndex"
+                                    [pageSizeOptions]="[5, 10, 25, 50]"
+                                    (page)="onPageChange($event)">
+                                </mat-paginator>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Id Proof Modal -->
+<modal #idProofModal title="{{mode == 'Create' ? 'Add' : 'Update'}} ID Proof" [saveBtnTxt]="mode == 'Create' ? 'Save' : 'Update'" size="md" (onSubmit)="submit()">
+
+    <form  *ngIf="!_.isEmpty(idProofForm.value)" [formGroup]="idProofForm"  class="horizontal-form-fields">
+
+        <div class="container-fluid">
+
+            <div class="row g-3">
+
+                <div class="col-md-12 form-group required">
+
+                    <label for="proofName" class="form-label text-dark">ID Proof Name</label>
+
+                    <input type="text" class="form-control" id="proofName" formControlName="proofName" autocomplete="off" placeholder="Enter ID Proof Name" [ngClass]="{ 'is-invalid': (formSubmitted) && f.proofName.errors }"/>
+
+                    <div *ngIf="(formSubmitted) && f.proofName.errors" class="invalid-feedback">
+
+                        <div *ngIf="f.proofName.errors.required">ID Proof Name is Required</div>
+
+                    </div>
+
+                </div>  
+
+                <!-- <div>
+
+                    <div class="text-dark" style="display: flex; align-items: center; gap: 6px;">
+
+                        <span>Does this ID have an expiry date? -  No</span>
+                        
+                        <div class="form-check form-switch" style="margin: 0;">
+
+                            <input class="form-check-input custom-switch-color" type="checkbox" role="switch" formControlName="isExpiry" id="flexSwitchCheckChecked" checked>
+
+                        </div>
+                        
+                        <span class="ms-0 ps-0">Yes</span>
+
+                    </div>
+
+                </div> -->
+
+                 <ng-container>
+
+                    <div class="row mt-2 text-dark">
+    
+                        <div class="col-md-8">
+    
+                            <small>Does this ID have an expiry date?</small>
+    
+                        </div>
+    
+                        <div class="col-md-1" style="margin-left: -40px;">
+    
+                            <span>-</span>
+    
+                        </div>
+    
+                        <div class="col-md-2 d-flex" style="margin-left: -17px;">
+    
+                            <small>No</small>
+    
+                             <div class="form-check form-switch" style="margin-left: 10px; margin-right: 3px;">
+
+                                <input class="form-check-input custom-switch-color" type="checkbox" role="switch" formControlName="isExpiry" id="flexSwitchCheckChecked" checked>
+
+                            </div>
+    
+                            <small>Yes</small>
+    
+                        </div>
+    
+                        <div class="col-md-1"></div>
+    
+                    </div>
+
+                    <div class="row mt-2 text-dark">
+    
+                        <div class="col-md-8">
+    
+                            <small>Required</small>
+    
+                        </div>
+    
+                        <div class="col-md-1" style="margin-left: -40px;">
+    
+                            <span>-</span>
+    
+                        </div>
+    
+                        <div class="col-md-2 d-flex" style="margin-left: -17px;">
+    
+                            <small>No</small>
+    
+                             <div class="form-check form-switch" style="margin-left: 10px; margin-right: 3px;">
+
+                                <input class="form-check-input custom-switch-color" type="checkbox" role="switch" formControlName="isRequired" id="flexSwitchCheckChecked" checked>
+
+                            </div>
+    
+                            <small>Yes</small>
+    
+                        </div>
+    
+                        <div class="col-md-1"></div>
+    
+                    </div>
+
+                </ng-container>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</modal>
+
+<!-- Filters Modal -->
+<!-- <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" style="margin-top: 84px; background-color: #F6F9FC;">
+    
+    <div class="offcanvas-header border-bottom">
+       
+        <h5 class="offcanvas-title" id="offcanvasRightLabel">Filter</h5>
+       
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    
+    </div>
+
+    <div class="offcanvas-body ps-4 pe-4">
+    
+        <form [formGroup]="filterForm">
+    
+            Accordion: ID Proff Name
+            <div class="accordion mt-2" id="accordionPropertyName">
+    
+                <div class="accordion-item border-0 p-2">
+    
+                    <h2 class="accordion-header" id="headingProofName">
+    
+                        <button class="accordion-button p-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProofName" aria-expanded="true" aria-controls="collapseProofName" style="background-color: transparent;">
+
+                            <span class="text-dark" style="font-weight: 600;">ID Proff Name</span>
+                        
+                        </button>
+                    
+                    </h2>
+                    
+                    <div id="collapseProofName" class="accordion-collapse collapse show" aria-labelledby="headingProofName" data-bs-parent="#accordionPropertyName">
+                        
+                        <div class="accordion-body w-100 p-0 mt-3">
+                        
+                            <div class="position-relative">
+                        
+                                <div class="col-md-12 form-group required mb-3">
+
+                                    <ng-select class="form-control" [items]="this.masterList['idProofList']" bindLabel="proofName" bindValue="_id" formControlName="proofName" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body">
+
+                                        <ng-template ng-label-tmp let-item="item" let-clear="clear">
+                                        
+                                            <span class="badge bg-white text-dark me-1 d-inline-flex align-items-center fw-500" style="font-size: 12px;">
+
+                                                <span>{{ item?.proofName }}</span> 
+
+                                                <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                                                <span style="width: 1px; height: 20px; background-color: black;"></span>
+                                                
+                                            </span>
+
+                                        </ng-template>
+
+                                        <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                                            <div class="form-check d-flex align-items-center"> 
+                                                
+                                                <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id)"/>
+        
+                                                <label class="form-check-label mt-1">{{ item?.proofName }}</label>
+        
+                                            </div>
+                                                
+                                        </ng-template>
+                                    
+                                    </ng-select>
+                                
+                                </div>
+
+                            </div>
+
+                        </div>
+                        
+                    </div>
+        
+                </div>
+        
+            </div>
+
+            Accordion: Expiry Date
+            <div class="accordion mt-2" id="accordionStatus">
+        
+                <div class="accordion-item border-0 p-2">
+        
+                    <h2 class="accordion-header" id="headingStatus">
+        
+                        <button class="accordion-button p-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="true" aria-controls="collapseStatus" style="background-color: transparent;">
+                            
+                            <span  class="text-dark" style="font-weight: 600;">Expiry Date</span>
+
+
+                        </button>
+            
+                    </h2>
+            
+                    Expiry Yes
+                    <div class="d-flex align-items-center mt-3">
+
+                        <div class="form-check">
+                            
+                            <input class="form-check-input me-3 custom-checkbox" type="checkbox" [checked]="filterForm.get('isExpiry')?.value == 'yes'" (change)="onExpirySelect('yes')"/>
+
+                        </div>
+
+                        <h6 class="mb-0" [ngStyle]="{ color: filterForm.get('isExpiry')?.value == 'yes' ? '#2C5069' : '#000' }">Yes</h6>
+                        
+                    </div>
+
+                    Expiry No
+                    <div class="d-flex align-items-center mt-3">
+
+                        <div class="form-check">
+
+                            <input class="form-check-input me-3 custom-checkbox" type="checkbox" [checked]="filterForm.get('isExpiry')?.value == 'no'" (change)="onExpirySelect('no')"/>
+
+                        </div>
+
+                        <h6 class="mb-0" [ngStyle]="{ color: filterForm.get('isExpiry')?.value == 'no' ? '#2C5069' : '#000' }">No</h6>
+                    
+                    </div>
+
+                </div>
+
+            </div>
+
+            Accordion: Required
+            <div class="accordion mt-2" id="accordionStatus">
+        
+                <div class="accordion-item border-0 p-2">
+        
+                    <h2 class="accordion-header" id="headingStatus">
+        
+                        <button class="accordion-button p-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="true" aria-controls="collapseStatus" style="background-color: transparent;">
+                            
+                            <span  class="text-dark" style="font-weight: 600;">Required</span>
+
+
+                        </button>
+            
+                    </h2>
+            
+                    Required Yes
+                    <div class="d-flex align-items-center mt-3">
+
+                        <div class="form-check">
+                            
+                            <input class="form-check-input me-3 custom-checkbox" type="checkbox" [checked]="filterForm.get('isRequired')?.value == 'yes'" (change)="onRequiredSeelct('yes')"/>
+
+                        </div>
+
+                        <h6 class="mb-0" [ngStyle]="{ color: filterForm.get('isRequired')?.value == 'yes' ? '#2C5069' : '#000' }">Yes</h6>
+                        
+                    </div>
+
+                    Required No
+                    <div class="d-flex align-items-center mt-3">
+
+                        <div class="form-check">
+
+                            <input class="form-check-input me-3 custom-checkbox" type="checkbox" [checked]="filterForm.get('isRequired')?.value == 'no'" (change)="onRequiredSeelct('no')"/>
+
+                        </div>
+
+                        <h6 class="mb-0" [ngStyle]="{ color: filterForm.get('isRequired')?.value == 'no' ? '#2C5069' : '#000' }">No</h6>
+                    
+                    </div>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div> -->

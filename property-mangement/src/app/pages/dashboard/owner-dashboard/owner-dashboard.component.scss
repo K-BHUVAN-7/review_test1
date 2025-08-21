@@ -1,0 +1,240 @@
+
+.card-wrapper {
+  flex: 1 1 20%; /* Approximately 20% width for 5 cards, with flexibility */
+  min-width: 10em; /* Minimum width for readability */
+  box-sizing: border-box; /* Include padding in width */
+}
+
+select{
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.card{
+  border-radius: 12px;
+}
+
+.card h4 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.card p {
+  font-size: 13px;
+}
+
+.card img {
+  object-fit: contain;
+}
+
+.open-ticket-ageing-table {
+  border-radius: 12px;
+  background: #fff;
+  height: 428px;
+
+  .custom-ageing-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 0px 0px 10px 10px;
+    overflow: hidden;
+
+    th,
+    td {
+    //   padding: 0.75rem;
+      font-size: 14px;
+      vertical-align: middle;
+      border-bottom: 1px solid #D8D8D8;
+      background-color: none !important;
+    }
+
+    th {
+      font-weight: 600;
+      background-color: transparent!important;
+    }
+
+    // Background colors for columns
+
+
+    .bg-grey-1 {
+      background-color: #d8d8d84f !important;
+      width: 160px;
+    }
+
+    .bg-blue-1 {
+      background-color: #0f3b61 !important;
+    }
+    .bg-blue-2 {
+      background-color: #206ba4 !important;
+    }
+
+    .bg-blue-3 {
+      background-color: #58a0db !important;
+    }
+
+    .bg-yellow-1 {
+      background-color: var(--secondary-color) !important;
+    }
+
+    .bg-yellow-2 {
+      background-color: #E6B62F !important;
+    }
+
+    .text-white {
+      color: #fff !important;
+    }
+
+    tr:hover td {
+      background-color: #f5f5f5;
+    }
+  }
+
+  .form-select,
+  .form-check-input {
+    font-size: 13px;
+  }
+
+  .table > tbody > tr:nth-of-type(even) {
+    --bs-table-accent-bg: transparent !important;
+    background-color: transparent !important;
+  }
+
+  .table > tbody > tr:nth-of-type(odd) {
+      --bs-table-accent-bg: none !important; /* your desired color */
+  }
+}
+
+.custom-ageing-table td,
+.custom-ageing-table th {
+  text-align: center !important;
+  vertical-align: middle;
+}
+
+.custom-ageing-table td:first-child,
+.custom-ageing-table th:first-child {
+  text-align: left !important;
+}
+
+.overview-tabel{
+  border-radius: 12px;
+  background: #fff;
+  height: 477px;
+}
+
+.check-switch-color {
+  background-color: #f6ebcd;
+  border-color: var(--secondary-color); 
+  box-shadow: 0 0 0 0;
+  width: 40px; 
+  height: 17px; 
+  appearance: none;
+  right: 3px; 
+  position: relative;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s; 
+
+  /* Custom thumb using ::before */
+  &::before {
+    content: '';
+    position: absolute;
+    width: 12px; 
+    height: 12px;
+    background-color: var(--secondary-color);
+    border-radius: 50%;
+    top: 1px;
+    left: 2px;
+    transition: transform 0.0s, background-color 0.0s; 
+  }
+
+  /* Checked state */
+  &:checked {
+    background-color: #f6ebcd; 
+    border-color: var(--secondary-color);
+  }
+
+  &:checked::before {
+    background-color: var(--secondary-color);
+    transform: translateX(20px);
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 0;
+    border-color: var(--secondary-color);
+    outline: none;
+  }
+}
+
+// .check-switch-color{
+//     background-color: #f6ebcd;
+//     border-color: var(--secondary-color);
+//     accent-color: #ffff;
+//     box-shadow: 0 0 0 0;
+
+//     // &:focus{
+//     //   box-shadow: 0 0 0  0;
+//     //   border-color: var(--secondary-color);
+//     // }
+//   }
+
+  .selected-btn {
+    background-color: #eac359 !important;
+    color: #000 !important;
+  }
+
+
+.custom-tooltip {
+  font-size: 14px;
+  background-color: #333;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: normal;
+  max-width: 200px;
+}
+
+
+
+
+
+
+
+
+.chart-container {
+  position: relative;
+  min-height: 300px; /* Adjust based on your chart height */
+}
+
+.navigation-arrow {
+  position: absolute;
+  top: 37%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.8); /* Semi-transparent background for visibility */
+  border: none;
+  padding: 2px;
+  z-index: 10;
+}
+
+.left-arrow {
+  left: 0;
+}
+
+.right-arrow {
+  right: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .navigation-arrow {
+    padding: 3px;
+    font-size: 14px;
+  }
+  .chart-container {
+    min-height: 250px;
+  }
+}
+
+@media (max-width: 576px) {
+  .navigation-arrow {
+    display: none; /* Hide arrows on very small screens if needed */
+  }
+}

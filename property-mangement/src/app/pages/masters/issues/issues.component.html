@@ -1,0 +1,252 @@
+<!-- Issue List -->
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-end mb-3">
+  
+        <small><span class="text-primary">Issue</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-dark">Issue List</span></small>
+  
+    </div>
+
+    <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+        <div class="card-header bg-white">
+
+            <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+
+                <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Issue Category List</h6>
+                
+                <img src="images/download.png" style="width: 26px; height: auto; cursor: pointer;" alt="" (click)="xlDownload()">
+              
+            </div>
+              
+        </div>
+
+        <div class="card-body">
+
+            <div class="card rounded-0">
+
+                <div class="card-body rounded-0">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div class="d-flex">
+
+                            <div class="position-relative">
+
+                                <img src="images/searchBlack.png" class="position-absolute search-icon" style="width: 25px;top: 6px;left: 8px;">
+                                
+                                <input type="text" class="form-control" placeholder="Search Issue Category" style="background: transparent !important; border-radius: 8px !important; padding-left: 40px;" [(ngModel)]="searchValue" (change)="this.getIssueList();">
+
+                            </div>
+
+                            <!-- <div style="border: 1px solid #D8D8D8;" class="px-3 ms-2 d-flex align-items-center rounded-3">
+
+                                <img src="images/filterVapour.png" style="width: 18px;" alt=""><span class="ms-2">Filter</span>
+
+                            </div> -->
+
+                        </div>
+
+                        <div>
+
+                            <button class="btn btn-secondary" (click)="openModal()">+ Add New</button>
+
+                        </div>
+
+                    </div>
+
+                    <div class="mt-3">
+
+                        <div class="table-responsive table-wrapper">
+
+                            <table class="table table-borderless align-middle">
+
+                                <thead class="bg-light text-secondary">
+
+                                    <tr>
+
+                                        <th>S.no</th>
+
+                                        <th style="width: 30%;">Issue Category</th>
+
+                                        <th style="width: 30%;"> Priority</th>
+
+                                        <th>Default TAT (Day/Hour)</th>
+
+                                        <th>Action</th>
+
+                                    </tr>
+
+                                </thead>
+                        
+                                <tbody>
+
+                                    <ng-container *ngIf="(_.size(this.permissions.viewPermission.branchIds) > 0); else others">
+
+                                        <ng-container *ngIf="!_.isEmpty(masterList['issueList']) ;else other"> 
+        
+                                            <tr *ngFor="let issue of masterList['issueList']; let i = index ">
+            
+                                                <td>{{ ( pageSize * pageIndex ) + i + 1 | number: '2.0-0' }}</td>
+                
+                                                <td>{{ issue?.issueName }}</td>
+                
+                                                <td [ngClass]="{ 'priority-high': issue.priority == 'high', 'priority-medium': issue.priority == 'medium', 'priority-low': issue.priority == 'low' }">
+
+                                                    {{ (issue.priority | titlecase) || '-' }}
+                                                  
+                                                </td>                                                  
+            
+                                                <td>{{ issue.tat ? (issue.tat +' (' + (issue.tatType | titlecase) + ') ' || '-') : '-'  }}</td>
+            
+                                                <td>
+                                                    
+                                                    <img src="images/bin.png" alt="Delete" (click)="deletePropertyType(issue)" style="width: 18px; cursor: pointer;" class="me-2">
+
+                                                    <img src="images/edit.png" alt="Edit" (click)="openModal(issue)" style="width: 18px; cursor: pointer;">
+                                                    
+                                                </td>
+            
+                                            </tr>
+        
+                                        </ng-container>
+        
+                                        <ng-template #other>
+        
+                                            <tr>
+        
+                                                <td colspan="5" style="text-align: center !important;">No  Records Found</td>
+        
+                                            </tr>
+        
+                                        </ng-template>
+
+                                    </ng-container>
+                                    
+                                    <ng-template #others>
+
+                                        <tr>
+
+                                            <td colspan="5" style="text-align: center !important;"><img style="width: 16px !important;" class="me-2" src="images/lock2.png" alt="">Access Denied</td>
+
+                                        </tr>
+
+                                    </ng-template>
+
+                                </tbody>
+
+                            </table>
+
+                            <div *ngIf="totalCount > 0">
+
+                                <mat-paginator 
+                                    class="custom-paginator"
+                                    [length]="totalCount"
+                                    [pageSize]="pageSize"
+                                    [pageIndex]="pageIndex"
+                                    [pageSizeOptions]="[5, 10, 25, 50]"
+                                    (page)="onPageChange($event)">
+                                </mat-paginator>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Issue List Modal -->
+<modal #issueModal title="{{mode == 'Create' ? 'Add' : 'Update'}} Issue Category" [saveBtnTxt]="mode == 'Create' ? 'Save' : 'Update'" size="md" (onSubmit)="submit()">
+
+    <form *ngIf="!_.isEmpty(issueForm.value)" [formGroup]="issueForm" class="horizontal-form-fields">
+
+        <div class="container-fluid">
+
+            <div class="row g-3">
+
+                <div class="col-md-12 form-group required">
+
+                    <label for="issueName" class="form-label text-dark">Issue Category Name</label>
+
+                    <input type="text" class="form-control" id="issueName" formControlName="issueName" autocomplete="off" placeholder="Enter Issue Category Name" [ngClass]="{ 'is-invalid': (formSubmitted) && f.issueName.errors }"/>
+
+                    <div *ngIf="(formSubmitted) && f.issueName.errors" class="invalid-feedback">
+
+                        <div *ngIf="f.issueName.errors.required">Issue Category Name is Required</div>
+
+                    </div>
+
+                </div>  
+
+                <div class="col-md-6 form-group">
+
+                    <label for="priority" class="form-label text-dark">Priority</label>
+
+                    <ng-select name="priority" id="priority" class="form-control" formControlName="priority" appendTo="body" [clearable]="false" placeholder="Select Priority">
+
+                        <ng-option value="high">High</ng-option>
+
+                        <ng-option value="medium">Medium</ng-option>
+
+                        <ng-option value="low">Low</ng-option>
+                        
+                    </ng-select>
+
+                </div>         
+
+                <div class="col-md-6 form-group">
+
+                    <label for="tat" class="form-label text-dark">Default TAT</label>
+                  
+                    <div class="d-flex">
+
+                        <div class="col-md-5">
+
+                            <input type="number" class="form-control" id="tat" formControlName="tat" numbersOnly autocomplete="off" placeholder="-"/>
+                            
+                        </div>
+                        
+                        <div class="col-md-1 m-0 p-0">
+                            
+                            <div style="width: 0.9px;height: 30px;margin-top: 4px;background-color: #dee2e6;"></div>
+
+                        </div>
+                    
+                        <div class="col-md-6">
+
+                            <ng-select name="tatType" id="tatType" formControlName="tatType" class="form-control" appendTo="body" [clearable]="false" placeholder="Select Type">
+
+                                <ng-option value="days">Days</ng-option>
+                                
+                                <ng-option value="hours">Hours</ng-option>
+                                
+                            </ng-select>
+                        
+                        </div>
+                        
+                    </div>
+                  
+                    <div *ngIf="(f.tat?.touched || formSubmitted) && f.tat.errors" class="invalid-feedback">
+                      
+                        <div *ngIf="f.tat.errors.required">TAT is required</div>
+                    
+                    </div>
+                  
+                </div>
+                
+            </div>
+
+        </div>
+
+    </form>
+
+</modal>
