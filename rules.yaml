@@ -6,4 +6,4 @@ rules:
     paths:
       include:
         - "src/app/_core/**/*.component.ts"
-    pattern-regex: "."
+    pattern-regex: "\\A"
