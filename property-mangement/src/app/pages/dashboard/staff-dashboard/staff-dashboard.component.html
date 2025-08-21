@@ -1,0 +1,412 @@
+
+<div class="container-fluid">
+
+    <!-- Top Status -->
+    <div class="row mb-4 g-3">
+
+        <div class="d-flex flex-wrap justify-content-between">
+        
+            <div class="card-wrapper mt-1" *ngFor="let card of topStats">
+        
+                <div class="card shadow-sm border-0 text-center p-3 h-100 me-4 rounded-4">
+        
+                    <div class="d-flex justify-content-between">
+                        
+                        <h4 class="fw-semibold mb-1">{{ card.count }}</h4>
+
+                        <img [src]="card.icon" width="32" height="32" alt="icon"/>
+
+                    </div>
+                    
+                    <div class="text-start">
+                        
+                        <p class="text-muted mb-0" style="font-size: 12px;">{{ card.label }}</p>
+
+                    </div>
+        
+                </div>
+        
+            </div>
+    
+        </div>
+
+    </div>
+
+    <!-- Open tickets Proority & Open Tickets Ageing -->
+    <div class="row">
+
+        <!-- Open Tickets Priority -->
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm rounded-4">
+
+                <div class="card-body py-4 px-3" [formGroup]="filterForm">
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+
+                        <div class="fw-semibold" style="border-left: 3px solid #D2A119; padding-left: 8px;">Open Tickets Priority</div>
+
+                        <ng-select class="form-control w-auto" formControlName="openTicketsPriority" (change)="changeValue({ fieldName: 'openTicketsPriority' })" appendTo="body" [clearable]="false">
+
+                            <ng-option value="1week">1 Week</ng-option>
+
+                            <ng-option value="1month">1 Month</ng-option>
+
+                            <ng-option value="6month">6 Month</ng-option>
+
+                            <ng-option value="1year">1 Year</ng-option>
+
+                        </ng-select>
+
+                    </div>
+
+                    <div class="text-start mb-3 fw-medium text-dark">Total Tickets - {{ totalOpenTicketCount }}</div>
+
+                    <div class="d-flex justify-content-center">
+
+                        <div class="mt-4" style="width: 320px; height: 278px;">
+                            
+                            <apx-chart
+                                [chart]="openTicketsPriority?.chart"
+                                [labels]="openTicketsPriority?.labels"
+                                [series]="openTicketsPriority?.series"
+                                [colors]="openTicketsPriority?.colors"
+                                [dataLabels]="openTicketsPriority?.dataLabels"
+                                [tooltip]="openTicketsPriority?.tooltip"
+                                [legend]="openTicketsPriority?.legend"
+                                [plotOptions]="openTicketsPriority?.plotOptions"
+                                [responsive]="openTicketsPriority?.responsive">
+                            </apx-chart>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Open Tickets Ageing -->
+        <div class="col-md-8">
+
+            <div class="card p-3 rounded-4 shadow-sm border-0" style=" height: 436px; border: none;">
+
+                <h6 class="mb-3" style="border-left: 3px solid #D2A119; padding-left: 8px;">Open Tickets Ageing :</h6>
+
+                <div>
+
+                    <apx-chart
+                        *ngIf="rentTrendChart"
+                        [series]="rentTrendChart?.series"
+                        [chart]="rentTrendChart?.chart"
+                        [xaxis]="rentTrendChart?.xaxis"
+                        [yaxis]="rentTrendChart?.yaxis"
+                        [plotOptions]="rentTrendChart?.plotOptions"
+                        [dataLabels]="rentTrendChart?.dataLabels"
+                        [colors]="rentTrendChart?.colors"
+                        [legend]="rentTrendChart?.legend">
+                    </apx-chart>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Overview & Tickets Summary -->
+    <div class="row mt-4">
+
+        <!-- Overview -->
+        <div class="col-md-8">
+
+            <div class="overview-tabel card p-0 shadow-sm border-0" style="height: 495px;">
+
+                <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+
+                    <div class="col-md-7 d-flex justify-content-start align-items-center">
+
+                        <h6 class="mb-0"><span class="border-start border-3 border-warning ps-2 pe-3">Overview :</span></h6>
+
+                    </div>
+
+                    <div class="col-md-4 ms-3 text-end">
+
+                        <button class="btn btn-sm" style="background-color: #F0F0F0;" (click)="openOverviewExpand()">
+
+                            <span class="fw-400 me-2" style="font-size: 12px;">View More</span> 
+                            
+                            <img src="images/icons/direction-left.svg" style="width: 18px;" alt="">
+                        
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- List -->
+                <div class="table-responsive">
+
+                    <table class="table table-borderless align-middle">
+
+                        <thead class="bg-light text-secondary">
+
+                            <tr style="font-size: 14px; font-weight: 500;">
+
+                                <th>Ticket Id</th>
+
+                                <th>Issue Category</th>
+
+                                <th style="width: 300px;">Unit</th>
+
+                                <th>Created Date</th>
+
+                                <th style="text-align: center !important; min-width: 210px !important;" class="th-action">Status</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <ng-container *ngIf="!_.isEmpty(this.masterList['ticketHistory']); else other">
+
+                                <tr *ngFor="let ticket of limitedOverviewList" style="font-size: 14px; font-weight: 400;">
+
+                                    <td>{{ ticket.ticketId }}</td>
+
+                                    <td>{{ ticket.issueName }}</td>
+
+                                    <td>{{ ticket.unitName }}</td>
+
+                                    <td>{{ ticket.created_at | date: 'dd-MM-yyyy' }}</td>
+
+                                    <td class="d-flex justify-content-center th-action">
+
+                                        <font color="#FF9500" *ngIf="ticket.ticketStatus == 'Pending'">{{ ticket.ticketStatus | titlecase }}</font>
+
+                                        <font color="#FFCC00" *ngIf="ticket.ticketStatus == 'assigned'">{{ ticket.ticketStatus | titlecase }}</font>
+
+                                        <font color="#6C757D" *ngIf="ticket.ticketStatus == 'closed'">
+                                            
+                                            <span>{{ ticket.ticketStatus | titlecase }}</span><br>
+
+                                            <!-- <small *ngIf="_.isEmpty(ticket?.feedbackDescription);" style="color: #B1B1B1; font-size: 11px;">
+
+                                            (Feedback is pending)
+
+                                            </small> -->
+                                        
+                                        </font>
+
+                                        <font color="#34C759" *ngIf="ticket.ticketStatus == 'resolved'">
+                                            
+                                            <span>{{ ticket.ticketStatus | titlecase }}</span><br>
+
+                                            <!-- <small *ngIf="_.isEmpty(ticket?.feedbackDescription);" style="color: #B1B1B1; font-size: 11px;">
+
+                                            (Feedback is pending)
+
+                                            </small> -->
+                                        
+                                        </font>
+                                        
+                                    </td>
+
+                                </tr>
+
+                            </ng-container>
+
+                            <ng-template #other>
+
+                                <tr>
+
+                                    <td colspan="10" style="text-align: center !important;">No Records Found</td>
+
+                                </tr>
+
+                            </ng-template>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Tickets Sumary -->
+        <div class="col-md-4">
+        
+            <div class="card border-0 shadow-sm">
+            
+                <div class="card-body py-4"  [formGroup]="filterForm">
+                
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+
+                        <div class="fw-semibold" style="border-left: 3px solid #D2A119; padding-left: 8px;">Tickets Sumary</div>
+
+                        <ng-select class="form-control w-auto" formControlName="ticketSummary" (change)="changeValue({ fieldName: 'ticketSummary' })" appendTo="body" [clearable]="false">
+
+                            <ng-option value="1week">1 Week</ng-option>
+
+                            <ng-option value="1month">1 Month</ng-option>
+
+                            <ng-option value="6month">6 Month</ng-option>
+
+                            <ng-option value="1year">1 Year</ng-option>
+
+                        </ng-select>
+
+                    </div>
+                    
+                    <div class="d-flex justify-content-center">
+                    
+                        <div class="mt-4" style="width: 400px; height: 375px;">
+                    
+                            <apx-chart
+                                *ngIf="ticketSymaryChartOption"
+                                [chart]="ticketSymaryChartOption.chart"
+                                [labels]="ticketSymaryChartOption.labels"
+                                [series]="ticketSymaryChartOption.series"
+                                [colors]="ticketSymaryChartOption.colors"
+                                [dataLabels]="ticketSymaryChartOption.dataLabels"
+                                [tooltip]="ticketSymaryChartOption.tooltip"
+                                [legend]="ticketSymaryChartOption.legend"
+                                [plotOptions]="ticketSymaryChartOption.plotOptions"
+                                [responsive]="ticketSymaryChartOption.responsive">
+                            </apx-chart>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Open Overview Expand -->
+<ng-template #openOverviewExpandModal let-modal>
+
+    <div class="modal-header">
+
+        <div class="d-flex justify-content-between align-items-center w-100" style="height: 40px;">
+
+            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Full Overview List :</h6>
+            
+            <i class="bi bi-x-lg pe-2 fw-bold" style="cursor: pointer;" (click)="modal.close()"></i>
+        
+        </div>
+
+    </div>
+
+    <div class="modal-body p-3">
+
+        <div class="table-responsive">
+
+        <table class="table table-borderless align-middle">
+
+            <thead class="bg-light text-secondary">
+
+                <tr style="font-size: 14px; font-weight: 500;">
+
+                    <th>Ticket Id</th>
+
+                    <th>Issue Category</th>
+
+                    <th style="width: 300px;">Unit</th>
+
+                    <th>Created Date</th>
+
+                    <th style="text-align: center !important; min-width: 210px !important;" class="th-action">Status</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <ng-container *ngIf="!_.isEmpty(masterList['ticketHistory']); else other">
+
+                    <tr *ngFor="let ticket of masterList['ticketHistory']" style="font-size: 14px; font-weight: 400;">
+
+                        <td>{{ ticket.ticketId }}</td>
+
+                        <td>{{ ticket.issueName }}</td>
+
+                        <td>{{ ticket.unitName }}</td>
+
+                        <td>{{ ticket.created_at | date: 'dd-MM-yyyy' }}</td>
+
+                        <td class="d-flex justify-content-center th-action">
+
+                            <font color="#FF9500" *ngIf="ticket.ticketStatus == 'Pending'">{{ ticket.ticketStatus | titlecase }}</font>
+
+                            <font color="#FFCC00" *ngIf="ticket.ticketStatus == 'assigned'">{{ ticket.ticketStatus | titlecase }}</font>
+
+                            <font color="#6C757D" *ngIf="ticket.ticketStatus == 'closed'">
+                                
+                                <span>{{ ticket.ticketStatus | titlecase }}</span><br>
+
+                                <!-- <small *ngIf="_.isEmpty(ticket?.feedbackDescription);" style="color: #B1B1B1; font-size: 11px;">
+
+                                (Feedback is pending)
+
+                                </small> -->
+                            
+                            </font>
+
+                            <font color="#34C759" *ngIf="ticket.ticketStatus == 'resolved'">
+                                
+                                <span>{{ ticket.ticketStatus | titlecase }}</span><br>
+
+                                <!-- <small *ngIf="_.isEmpty(ticket?.feedbackDescription);" style="color: #B1B1B1; font-size: 11px;">
+
+                                (Feedback is pending)
+
+                                </small> -->
+                            
+                            </font>
+                            
+                        </td>
+
+                    </tr>
+
+                </ng-container>
+
+                <ng-template #other>
+
+                    <tr *ngIf="_.isEmpty(masterList['overViewList'])">
+        
+                        <td colspan="4" style="text-align: center !important;">No Records Found</td>
+        
+                    </tr>
+
+                </ng-template>
+
+            </tbody>
+
+        </table>
+
+        </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+        <button class="btn btn-secondary" (click)="modal.close()">Close</button>
+
+    </div>
+
+</ng-template>

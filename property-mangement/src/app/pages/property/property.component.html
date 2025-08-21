@@ -1,0 +1,739 @@
+<div class="container-fluid">
+
+  <div class="d-flex justify-content-end mb-3">
+
+    <small><span class="text-primary">Property</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-dark">Property List</span></small>
+
+  </div>
+
+  <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+    <div class="card-header bg-white">
+
+      <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+
+        <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Property List</h6>
+        
+        <img src="images/download.png" style="width: 26px; height: auto; cursor: pointer;" alt="" (click)="xlDownload()">
+      
+      </div>
+          
+    </div>
+
+    <div class="card-body">
+
+      <div class="card rounded-0">
+
+        <div class="card-body rounded-0">
+
+          <div class="d-flex justify-content-between">
+
+            <div class="d-flex">
+
+              <div class="position-relative">
+
+                <img src="images/searchBlack.png" class="position-absolute search-icon" style="width: 25px;top: 6px;left: 8px;">
+                
+                <input type="text" class="form-control" placeholder="Search Property Name" style="background: transparent !important; border-radius: 8px !important; padding-left: 40px;" [(ngModel)]="searchValue" (change)="this.getPropertyList();">
+      
+              </div>
+
+              <div style="border: 1px solid #D8D8D8; cursor: pointer;" class="px-3 ms-2 d-flex align-items-center rounded-3" aria-controls="offcanvasRight" data-bs-target="#offcanvasRight" data-bs-toggle="offcanvas">
+
+                <img src="images/filterVapour.png" style="width: 18px;" alt=""><span class="ms-2">Filter</span>
+
+              </div>
+
+            </div>
+
+            <div>
+
+              <button class="btn btn-secondary" (click)="createProperty()">+ Add New</button>
+
+            </div>
+
+          </div>
+
+          <div class="mt-3">
+
+            <div class="table-responsive table-wrapper">
+
+              <!-- <table class="table table-borderless align-middle table-striped table-scroll"> -->
+
+              <table class="table table-borderless align-middle table-scroll">
+
+                <thead class="bg-light text-secondary">
+
+                  <tr>
+
+                    <th class="th-first-field">Property Name</th>
+
+                    <th style="width: 10%;">Image</th>
+
+                    <th style="width: 20%;">Type</th>
+
+                    <th style="width: 20%;">Address</th>
+
+                    <th style="width: 10%;">Total Units</th>
+
+                    <th style="width: 10%;">Occupied Units</th>
+
+                    <th style="width: 20%;">Managers</th>
+
+                    <th style="width: 20%;">Owners</th>
+
+                    <th style="width: 10%;" class="th-status">Status</th>
+
+                    <th style="width: 10%;" class="th-action">Action</th>
+
+                  </tr>
+
+                </thead>
+          
+                <tbody>
+
+                  <ng-container *ngIf="(_.size(this.permissions.viewPermission?.branchIds) > 0); else other">
+
+                    <ng-container *ngIf="!_.isEmpty(this.masterList['propertyList']) ;else other">
+
+                      <tr *ngFor="let property of masterList['propertyList']">
+
+                         <td class="td-first-field" [matTooltip]="property.propertyName || '-'" matTooltipPosition="above" matTooltipClass="custom-tooltip">
+
+                          <span>{{ (property.propertyName || '-').length > 20 ? (property.propertyName || '-').slice(0, 20) + '...' : (property.propertyName || '-') }}</span>
+
+                        </td>
+
+                        <td>
+
+                          <ng-container *ngIf="property.propertyImages?.length > 0; else empty">
+
+                            <img [src]="service.getFullImagePath({ imgUrl : property.propertyImages[0]?.path })" alt="Property Image" style="width: 43px;height: 28px; border-radius: 4%; object-fit: cover;"> {{ '' }}
+
+                          </ng-container>
+
+                          <ng-template #empty>
+
+                            {{ ' - ' }}
+                            
+                          </ng-template>
+
+                          <!-- <img [src]="service.getFullImagePath({ imgUrl : property.propertyImages[0] })" alt="Property Image" style="width: 40px; border-radius: 4%;"> -->
+
+                        </td>
+
+                        <td>
+
+                          <img src="images/icons/view_eye.svg" style="width: 26px; height: auto;" alt="" [matTooltip]="getTooltipList(property.propertyType, 'Property Type', 'propertyName')" matTooltipPosition="above" matTooltipClass="custom-tooltip"/>
+                          
+                          {{ property.propertyType[0]?.propertyName }} 
+
+                          <span *ngIf="property.propertyType?.length > 1">, <span class="text-primary">+{{ property.propertyType.length - 1 }}</span></span>
+
+                        </td>
+
+                        <td>
+
+                          <img *ngIf="property.addressLineOne" src="images/icons/view_eye.svg" style="width: 26px; height: auto;" alt="" 
+                          matTooltip="{{ property.addressLineOne + ', ' + property.addressLineTwo + ', ' + property.city + ', ' + property.state + ', ' + property.country?.name + ' - ' + property.pincode }}" matTooltipPosition="above" matTooltipClass="custom-tooltip"/>
+                          
+                          {{ property.addressLineOne.length > 20 ? (property.addressLineOne | slice:0:20) + '...' : property.addressLineOne }}
+                        
+                        </td>
+
+                        <td style="text-align: center !important;">{{ property.noOfUnits || 0 }}</td>
+
+                        <td style="text-align: center !important;">{{ property.occupiedUnits || 0 }}</td>
+
+                        <td>
+
+                          <img src="images/icons/view_eye.svg" style="width: 26px; height: auto;" alt="" [matTooltip]="getTooltipList(property.manager, 'Manager', 'firstName', 'lastName')" matTooltipPosition="above" matTooltipClass="custom-tooltip" />
+                          
+                          {{ property.manager[0]?.firstName }}
+                          
+                          <span *ngIf="property.manager?.length > 1">, <span class="text-primary">+{{ property.manager.length - 1 }}</span></span>
+
+                        </td>
+
+                        <td>
+
+                          <img src="images/icons/view_eye.svg" style="width: 26px; height: auto;" alt=""
+                          [matTooltip]="getTooltipList(property.owner, 'Owner', 'firstName', 'lastName')" matTooltipPosition="above" matTooltipClass="custom-tooltip" />
+                          
+                          {{ property.owner[0]?.firstName }} 
+
+                          <span *ngIf="property.owner?.length > 1">, <span class="text-primary">+{{ property.owner.length - 1 }}</span></span>
+
+                        </td>
+                          
+                        <td class="td-status">
+                      
+                          <font color="#34C759" *ngIf="property.is_active">Active</font>
+
+                          <font color="#C92E2E" *ngIf="!property.is_active">Inactive</font>
+                          
+                        </td>
+
+                        <td class="d-flex justify-content-center th-action" style="padding-left: 50px; text-align: center !important;">
+
+                          <div class="d-flex align-items-center">
+
+                            <nav class="navbar navbar-expand-lg navbar-light">
+                    
+                              <div class="navbar-collapse collapse show">
+                      
+                                <ul class="navbar-nav ml-auto navbar-list align-items-center">
+                    
+                                  <li class="nav-item nav-icon">
+                  
+                                    <a class="cursor-pointer" [matMenuTriggerFor]="profileMenu">
+            
+                                      <img src="images/icons/pepicons-pencil.svg" style="width: 26px; height: auto;" alt="">
+            
+                                    </a>
+            
+                                    <mat-menu class="header-mat-menu" #profileMenu="matMenu">
+            
+                                      <div class="btn-container">
+          
+                                        <div>
+        
+                                          <div class="action-buttons p-1" (click)="createProperty(property)">
+          
+                                            <p class="p-2 mb-0">Edit</p>
+    
+                                          </div>
+      
+                                          <div class="action-buttons p-1" (click)="deleteProperty(property)">
+          
+                                            <p class="p-2 mb-0">Delete</p>
+    
+                                          </div>
+
+                                          <div class="action-buttons p-1" (click)="inactiveProperty(property)">
+          
+                                            <p class="p-2 mb-0" *ngIf="property.is_active">Inactive</p>
+
+                                            <p class="p-2 mb-0" *ngIf="!property.is_active">Active</p>
+    
+                                          </div>
+          
+                                        </div>
+          
+                                      </div>
+            
+                                    </mat-menu>
+                  
+                                  </li>
+                    
+                                </ul>
+                      
+                              </div>
+                        
+                            </nav>
+
+                          </div>
+
+                          <!-- <img src="images/edit.png" alt="Edit" style="width: 18px;" class="me-2" (click)="createProperty(property)"> -->
+
+                          <!-- <img src="images/bin.png" alt="Delete" style="width: 18px;"> -->
+
+                        </td>
+
+                      </tr>
+
+                    </ng-container>
+
+                    <ng-template #other>
+
+                      <tr>
+
+                        <td colspan="10" style="text-align: center !important;">No Records Found</td>
+
+                      </tr>
+
+                    </ng-template>
+
+                  </ng-container>
+
+                  <ng-template #other>
+
+                    <tr>
+
+                      <td colspan="10" style="text-align: center !important;"><img style="width: 16px !important;" class="me-2" src="images/lock2.png" alt="">Access Denied</td>
+
+                    </tr>
+
+                  </ng-template>
+
+                </tbody>
+
+              </table>
+              
+            </div>
+
+              <div *ngIf="totalCount > 0">
+
+              <mat-paginator 
+                class="custom-paginator"
+                appendTo="body"
+                [length]="totalCount"
+                [pageSize]="pageSize"
+                [pageIndex]="pageIndex"
+                [pageSizeOptions]="[5, 10, 25, 50]"
+                (page)="onPageChange($event)">
+              </mat-paginator>
+
+            </div>
+
+          </div>
+
+        </div>
+          
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Filter Offcanvas -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" style="margin-top: 84px; background-color: #F6F9FC;">
+  
+  <div class="offcanvas-header border-bottom">
+      
+    <h5 class="offcanvas-title" id="offcanvasRightLabel">Filter</h5>
+    
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  
+  </div>
+
+  <div class="offcanvas-body ps-4 pe-4">
+  
+    <form [formGroup]="filterForm">
+
+      <!-- Accordion: Property Type -->
+      <div class="accordion mt-2" id="accordionPropertyType">
+  
+        <div class="accordion-item border-0 p-2">
+
+          <h2 class="accordion-header" id="headingPropertyType">
+
+            <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePropertyType" aria-expanded="true" aria-controls="collapsePropertyType" style="background-color: transparent;">Property Type</button>
+  
+          </h2>
+  
+          <div id="collapsePropertyType" class="accordion-collapse collapse" aria-labelledby="headingPropertyType" data-bs-parent="#accordionPropertyType">
+              
+            <div class="accordion-body w-100 p-0 mt-3">
+
+              <ng-select class="form-control" [items]="masterList['propertyTypeList']" bindLabel="owner" bindValue="_id" formControlName="propertyType" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" placeholder="Select Property type">
+
+                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                  <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                      
+                    <div class="d-flex">
+
+                      <span class="ng-value-label ellipsis ms-1">
+
+                        <span>{{ _.get(item,'propertyName') }}</span> 
+
+                      </span>
+
+                      <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                      <span style="width: 1px; height: 20px; background-color: black;"></span>
+                        
+                    </div>
+
+                  </div>
+
+                  <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                    <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                  </div>
+
+                </ng-template>   
+
+                <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                  <div class="form-check d-flex align-items-center"> 
+                      
+                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected('propertyType', item._id)"/>
+
+                    <label class="form-check-label mt-1">{{ item?.propertyName }}</label>
+
+                  </div>
+                      
+                </ng-template>
+            
+              </ng-select>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Accordion: Total Units -->
+      <div class="accordion mt-2" id="accordioTotalUnit">
+        
+        <div class="accordion-item border-0 p-2 rounded shadow-sm bg-white">
+        
+          <h2 class="accordion-header" id="headingTotalUnit">
+        
+            <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTotalUnit" aria-expanded="true" aria-controls="collapseTotalUnit" style="background-color: transparent">Total Units</button>
+        
+          </h2>
+
+          <div id="collapseTotalUnit" class="accordion-collapse collapse" aria-labelledby="headingTotalUnit" data-bs-parent="#accordioTotalUnit">
+
+            <div class="accordion-body w-100 p-0 mt-3">
+            
+              <!-- Dual Range Slider -->
+              <div class="range-slider-container p-3 rounded">
+
+                <!-- Sliders -->
+                <div class="range-slider">
+                
+                  <input type="range" [(ngModel)]="unitMinValue" [ngModelOptions]="{standalone: true}" [min]="unitSliderMin" [max]="unitSliderMax" [step]="1" (input)="onTotalUnitSliderChange()" />
+                
+                  <input type="range" [(ngModel)]="unitMaxValue" [ngModelOptions]="{standalone: true}" [min]="unitSliderMin" [max]="unitSliderMax" [step]="1" (input)="onTotalUnitSliderChange()" />
+                
+                </div>
+                
+                <!-- Inputs -->
+                <div class="amount-inputs d-flex justify-content-between mt-3">
+                  
+                  <div class="input-group">
+                    
+                    <input type="number" class="form-control text-center border-0" [(ngModel)]="unitMinValue" [ngModelOptions]="{standalone: true}" [min]="unitSliderMin" [max]="unitMaxValue" (input)="onTotalUnitSliderChange()" />
+                
+                  </div>
+                  
+                  <span class="mx-3 mt-2 fw-bold">—</span>
+                  
+                  <div class="input-group">
+                  
+                    <input type="number" class="form-control text-center border-0" [(ngModel)]="unitMaxValue" [ngModelOptions]="{standalone: true}" [min]="unitMinValue" [max]="unitSliderMax" (input)="onTotalUnitSliderChange()" />
+                  
+                  </div>
+                  
+                </div>
+                
+              </div>
+
+            </div>
+
+          </div>
+        
+        </div>
+      
+      </div>
+
+      <!-- Accordion: Occupied Units -->
+      <div class="accordion mt-2" id="accordioOccupiedUnit">
+
+        <div class="accordion-item border-0 p-2 rounded shadow-sm bg-white">
+
+          <h2 class="accordion-header" id="headingOccupiedUnit">
+
+            <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseoccupiedUnit" aria-expanded="true" aria-controls="collapseoccupiedUnit" style="background-color: transparent">
+
+              Occupied Units
+
+            </button>
+
+          </h2>
+    
+          <div id="collapseoccupiedUnit" class="accordion-collapse collapse" aria-labelledby="headingOccupiedUnit" data-bs-parent="#accordioOccupiedUnit">
+              
+            <div class="accordion-body w-100 p-0 mt-3">
+
+              <!-- Dual Range Slider -->
+              <div class="range-slider-container p-3 rounded">
+
+                <!-- Sliders -->
+                <div class="range-slider">
+
+                  <input type="range" [(ngModel)]="unitOccupiedMinValue" [ngModelOptions]="{standalone: true}" [min]="occupiedUnitSliderMin" [max]="occupiedUnitSliderMax" [step]="1" (input)="onOccupiedUnitSliderChange()"/>
+
+                  <input type="range" [(ngModel)]="unitOccupiedMaxValue" [ngModelOptions]="{standalone: true}" [min]="occupiedUnitSliderMin" [max]="occupiedUnitSliderMax" [step]="1" (input)="onOccupiedUnitSliderChange()"/>
+
+                </div>
+    
+                <!-- Inputs -->
+                <div class="amount-inputs d-flex justify-content-between mt-3">
+
+                  <div class="input-group">
+
+                    <input type="number" class="form-control text-center border-0" [(ngModel)]="unitOccupiedMinValue" [ngModelOptions]="{standalone: true}" [min]="occupiedUnitSliderMin" [max]="unitOccupiedMaxValue" (input)="onOccupiedUnitSliderChange()"/>
+
+                  </div>
+      
+                  <span class="mx-3 mt-2 fw-bold ">—</span>
+      
+                  <div class="input-group">
+
+                    <input type="number" class="form-control text-center border-0" [(ngModel)]="unitOccupiedMaxValue" [ngModelOptions]="{standalone: true}" [min]="unitOccupiedMinValue" [max]="occupiedUnitSliderMax" (input)="onOccupiedUnitSliderChange()"/>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+      
+          </div>
+        
+        </div>
+          
+      </div>
+
+      <!-- Accordion: Owner -->
+      <div class="accordion mt-2" id="accordionOwner">
+  
+        <div class="accordion-item border-0 p-2">
+
+          <h2 class="accordion-header" id="headingOwner">
+
+            <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOwner" aria-expanded="true" aria-controls="collapseOwner" style="background-color: transparent;">Owner</button>
+  
+          </h2>
+  
+          <div id="collapseOwner" class="accordion-collapse collapse" aria-labelledby="headingOwner" data-bs-parent="#accordionOwner">
+              
+            <div class="accordion-body w-100 p-0 mt-3">
+
+              <ng-select class="form-control" [items]="masterList['ownerList']" bindLabel="owner" bindValue="_id" formControlName="owner" placeholder="Select Owner" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true">
+
+                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                  <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                      
+                    <div class="d-flex">
+
+                      <span class="ng-value-label ellipsis ms-1">
+
+                        <span>{{ _.get(item,'firstName') + ' ' + _.get(item,'lastName') }}</span> 
+
+                      </span>
+
+                      <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                      <span style="width: 1px; height: 20px; background-color: black;"></span>
+                        
+                    </div>
+
+                  </div>
+
+                  <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                    <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                  </div>
+
+                </ng-template>   
+
+                <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                  <div class="form-check d-flex align-items-center"> 
+                      
+                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected('owner', item._id)"/>
+
+                    <span>{{ item?.firstName + ' ' + item?.lastName }}</span> 
+
+                  </div>
+                    
+                </ng-template>
+            
+              </ng-select>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Accordion: Manager -->
+      <div class="accordion mt-2" id="accordionManager">
+  
+        <div class="accordion-item border-0 p-2">
+
+          <h2 class="accordion-header" id="headingManager">
+
+            <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseManager" aria-expanded="true" aria-controls="collapseManager" style="background-color: transparent;">Manager</button>
+  
+          </h2>
+  
+          <div id="collapseManager" class="accordion-collapse collapse" aria-labelledby="headingManager" data-bs-parent="#accordionManager">
+              
+            <div class="accordion-body w-100 p-0 mt-3">
+
+              <ng-select class="form-control" [items]="masterList['managerList']" bindLabel="owner" bindValue="_id" formControlName="manager" placeholder="Select Manager" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true">
+
+                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                  <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                      
+                    <div class="d-flex">
+
+                      <span class="ng-value-label ellipsis ms-1">
+
+                        <span>{{ _.get(item,'firstName') + ' ' + _.get(item,'lastName') }}</span> 
+
+                      </span>
+
+                      <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                      <span style="width: 1px; height: 20px; background-color: black;"></span>
+                        
+                    </div>
+
+                  </div>
+
+                  <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                    <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                  </div>
+
+                </ng-template>   
+
+                <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                  <div class="form-check d-flex align-items-center"> 
+                      
+                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected('manager', item._id)"/>
+
+                    <span>{{ item?.firstName + ' ' + item?.lastName }}</span> 
+
+                  </div>
+                      
+                </ng-template>
+            
+              </ng-select>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+          
+      <!-- Accordian: Status -->
+      <!-- <div class="accordion mt-2" id="accordionStatus">
+
+        <div class="accordion-item border-0 p-2">
+
+          <h2 class="accordion-header" id="headingStatus">
+
+            <button class="accordion-button p-2 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="true" aria-controls="collapseStatus" style="background-color: transparent;">Status</button>
+  
+          </h2>
+    
+          <div id="collapseStatus" class="accordion-collapse collapse" aria-labelledby="headingStatus" data-bs-parent="#accordionStatus">
+              
+            <div class="accordion-body w-100 p-0 mt-3">
+            
+              <div class="d-flex align-items-center mt-3">
+
+                <div class="form-check">
+
+                  <input class="form-check-input me-3 custom-checkbox" type="checkbox" id="active" [(ngModel)]="active" [ngModelOptions]="{standalone: true}" name="active">
+                
+                </div>
+
+                <h6 class="mb-0">Active</h6>
+                
+              </div>
+
+              <div class="d-flex align-items-center mt-2">
+
+                <div class="form-check">
+
+                  <input class="form-check-input me-3 custom-checkbox" type="checkbox" id="inactive" [(ngModel)]="inactive" [ngModelOptions]="{standalone: true}" name="inactive">
+                
+                </div>
+
+                <h6 class="mb-0">Inactive</h6>
+                
+              </div>
+
+              <div class="d-flex align-items-center mt-2">
+
+                <div class="form-check">
+
+                  <input class="form-check-input me-3 custom-checkbox" type="checkbox" id="all" [(ngModel)]="all" [ngModelOptions]="{standalone: true}" name="all">
+                
+                </div>
+
+                <h6 class="mb-0">All</h6>
+                
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div> -->
+
+      <!-- Accordion: Status -->
+      <div class="accordion mt-2" id="accordionStatus">
+
+        <div class="accordion-item border-0 p-2">
+        
+          <h2 class="accordion-header" id="headingStatus">
+        
+            <button class="accordion-button p-2 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="true" aria-controls="collapseStatus" style="background-color: transparent;">Status</button>
+
+          </h2>
+
+          <div id="collapseStatus" class="accordion-collapse collapse" aria-labelledby="headingStatus" data-bs-parent="#accordionStatus">
+
+            <div class="accordion-body w-100 p-0 mt-3">
+
+              <div class="d-flex align-items-center mt-3" *ngFor="let status of statusOptions">
+
+                <div class="form-check">
+                
+                  <input class="form-check-input me-3 custom-checkbox" type="checkbox" [value]="status.value" (change)="checkboxFilterChange({ event: $event, fieldName: 'status', isAll: status.label == 'All' })" [(ngModel)]="status.checked" [ngModelOptions]="{ standalone: true }">
+
+                </div>
+
+                <h6 class="mb-0">{{ status.label }}</h6>
+              
+              </div>
+
+            </div>
+
+          </div>
+        
+        </div>
+      
+      </div>
+
+    </form>
+
+  </div>
+
+  <div class="offcanvas-footer d-flex justify-content-end border-bottom border-top p-3">
+    
+    <button class="btn btn-sm btn-outline-secondary me-3" data-bs-dismiss="offcanvas">Close</button>
+
+    <button class="btn btn-sm btn-secondary" (click)="getPropertyList()" data-bs-dismiss="offcanvas">Apply</button>
+  
+  </div>
+
+</div>

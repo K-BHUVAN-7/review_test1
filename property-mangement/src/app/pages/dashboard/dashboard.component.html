@@ -1,0 +1,29 @@
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between mb-3 ms-3" *ngIf="userDetails?.userType == 'admin'">
+
+        <div>
+
+            <button class="btn btn-sm btn-white me-2" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="selectedDashboard = 'owner'">Owner Dashboard</button>
+        
+            <button class="btn btn-sm btn-white me-2" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="selectedDashboard = 'manager'">Manager Dashboard</button>
+            
+            <button class="btn btn-sm btn-white me-2" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="selectedDashboard = 'staff'">Staff Dashboard</button>
+
+            <button class="btn btn-sm btn-white me-2" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="selectedDashboard = 'tenant'">Tenant Dashboard</button>
+        
+        </div>
+
+        <div></div>
+
+    </div>
+
+    <app-owner-dashboard *ngIf="selectedDashboard == 'owner'"></app-owner-dashboard>
+    
+    <app-manager-dashboard *ngIf="selectedDashboard == 'manager'"></app-manager-dashboard>
+    
+    <app-staff-dashboard *ngIf="selectedDashboard == 'staff'"></app-staff-dashboard>
+    
+    <app-tenant-dashboard *ngIf="selectedDashboard == 'tenant'"></app-tenant-dashboard>
+    
+</div>

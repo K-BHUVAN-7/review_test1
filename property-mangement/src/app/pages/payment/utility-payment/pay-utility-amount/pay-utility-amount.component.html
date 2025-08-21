@@ -1,0 +1,319 @@
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h5 class="text-dark"></h5>
+
+        <small><span class="text-primary">Utility</span><img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-primary" style="cursor: pointer;" (click)=" this.service.navigate({ 'url': 'app/payment/utility' })">Utility List</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-dark">Pay Utility Amount</span></small>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-8">
+
+            <form  *ngIf="!_.isEmpty(utilityPaymentForm.value)" [formGroup]="utilityPaymentForm"  class="horizontal-form-fields">
+    
+                <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+    
+                    <div class="card-header bg-white">
+        
+                        <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+          
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Pay Utility Amount :</h6>
+                          
+                        </div>
+                          
+                    </div>
+    
+                    <div class="card-body">
+    
+                        <div class="row">
+
+                            <ng-container>
+                                                              
+                                <div class="col-md-3">
+    
+                                    <div class="form-group mb-3">
+
+                                        <label for="property" class="mb-2">Property Name</label>
+
+                                        <input type="text" class="form-control" id="property" formControlName="property" readonly [value]="!_.isEmpty(editData.property) ? editData.property?.propertyName : ''" placeholder="Select Property">
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-3">
+    
+                                    <div class="form-group mb-3">
+
+                                        <label for="unit" class="mb-2">Unit</label>
+
+                                        <input type="text" class="form-control" id="unit" formControlName="unit" readonly [value]="!_.isEmpty(editData.unit) ? editData.unit?.unitName : ''" placeholder="Select Unit">
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-3">
+    
+                                    <div class="form-group mb-3">
+
+                                        <label for="utility" class="mb-2">Utility Name</label>
+
+                                        <input type="text" class="form-control" id="utility" formControlName="utility" readonly [value]="!_.isEmpty(editData.utility) ? editData.utility?.utilityName : ''" placeholder="Select Utility">
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-3">
+    
+                                    <div class="form-group mb-3">
+
+                                        <label for="dueDate" class="mb-2">Due Date</label>
+
+                                        <input type="text" class="form-control" id="dueDate" formControlName="dueDate" readonly [value]="!_.isEmpty(editData?.dueDate) ? ( this.editData?.dueDate | date: 'dd-MM-yyyy') : ''" placeholder="Select Date">
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-3">
+
+                                    <div class="form-group mb-3">
+
+                                        <label for="invoiceNo" class="mb-2">Invoice Number</label>
+
+                                        <input type="text" class="form-control" id="invoiceNo" formControlName="invoiceNo" readonly placeholder="Enter Invoice No">
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-3">
+
+                                    <div class="form-group mb-3">
+                                    
+                                        <label for="paymentDate" class="mb-2">Payment Date</label>
+                                
+                                        <div class="input-group">
+                                        
+                                            <input type="text" class="form-control" id="paymentDate" autocomplete="off" formControlName="paymentDate"[matDatepicker]="picker1" [ngClass]="{ 'is-invalid': formSubmitted && f.paymentDate.errors }" placeholder="Select Payment Date"/>
+                                    
+                                            <mat-datepicker-toggle matSuffix [for]="picker1" class="input-group-text border" style="border-radius: 0px 5px 5px 0px !important; height: 38px">
+
+                                                <ng-container matDatepickerToggleIcon>
+                                                    
+                                                    <i class="bi bi-calendar4-week fs-5 text-center"></i>
+                                                
+                                                </ng-container>
+                                                
+                                            </mat-datepicker-toggle>
+                                    
+                                            <mat-datepicker #picker1></mat-datepicker>
+
+                                            <div *ngIf="(f.paymentDate?.touched || formSubmitted) && f.paymentDate.errors" class="invalid-feedback">
+            
+                                                <div *ngIf="f.paymentDate.errors.required">Payment Date is required</div>
+                        
+                                            </div>
+
+                                        </div>
+                                        
+                                    </div>
+                                
+                                </div>
+
+                                <div class="col-md-3">
+
+                                    <div class="form-group mb-3">
+
+                                        <label for="amountDue" class="mb-2">Utility Amount</label>
+
+                                        <input type="text" class="form-control" id="amountDue" numbersOnly formControlName="amountDue" placeholder="Enter Amount Due" readonly>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-3">
+
+                                    <div class="form-group mb-3">
+
+                                        <label for="amountPaid" class="mb-2">Paid Amount</label>
+
+                                        <input type="text" class="form-control" id="amountPaid" numbersOnly formControlName="amountPaid" placeholder="Enter Paid Amount" [ngClass]="{ 'is-invalid': (f.amountPaid?.touched || formSubmitted) && f.amountPaid.errors }">
+
+                                        <div *ngIf="(f.amountPaid?.touched || formSubmitted) && f.amountPaid.errors" class="invalid-feedback">
+            
+                                            <div *ngIf="f.amountPaid.errors.required">Paid Amount is required</div>
+
+                                            <div *ngIf="f.amountPaid.errors.amountExceedsDue">Exceeds due amount</div>
+                    
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-3">
+        
+                                    <div class="form-group mb-3">
+
+                                        <label for="paymentMode" class="mb-2">Payment Mode</label>
+
+                                        <ng-select name="paymentMode" id="paymentMode" class="form-control" formControlName="paymentMode" [ngClass]="{ 'is-invalid': (f.paymentMode?.touched || formSubmitted) && f.paymentMode.errors }" appendTo="body" [clearable]="false" placeholder="Select Payment Date">
+
+                                            <ng-option *ngFor="let paymentMode of paymentModeList" [value]="paymentMode?.value">{{ paymentMode.label }}</ng-option>
+
+                                        </ng-select>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-3" *ngIf="this.utilityPaymentForm?.get('paymentMode')?.value != 'cash'">
+
+                                    <div class="form-group required mb-3">
+
+                                        <label for="transactionId" class="mb-2">Transaction Id</label>
+
+                                        <input type="text" class="form-control" id="transactionId" formControlName="transactionId" placeholder="Enter Transaction Id" [ngClass]="{ 'is-invalid': (f.transactionId?.touched || formSubmitted) && f.transactionId.errors }">
+
+                                        <div *ngIf="(f.transactionId?.touched || formSubmitted) && f.transactionId.errors" class="invalid-feedback">
+            
+                                            <div *ngIf="f.transactionId.errors.required">Transaction Id is required</div>
+                    
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-3" *ngIf="this.utilityPaymentForm?.get('paymentMode')?.value == 'netBanking'">
+
+                                    <div class="form-group required mb-3" >
+
+                                        <label for="accountNo" class="mb-2">Account Number</label>
+
+                                        <input type="text" class="form-control" id="accountNo" formControlName="accountNo" placeholder="Enter Account No" [ngClass]="{ 'is-invalid': (f.accountNo?.touched || formSubmitted) && f.accountNo.errors }">
+
+                                        <div *ngIf="(f.accountNo?.touched || formSubmitted) && f.accountNo.errors" class="invalid-feedback">
+            
+                                            <div *ngIf="f.accountNo.errors.required">Account Number is required</div>
+                    
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-3" *ngIf="this.utilityPaymentForm?.get('paymentMode')?.value == 'cheque'">
+
+                                    <div class="form-group required mb-3" >
+
+                                        <label for="refNo" class="mb-2">Reference Number</label>
+
+                                        <input type="text" class="form-control" id="refNo" formControlName="refNo" placeholder="Enter Ref No" [ngClass]="{ 'is-invalid': (f.refNo?.touched || formSubmitted) && f.refNo.errors }">
+
+                                        <div *ngIf="(f.refNo?.touched || formSubmitted) && f.refNo.errors" class="invalid-feedback">
+            
+                                            <div *ngIf="f.refNo.errors.required">Reference Number is required</div>
+                    
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-3" *ngIf="this.utilityPaymentForm?.get('paymentMode')?.value != 'cash' && this.utilityPaymentForm?.get('paymentMode')?.value != 'upi'">
+            
+                                    <div class="form-group required mb-3">
+        
+                                        <label for="bank" class="mb-2">Bank</label>
+        
+                                        <input type="text" class="form-control" id="bank" formControlName="bank" placeholder="Enter Bank" [ngClass]="{ 'is-invalid': (f.bank?.touched || formSubmitted) && f.bank.errors }">
+        
+                                        <div *ngIf="(f.bank?.touched || formSubmitted) && f.bank.errors" class="invalid-feedback">
+            
+                                            <div *ngIf="f.bank.errors.required">Bank is required</div>
+                    
+                                        </div>
+        
+                                    </div>
+        
+                                </div>
+
+                                <div class="col-md-3">
+        
+                                    <div class="form-group required mb-3" *ngIf="this.utilityPaymentForm?.get('paymentMode')?.value != 'cash' && this.utilityPaymentForm?.get('paymentMode')?.value != 'upi'">
+        
+                                        <label for="branch" class="mb-2">Branch</label>
+        
+                                        <input type="text" class="form-control" id="branch" formControlName="branch" placeholder="Enter Branch" [ngClass]="{ 'is-invalid': (f.branch?.touched || formSubmitted) && f.branch.errors }">
+        
+                                        <div *ngIf="(f.branch?.touched || formSubmitted) && f.branch.errors" class="invalid-feedback">
+            
+                                            <div *ngIf="f.branch.errors.required">branch is required</div>
+                    
+                                        </div>
+        
+                                    </div>
+        
+                                </div>
+
+                                <div class="col-md-3" *ngIf="this.utilityPaymentForm?.get('paymentMode')?.value == 'cheque'">
+        
+                                    <div class="form-group required mb-3">
+        
+                                        <label for="chequeNo" class="mb-2">Cheque No</label>
+        
+                                        <input type="text" class="form-control" id="chequeNo" formControlName="chequeNo" placeholder="Enter Cheque No" [ngClass]="{ 'is-invalid': (f.chequeNo?.touched || formSubmitted) && f.chequeNo.errors }">
+        
+                                        <div *ngIf="(f.chequeNo?.touched || formSubmitted) && f.chequeNo.errors" class="invalid-feedback">
+            
+                                            <div *ngIf="f.chequeNo.errors.required">Cheque No is required</div>
+                    
+                                        </div>
+        
+                                    </div>
+        
+                                </div>
+
+                                <div class="col-md-12">
+
+                                    <div class="form-group mb-3">
+
+                                        <label for="otherDetails" class="mb-2">Other Details</label>
+                                    
+                                        <textarea class="form-control" id="otherDetails" formControlName="otherDetails" rows="3" [ngClass]="{ 'is-invalid': (f.otherDetails?.touched || formSubmitted) && f.otherDetails.errors }" placeholder="Enter Other Details...."></textarea>
+                                  
+                                    </div>
+
+                                </div>
+
+                            </ng-container>
+
+                        </div>
+    
+                    </div>
+    
+                </div>
+    
+            </form>
+
+            <div class="d-flex justify-content-end mt-3 mb-3">
+
+                <button class="btn btn-outline-secondary mt-3 ms-2" (click)=" this.service.navigate({ 'url': 'app/payment/utility' })">Discard</button>
+
+                <button class="btn btn-secondary mt-3 mx-2" (click)="submitPayment()">Save</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

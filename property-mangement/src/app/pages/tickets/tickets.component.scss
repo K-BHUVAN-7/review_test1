@@ -1,0 +1,55 @@
+// .table-wrapper {
+//     overflow-x: auto;
+//     width: 100%;
+//   }
+  
+//   .table-scroll {
+//     min-width: 1200px;
+//     border-collapse: separate;
+//     border-spacing: 0;
+//   }
+  
+//   .table-scroll th,
+//   .table-scroll td {
+//     white-space: nowrap;
+//     vertical-align: middle;
+//     padding: 1rem;
+//     background: #fff;
+//   }
+  
+//   /* Sticky first column (Ticket Id) */
+//   .th-first-field, .td-first-field {
+//     position: sticky;
+//     left: 0;
+//     background: #F8F8F8;
+//     z-index: 3; /* Higher for first column */
+//     min-width: 160px;
+//   }
+  
+//   /* Sticky second column (Issue Categories) */
+//   .th-secound-field, .td-secound-filed {
+//     position: sticky;
+//     left: 160px; /* width of Ticket Id column */
+//     background: #F8F8F8;
+//     z-index: 2;
+//     min-width: 180px;
+//   }
+  
+//   /* Sticky Status column */
+//   .th-status, .td-status {
+//     position: sticky;
+//     right: 120px; /* width of Action column */
+//     background: #F8F8F8;
+//     z-index: 2;
+//     min-width: 120px;
+//   }
+  
+//   /* Sticky Action column (last column) */
+//   .th-action, .td-action {
+//     position: sticky;
+//     right: 0;
+//     background: #F8F8F8;
+//     z-index: 3;
+//     min-width: 120px;
+//   }
+  
