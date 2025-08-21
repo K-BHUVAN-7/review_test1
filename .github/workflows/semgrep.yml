@@ -1,27 +1,24 @@
-name: Semgrep Scan
+name: Semgrep PR Bot
 
 on:
-  pull_request:   # Run on every PR
-  push:           # (optional) Also run on push to branches
-    branches:
-      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   semgrep:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Run Semgrep
+        uses: returntocorp/semgrep-action@v1
         with:
-          python-version: '3.11'
+          config: p/ci
+          json: results.json
 
-      - name: Install Semgrep
-        run: pip install semgrep
-
-      - name: Run Semgrep scan
-        run: semgrep --config rules.yaml --error
-        # --error makes the workflow FAIL if any violations are found
+      - name: Upload Semgrep Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-results
+          path: results.json
