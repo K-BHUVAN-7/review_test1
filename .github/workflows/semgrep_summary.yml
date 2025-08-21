@@ -29,16 +29,18 @@ jobs:
           python -m pip install --upgrade pip
           pip install semgrep google-generativeai requests
 
-      # This step will now FAIL the job if violations are found.
+      # This step will now FAIL but allow the workflow to continue.
       - name: Run Semgrep and Fail on Findings
+        id: semgrep # Assign an ID to this step to check its outcome later
+        continue-on-error: true # This is the crucial change
         run: |
           semgrep ci \
             --config "rules.yaml" \
             --json > semgrep_results.json
 
-      # This step will ONLY run if the previous step succeeds (i.e., no findings).
-      - name: Summarize and Comment
-        if: always() # This ensures the comment is posted even if the previous step fails
+      # This step ONLY runs if the 'semgrep' step above failed.
+      - name: Summarize and Comment on Failure
+        if: steps.semgrep.outcome == 'failure'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
