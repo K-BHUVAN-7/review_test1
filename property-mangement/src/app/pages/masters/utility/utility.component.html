@@ -1,0 +1,278 @@
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-end mb-3">
+  
+        <small><span class="text-primary">Utility</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-dark">Utility List</span></small>
+  
+    </div>
+
+    <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+        <div class="card-header bg-white">
+
+            <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+
+                <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Utility List</h6>
+                
+                <img src="images/download.png" style="width: 26px; height: auto; cursor: pointer;" alt="" (click)="xlDownload()">
+              
+            </div>
+              
+        </div>
+
+        <div class="card-body">
+
+            <div class="card rounded-0">
+
+                <div class="card-body rounded-0">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div class="d-flex">
+
+                            <div class="position-relative">
+
+                                <img src="images/searchBlack.png" class="position-absolute search-icon" style="width: 25px;top: 6px;left: 8px;">
+                                
+                                <input type="text" class="form-control" placeholder="Search Utility Name" style="background: transparent !important; border-radius: 8px !important; padding-left: 40px;" [(ngModel)]="searchValue" (change)="this.getUtilityList();">
+
+                    
+                            </div>
+
+                            <!-- <div style="border: 1px solid #D8D8D8;" class="px-3 ms-2 d-flex align-items-center rounded-3">
+
+                                <img src="images/filterVapour.png" style="width: 18px;" alt=""><span class="ms-2">Filter</span>
+
+                            </div> -->
+
+                        </div>
+
+                        <div>
+
+                            <button class="btn btn-secondary" (click)="openModal()">+ Add New</button>
+
+                        </div>
+
+                    </div>
+
+                    <div class="mt-3">
+
+                        <div class="table-responsive table-wrapper">
+
+                            <table class="table table-borderless align-middle">
+
+                                <thead class="bg-light text-secondary">
+
+                                    <tr>
+
+                                        <th>S.no</th>
+
+                                        <th>Utility Name</th>
+
+                                        <th>Utility Amount Type</th>
+
+                                        <th style="width: 20%;">Paid By</th>
+
+                                        <th>Default Amount</th>
+
+                                        <th>Action</th>
+
+                                    </tr>
+
+                                </thead>
+                            
+                                <tbody>
+
+                                    <ng-container *ngIf="(_.size(this.permissions.viewPermission.branchIds) > 0); else others">
+
+                                        <ng-container *ngIf="!_.isEmpty(masterList['utilityList']); else other"> 
+        
+                                            <tr *ngFor="let utility of masterList['utilityList']; let i = index ">
+            
+                                                <td>{{ (pageIndex * pageSize) + i + 1 | number: '2.0-0' }}</td>
+                
+                                                <td>{{ utility?.utilityName | titlecase }}</td>
+                                                
+                                                <td>{{ utility.utilityAmtType | titlecase }}</td>
+
+                                                <td>{{ utility.paidBy | titlecase }}</td>
+                                                
+                                                <td><span *ngIf="utility.defaultAmt"></span>{{ this.service.currencyCode?.currencyCode }}. {{ utility.defaultAmt || '0' }}</td>
+                
+                                                <td>
+                                                    
+                                                    <img src="images/bin.png" alt="Delete" (click)="deletePropertyType(utility)" style="width: 18px; cursor: pointer;" class="me-2">
+                                                    
+                                                    <img src="images/edit.png" alt="Edit" (click)="openModal(utility)" style="width: 18px; cursor: pointer;">
+                
+                                                </td>
+            
+                                            </tr>
+        
+                                        </ng-container>
+        
+                                        <ng-template #other>
+        
+                                            <tr>
+        
+                                                <td colspan="6" style="text-align: center !important;">No Records Found</td>
+        
+                                            </tr>
+        
+                                        </ng-template>
+
+                                    </ng-container>
+
+                                    <ng-template #others>
+
+                                        <tr>
+
+                                            <td colspan="6" style="text-align: center !important;"><img style="width: 16px !important;" class="me-2" src="images/lock2.png" alt="">Access Denied </td>
+
+                                        </tr>
+
+                                    </ng-template>
+                                    
+                                </tbody>
+
+                            </table>
+
+                            <div *ngIf="totalCount > 0">
+                            
+                                <mat-paginator
+                                    class="custom-paginator"
+                                    [length]="totalCount"
+                                    [pageSize]="pageSize"
+                                    [pageIndex]="pageIndex"
+                                    [pageSizeOptions]="[5, 10, 25, 50]"
+                                    (page)="onPageChange($event)">
+                                </mat-paginator>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Utilitty Modal -->
+<modal #utilityModal title="{{mode == 'Create' ? 'Add' : 'Update'}} Utility" [saveBtnTxt]="mode == 'Create' ? 'Save' : 'Update'" size="lg" (onSubmit)="submit()">
+
+    <form *ngIf="!_.isEmpty(utilityForm.value)" [formGroup]="utilityForm" class="horizontal-form-fields">
+
+        <div class="container-fluid">
+
+            <div class="row g-3">
+
+                <div class="col-md-6 form-group required">
+
+                    <label for="utilityName" class="form-label">Utility Name</label>
+
+                    <input type="text" class="form-control" id="utilityName" formControlName="utilityName" placeholder="Enter Utility Name" autocomplete="off" [ngClass]="{ 'is-invalid': (formSubmitted) && f.utilityName.errors }"/>
+
+                    <div *ngIf="(formSubmitted) && f.utilityName.errors" class="invalid-feedback">
+
+                        <div *ngIf="f.utilityName.errors.required">Utility Name is required</div>
+
+                    </div>
+
+                </div>  
+
+                <div class="col-md-6 form-group">
+
+                    <label for="defaultAmt" class="form-label">Default Amount</label>
+
+                    <input type="text" class="form-control" id="defaultAmt" formControlName="defaultAmt" autocomplete="off" [ngClass]="{ 'is-invalid': (formSubmitted) && f.defaultAmt.errors }"   decimalNumbersOnly [decimalPlaces]="4"/>
+
+                    <div *ngIf="(formSubmitted) && f.defaultAmt.errors" class="invalid-feedback">
+
+                        <div *ngIf="f.defaultAmt.errors.required">ID Proof Name is required</div>
+
+                    </div>
+
+                </div>  
+
+                <ng-container>
+
+                    <div class="row mt-3">
+    
+                        <div class="col-md-3">
+    
+                            <span>Utility Amount Type</span>
+    
+                        </div>
+    
+                        <div class="col-md-1">
+    
+                            <span>:</span>
+    
+                        </div>
+    
+                        <div class="col-md-2 d-flex">
+    
+                            <span>Fixed</span>
+    
+                            <div class="form-check form-switch" style="margin-left: 30px; margin-right: 16px;">
+    
+                                <input class="form-check-input custom-switch-color" type="checkbox" role="switch" formControlName="utilityAmtType" id="flexSwitchCheckChecked" checked>
+    
+                            </div>
+    
+                            <span>Variable</span>
+    
+                        </div>
+    
+                        <div class="col-md-7"></div>
+    
+                    </div>
+
+                    <div class="row mt-2">
+    
+                        <div class="col-md-3">
+    
+                            <span>Paid By</span>
+    
+                        </div>
+    
+                        <div class="col-md-1">
+    
+                            <span>:</span>
+    
+                        </div>
+    
+                        <div class="col-md-2 d-flex">
+    
+                            <span>Owner</span>
+    
+                            <div class="form-check form-switch" style="margin-left: 19px; margin-right: 16px;">
+    
+                                <input class="form-check-input custom-switch-color" type="checkbox" role="switch" formControlName="paidBy" id="flexSwitchCheckChecked" checked>
+    
+                            </div>
+    
+                            <span>Tenant</span>
+    
+                        </div>
+    
+                        <div class="col-md-7"></div>
+    
+                    </div>
+
+                </ng-container>
+    
+            </div>
+
+        </div>
+
+    </form>
+
+</modal>

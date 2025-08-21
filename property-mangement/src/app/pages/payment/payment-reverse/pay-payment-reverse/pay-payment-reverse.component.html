@@ -1,0 +1,475 @@
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-end mb-3">
+
+        <small><span class="text-primary">Payment Reverse</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-primary" (click)="this.service.navigate({ 'url': 'app/payment/reverse' })" style="cursor: pointer;">Payment Reverse List</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"><span class="text-dark"> {{ this.mode == 'Create' ? 'Create' : 'Update' }} Payment Reverse</span> </small>
+
+    </div>
+
+    <div class="row" *ngIf="!_.isEmpty(paymentReverseForm.value)"[formGroup]="paymentReverseForm" >
+
+        <div class="col-md-8">
+
+            <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                <div class="card-header bg-white">
+
+                    <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+
+                        <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Basic Details :</h6>
+
+                    </div>
+
+                </div>
+
+                <div class="card-body d-flex">
+
+                    <!-- Basic Details -->
+                    <div class="col-md-12">
+
+                        <div class="row">
+
+                            <!-- Payment Type -->
+                            <div class="col-md-6 form-group required mb-3">
+
+                                <label for="billType" class="mb-2">Payment Type</label>
+    
+                                <ng-select class="form-control" [items]="billTypeList" bindLabel="billType" bindValue="_id" formControlName="billType" [multiple]="true" [closeOnSelect]="false" placeholder="Select Payment Type" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body" (change)="getPaymentEntryList()">
+
+                                    <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+                    
+                                      <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 4">
+                                          
+                                        <div class="d-flex">
+                    
+                                          <span class="ng-value-label ellipsis ms-1">
+                    
+                                            <span>{{ _.get(item, 'billType') }}</span> 
+                    
+                                          </span>
+                    
+                                          <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+                    
+                                          <span style="width: 1px; height: 20px; background-color: black;"></span>
+                                          
+                                        </div>
+                    
+                                      </div>
+                    
+                                      <div class="ng-value multiple ms-2" *ngIf="items.length > 4">
+                    
+                                        <span class="ng-value-label ellipsis"> + {{ items.length - 4 }} more</span>
+                    
+                                      </div>
+                    
+                                    </ng-template>  
+                    
+                                    <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+                    
+                                      <div class="form-check d-flex align-items-center"> 
+                                          
+                                        <input type="checkbox" class="form-check-input me-2" [checked]="isBillSelected(item._id, 'billType')"/>
+                    
+                                        <label class="form-check-label mt-1">{{ item?.billType }}</label>
+                    
+                                      </div>
+                                          
+                                    </ng-template>
+                                
+                                  </ng-select>
+    
+                                <div *ngIf="(f.billType?.touched || formSubmitted) && f.billType.errors" class="invalid-feedback">
+            
+                                    <div *ngIf="f.billType.errors.required">Payment Type is required</div>
+            
+                                </div>
+                                
+                            </div>
+
+                            <div class="col-md-6"></div>
+
+                            <!-- From Date -->
+                            <div class="col-md-6">
+
+                                <div class="form-group required mb-3">
+                                
+                                    <label for="fromDate" class="mb-2">From Date</label>
+
+                                    <div class="input-group">
+
+                                        <input type="text" class="form-control" id="fromDate" autocomplete="off" formControlName="fromDate" [matDatepicker]="picker" placeholder="Select From Date" [ngClass]="{ 'is-invalid': (f.fromDate?.touched || formSubmitted) && f.fromDate.errors }"/>
+
+                                        <mat-datepicker-toggle matSuffix [for]="picker" class="input-group-text border" style="border-radius: 0px 5px 5px 0px !important; height: 38px">
+
+                                            <ng-container matDatepickerToggleIcon>
+
+                                                <i class="bi bi-calendar4-week fs-5 text-center"></i>
+
+                                            </ng-container>
+
+                                        </mat-datepicker-toggle>
+
+                                        <mat-datepicker #picker></mat-datepicker>
+
+                                        <div *ngIf="(f.fromDate?.touched || formSubmitted) && f.fromDate.errors" class="invalid-feedback">
+    
+                                            <div *ngIf="f.fromDate.errors.required">From Date is required</div>
+                    
+                                        </div>
+
+                                    </div>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <!-- To Date -->
+                            <div class="col-md-6">
+
+                                <div class="form-group required mb-3">
+                                
+                                    <label for="toDate" class="mb-2">To Date</label>
+
+                                    <div class="input-group">
+
+                                        <input type="text" class="form-control" id="toDate" autocomplete="off" formControlName="toDate" [matDatepicker]="pickerz" placeholder="Select To Date" [ngClass]="{ 'is-invalid': (f.toDate?.touched || formSubmitted) && f.toDate.errors }"/>
+
+                                        <mat-datepicker-toggle matSuffix [for]="pickerz" class="input-group-text border" style="border-radius: 0px 5px 5px 0px !important; height: 38px">
+
+                                            <ng-container matDatepickerToggleIcon>
+
+                                                <i class="bi bi-calendar4-week fs-5 text-center"></i>
+
+                                            </ng-container>
+
+                                        </mat-datepicker-toggle>
+
+                                        <mat-datepicker #pickerz></mat-datepicker>
+
+                                        <div *ngIf="(f.toDate?.touched || formSubmitted) && f.toDate.errors" class="invalid-feedback">
+    
+                                            <div *ngIf="f.toDate.errors.required">To Date is required</div>
+                    
+                                        </div>
+
+                                    </div>
+                                
+                                </div>
+                                
+                            </div>
+                            
+                            <!-- Property Name -->
+                            <div class="col-md-6">
+    
+                                <div class="form-group mb-3">
+    
+                                    <label for="property" class="mb-2">Property Name</label>
+    
+                                    <ng-select name="property" id="property" class="form-control" formControlName="property" (change)="changeValue('propertyName')" appendTo="body" [clearable]="false" placeholder="Select Property" (change)="getPaymentEntryList()">
+    
+                                        <ng-option *ngFor="let property of masterList['propertyList']" [value]="property?._id">{{ property?.propertyName }}</ng-option>
+    
+                                    </ng-select>
+    
+                                </div>
+    
+                            </div>
+
+                            <!-- Unit Name -->
+                            <div class="col-md-6">
+    
+                                <div class="form-group mb-3">
+    
+                                    <label for="unit" class="mb-2">Unit Name</label>
+    
+                                    <ng-select name="unit" id="unit" class="form-control" formControlName="unit" (change)="changeValue('unit')" appendTo="body" [clearable]="false"  placeholder="Select Unit" (change)="getPaymentEntryList()">
+    
+                                        <ng-option *ngFor="let unit of filteredUnitList" [value]="unit?._id">{{ unit?.unitName }}</ng-option>
+    
+                                    </ng-select>
+        
+                                </div>
+    
+                            </div>
+
+                            <!-- Tenant Name -->
+                            <!-- <div class="col-md-6">
+    
+                                <div class="form-group required mb-3">
+    
+                                    <label for="tenant" class="mb-2">Tenant</label>
+
+                                    <input type="text" class="form-control" formControlName="tenantName" id="tenantName" [value]="(!_.isEmpty(this.paymentReverseForm.get('unitName')?.value) ? this.filteredTenantList[0]?.firstName : '')" readonly>
+    
+                                    <ng-select name="tenant" id="tenantName" class="form-control" formControlName="tenantName" [ngClass]="{ 'is-invalid': (f.tenantName?.touched || formSubmitted) && f.tenantName.errors }" appendTo="body" [clearable]="false" placeholder="Select Tenant" [readonly]="true">
+    
+                                        <ng-option *ngFor="let tenant of filteredTenantList" [value]="tenant?._id">{{ tenant?.firstName + ' ' + tenant?.lastName }}</ng-option>
+    
+                                    </ng-select>
+    
+                                    <div *ngIf="(f.tenantName?.touched || formSubmitted) && f.tenantName.errors" class="invalid-feedback">
+    
+                                        <div *ngIf="f.tenantName.errors.required">Tenant is required</div>
+                
+                                    </div>
+    
+                                </div>
+    
+                            </div> -->
+
+                            <!-- Rent Payment -->
+                            <!-- <div class="col-md-6" *ngIf="this.paymentReverseForm?.get('billType')?.value == 'rent'">
+    
+                                <div class="form-group required mb-3">
+    
+                                    <label for="tenant" class="mb-2">Rent Payment</label>
+    
+                                    <ng-select name="" id="paymentData" class="form-control" formControlName="paymentData" appendTo="body" [clearable]="false" placeholder="Select Rent Payment" [ngClass]="{ 'is-invalid': (f.paymentData?.touched || formSubmitted) && f.paymentData.errors }">
+    
+                                        <ng-option *ngFor="let pay of this.masterList['detailRentList']" [value]="pay?._id">{{ (pay?.billDate | date: 'dd-MM-yyyy') + ' - ' + (pay?.dueDate | date: 'dd-MM-yyyy') }}</ng-option>
+    
+                                    </ng-select>
+    
+                                    <div *ngIf="(f.paymentData?.touched || formSubmitted) && f.paymentData.errors" class="invalid-feedback">
+    
+                                        <div *ngIf="f.paymentData.errors.required">Rent Payment required</div>
+                
+                                    </div>
+    
+                                </div>
+    
+                            </div> -->
+
+                            <!-- Utility Payment -->
+                            <!-- <div class="col-md-6" *ngIf="this.paymentReverseForm?.get('billType')?.value == 'utility'">
+    
+                                <div class="form-group required mb-3">
+    
+                                    <label for="utilityPay" class="mb-2">Utility Payment</label>
+    
+                                    <ng-select name="" id="paymentData" class="form-control" formControlName="paymentData" [ngClass]="{ 'is-invalid': (f.paymentData?.touched || formSubmitted) && f.paymentData.errors }" appendTo="body" [clearable]="false" placeholder="Select Utility Payment">
+    
+                                        <ng-option *ngFor="let pay of this.masterList['detailUtilityList']" [value]="pay?._id">{{ (pay?.billDate | date: 'dd-MM-yyyy') + ' - ' + (pay?.dueDate | date: 'dd-MM-yyyy') }}</ng-option>
+    
+                                    </ng-select>
+    
+                                    <div *ngIf="(f.paymentData?.touched || formSubmitted) && f.paymentData.errors" class="invalid-feedback">
+    
+                                        <div *ngIf="f.paymentData.errors.required">Utility Payment required</div>
+                
+                                    </div>
+    
+                                </div>
+    
+                            </div> -->
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Total Amount Card -->
+        <div class="col-md-4">
+
+            <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051); height: 342px;">
+
+                <div class="card-header bg-white">
+
+                    <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+        
+                        <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Selected Total Amounts :</h6>
+                    
+                    </div>
+                    
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row w-100 mt-2" style="color: #B1B1B1; font-weight: 500">
+
+                        <div class="col-md-6"> <span>Amount Due</span> </div>
+
+                        <div class="col-md-1"> <span>:</span> </div>
+
+                        <div class="col-md-5"> <span > {{ this.service.currencyCode?.currencyCode }}. {{ (this.selectedAmtDue | number: '1.0') || 0 }} </span> </div>
+
+                    </div>
+
+                    <div class="row w-100 mt-3" style="color: #B1B1B1; font-weight: 500">
+
+                        <div class="col-md-6"> <span>Amount Paid</span> </div>
+
+                        <div class="col-md-1"> <span>:</span> </div>
+
+                        <div class="col-md-5"> <span > {{ this.service.currencyCode?.currencyCode }}. {{ (this.selectedAmtPaid | number: '1.0') || 0 }} </span> </div>
+
+                    </div>
+
+                    <div class="row w-100 mt-3" style="color: #B1B1B1; font-weight: 500">
+
+                        <div class="col-md-6"> <span>Amount Outstanding</span> </div>
+
+                        <div class="col-md-1"> <span>:</span> </div>
+
+                        <div class="col-md-5"> <span > {{ this.service.currencyCode?.currencyCode }}. {{ (this.selectedAmtOuts | number: '1.0') || 0 }} </span> </div>
+
+                    </div>
+
+                    <div class="row w-100 mt-3" style="color: #B1B1B1; font-weight: 500">
+
+                        <div class="col-md-6"> <span>Reverse Amount</span> </div>
+
+                        <div class="col-md-1"> <span>:</span> </div>
+
+                        <div class="col-md-5"> <span > {{ this.service.currencyCode?.currencyCode }}. {{ (this.selectedAmtReverse | number: '1.0') || 0 }} </span> </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Payment List Table -->
+        <div class="col-md-12 mt-2">
+
+            <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                <div class="card-header bg-white">
+
+                    <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+
+                        <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Payment List : </h6>
+
+                    </div>
+
+                </div>
+
+                <div class="card-body p-0">
+
+                    <div class="table-responsive" formArrayName="paymentEntries">
+
+                        <table class="table table-borderless align-middle table-striped">
+
+                            <thead class="bg-light text-secondary">
+
+                                <tr>
+
+                                    <th style="width: 100px;">Select</th>
+
+                                    <th>Property</th>
+
+                                    <th>Unit</th>
+
+                                    <th>Bill Type</th>
+
+                                    <th>Approved By</th>
+
+                                    <th>Request By</th>
+
+                                    <th>Payment Date</th>
+
+                                    <th>Amount Due</th>
+
+                                    <th>Amount Paid</th>
+
+                                    <th>Amount Outstanding</th>
+
+                                    <th style="text-align: center !important;">Reverse Amount</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <ng-container *ngIf="pl.length > 0 && pl.controls[0].get('paymentId')?.value; else other">
+
+                                    <ng-container *ngFor="let pay of pl.controls; let i = index" [formGroupName]="i">
+
+                                        <tr>
+
+                                            <td style="text-align: center !important;"> 
+
+                                                <input type="checkbox" class="form-check-input me-2 fs-6" formControlName="isSelected" (change)="changeValue('selectPayment', i)"/>
+
+                                            </td>
+
+                                            <td>{{ pay.get('propertyDet')?.value }}</td>
+
+                                            <td>{{ pay.get('unitDet')?.value }}</td>
+
+                                            <td>{{ pay.get('billType')?.value | titlecase}}</td>
+
+                                            <td>{{ pay.get('appprovedDet')?.value || '-' }}</td>
+
+                                            <td>{{ pay.get('requestedDet')?.value || '-' }}</td>
+
+                                            <td>{{ pay.get('paymentDate')?.value }}</td>
+
+                                            <td>{{ this.service.currencyCode?.currencyCode }}. {{ pay.get('amountDue')?.value | number: '1.0' }}</td>
+
+                                            <td>{{ this.service.currencyCode?.currencyCode }}. {{ pay.get('amountPaid')?.value | number: '1.0' }}</td>
+
+                                            <td>{{ this.service.currencyCode?.currencyCode }}. {{ pay.get('amountOutstanding')?.value | number: '1.0' }}</td>
+
+                                            <td style="text-align: center !important;">
+
+                                                <input type="text" class="form-control" [ngClass]="{'is-invalid': pay.get('isSelected')?.value && pay.hasError('reverseAmountExceedsPaid')}" formControlName="reverseAmt" numbersOnly [readOnly]="true">
+
+                                                <!-- <input type="text" class="form-control" [ngClass]="{'is-invalid': pay.get('isSelected')?.value && pay.hasError('reverseAmountExceedsPaid')}" formControlName="amount" numbersOnly [readOnly]="!pay.get('isSelected')?.value">
+
+                                                <div *ngIf="pay.get('isSelected')?.value && pay.hasError('reverseAmountExceedsPaid')" class="text-danger small mt-1">
+
+                                                    {{ pay.getError('reverseAmountExceedsPaid') }}
+
+                                                </div> -->
+
+                                            </td>
+
+                                        </tr>
+
+                                    </ng-container>
+
+                                </ng-container>
+
+                                <ng-template #other>
+
+                                    <tr>
+
+                                        <td colspan="12" style="text-align: center !important;">No Records Found</td>
+
+                                    </tr>
+
+                                </ng-template>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Buttons -->
+        <div class="d-flex justify-content-end mt-3">
+
+            <button class="btn btn-outline-secondary mt-3 px-3 py-0" (click)="close()">Discard</button>
+
+            <button class="btn btn-secondary mt-3 px-3 py-1 ms-2" (click)="onSubmit()" [disabled]="!this.isAnySelected || selectedAmtReverse <= 0">Add</button>
+
+        </div>
+
+    </div>
+
+</div>
