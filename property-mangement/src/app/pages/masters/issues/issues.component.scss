@@ -1,0 +1,72 @@
+/* Main container styling */
+.tat-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Input-Select shared wrapper */
+  .tat-input-group {
+    display: flex;
+    border: 2px solid #ccc;
+    border-radius: 12px; /* Rounded corners */
+    overflow: hidden;
+    width: 300px; /* Adjust as needed */
+  }
+  
+  /* Input styling */
+  .tat-input {
+    flex: 1; /* Takes up available space */
+    border: none;
+    padding: 12px;
+    font-size: 18px;
+    outline: none; /* Removes input outline */
+  }
+  
+  /* Dropdown styling */
+  .tat-select {
+    border: none;
+    padding: 12px;
+    font-size: 18px;
+    background: white;
+    cursor: pointer;
+    outline: none; /* Removes dropdown outline */
+  }
+  
+  /* Adjust dropdown arrow */
+  .tat-select::-ms-expand {
+    display: none; /* For IE */
+  }
+  
+  /* Hover effect (optional) */
+  .tat-input-group:hover {
+    border-color: #555; /* Darker border on hover */
+  }
+  
+  .priority-high { color:#C92E2E;}
+.priority-low { color:  var(--secondary-color)}
+.priority-medium { color:#5BDA50}
+
+.select-tat{
+  border-right: none !important; 
+  border-radius: 5px 0px 0px 5px !important;
+  &:focus {
+    border-color: #dee2e6; 
+    box-shadow: 0 0 0 0;
+  }
+}
+
+.select-tat-type{
+
+  border-left: none !important; 
+  margin-left: -17px !important; 
+  border-radius: 0px 5px 5px 0px !important;
+
+  &:focus {
+    border-color: #dee2e6; 
+    box-shadow: 0 0 0 0;
+  }
+}
+
+ ::ng-deep .mat-mdc-paginator-container {
+  background-color: #fff!important; /* Light pink background */
+}

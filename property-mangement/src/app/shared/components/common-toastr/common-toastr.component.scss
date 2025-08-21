@@ -1,0 +1,91 @@
+* {
+    --theme-color: #fff;
+    --success-foreground: #73D338;
+    // --success-background: #e0fae9;
+    --error-foreground: #e08d8d;
+    // --error-background: #f8e7e7;
+    --warn-foreground: #FF9770;
+    // --warn-background: #fee7df;
+    --info-foreground: #7EE2FF;
+    // --info-background: #eff9fc
+}
+
+// *** Message Type Styles ***
+
+.snack-container {
+
+    .success{
+        // background-color: var(--success-background);
+        color: var(--success-foreground);
+        border-color: var(--success-foreground) !important;                
+    }
+    .error{
+        // background-color: var(--error-background);
+        color: var(--error-foreground);
+        border-color: var(--error-foreground) !important;
+    }
+    .warn{
+        // background-color: var(--warn-background);
+        color: var(--warn-foreground);
+        border-color: var(--warn-foreground) !important;
+    }
+    .info{
+        // background-color: var(--info-background);
+        color: var(--info-foreground);
+        border-color: var(--info-foreground) !important;
+    }
+
+    // Image position
+    .iconImage{
+        font-size: 2.5rem !important;
+    }
+
+    .imgContainer{
+        width: 38px !important;
+        height: 38px !important;
+        vertical-align: middle !important;
+        border-radius: 50% !important;
+        position: relative;
+    }
+
+}
+
+::ng-deep{
+    .cdk-overlay-container {
+        z-index: 2000 !important;
+    }
+    // Snackbar background color
+    .mat-mdc-snack-bar-container {
+        min-width: 380px;
+        max-width: 40vw;
+        margin: 0;
+        border-radius: 0px;        
+        .mdc-snackbar__surface  {
+            background : #fff!important;
+            width: 100%;
+            padding-right: 0px;
+            padding-right: 0px;
+            border-radius: 0px 0px 8px 8px;            
+            box-shadow: 0 2px 4px 0 #00000021 !important;
+        }
+        &.snackbar-success .mdc-snackbar__surface {
+            background-color: #e5f3ee !important;
+        }
+        .text-secondary {
+            font-weight: 400;
+            font-size: 1.2rem;
+            font-family: Poppins;
+            color: #000;
+        }
+    }
+    .mdc-snackbar__label {
+        padding-right: 16px;
+    }
+}
+
+.btn-close {
+    outline: none !important;
+    box-shadow: none !important;
+    width: .5rem !important;
+    height: .5rem !important;
+}
