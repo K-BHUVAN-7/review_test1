@@ -29,16 +29,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install semgrep google-generativeai requests
 
-      # This step now uses 'semgrep ci' for robust CI execution and proper error handling.
-      # It will run and generate output, but also fail the job if a blocking finding is detected.
-      - name: Run Semgrep
+      # This step will now FAIL the job if violations are found.
+      - name: Run Semgrep and Fail on Findings
         run: |
           semgrep ci \
-            --config "p/default" \
             --config "rules.yaml" \
-            --json > semgrep_results.json || true
-            
+            --json > semgrep_results.json
+
+      # This step will ONLY run if the previous step succeeds (i.e., no findings).
       - name: Summarize and Comment
+        if: always() # This ensures the comment is posted even if the previous step fails
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
