@@ -1,0 +1,1334 @@
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h5 class="text-dark">{{ mode }} Staff</h5>
+
+        <small><span class="text-primary">Staff</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-primary" style="cursor: pointer;" (click)="this.service.navigate({ 'url': 'app/staff' })">Staff List</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-dark">{{ this.mode == 'Create' ? 'Create' : 'Update' }} Staff</span></small>
+
+    </div>  
+
+    <form *ngIf="!_.isEmpty(staffForm.value)" [formGroup]="staffForm"  class="horizontal-form-fields">
+
+        <div class="row">
+
+            <!-- Basic Details -->
+            <div class="col-md-8">
+
+                <!-- Basic Details -->
+                <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                    <div class="card-header bg-white">
+        
+                        <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+            
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119 ;">Basic Details : </h6>
+                            
+                        </div>
+                            
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="row">
+
+                            <div class="col-md-6">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="firstName" class="mb-2">First Name</label>
+
+                                    <input type="text" class="form-control" id="firstName" formControlName="firstName" placeholder="Enter First Name"  [ngClass]="{ 'is-invalid': (f.firstName?.touched || formSubmitted) && f.firstName.errors }">
+
+                                    <div *ngIf="(f.firstName?.touched || formSubmitted) && f.firstName.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.firstName.errors.required">First Name is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="lastName" class="mb-2">Last Name</label>
+
+                                    <input type="text" class="form-control" id="lastName" formControlName="lastName" placeholder="Enter Last Name" [ngClass]="{ 'is-invalid': (f.lastName?.touched || formSubmitted) && f.lastName.errors }">
+
+                                    <div *ngIf="(f.lastName?.touched || formSubmitted) && f.lastName.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.lastName.errors.required">Last Name is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="mobileNo" class="mb-2">Contact Number</label>
+
+                                    <input type="text" class="form-control" id="mobileNo" formControlName="mobileNo" placeholder="Enter Contact Number" [ngClass]="{ 'is-invalid': (f.mobileNo?.touched || formSubmitted) && f.mobileNo.errors }" numbersOnly>
+
+                                    <div *ngIf="(f.mobileNo?.touched || formSubmitted) && f.mobileNo.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.mobileNo.errors.required">Contact No is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="email" class="mb-2">Email</label>
+
+                                    <input type="text" class="form-control" id="email" formControlName="email" placeholder="Enter Email" [ngClass]="{ 'is-invalid': (f.email?.touched || formSubmitted) && f.email.errors }">
+
+                                    <div *ngIf="(f.email?.touched || formSubmitted) && f.email.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.email.errors.required">Email is required</div>
+
+                                        <div *ngIf="f.email.errors.email && !f.email.errors.required">Email must be a valid email address</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <!-- for address line one -->
+                            <div class="col-md-6">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="addressLineOne" class="mb-2">Address</label>
+
+                                    <input type="text" class="form-control" id="addressLineOne" formControlName="addressLineOne" placeholder="Enter Address Line 1" [ngClass]="{ 'is-invalid': (f.addressLineOne?.touched || formSubmitted) && f.addressLineOne.errors }">
+
+                                    <div *ngIf="(f.addressLineOne?.touched || formSubmitted) && f.addressLineOne.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.addressLineOne.errors.required">Address Line 1 is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">  
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="addressLineTwo" class="mb-2 opacity-0">Address Line 2</label>
+
+                                    <input type="text" class="form-control" id="addressLineTwo" formControlName="addressLineTwo" placeholder="Enter Address Line 2">
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-3">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="countryId" class="mb-2">Country</label>
+
+                                    <ng-select name="countryId" id="countryId" class="form-control" formControlName="countryId" [ngClass]="{ 'is-invalid': (f.countryId?.touched || formSubmitted) && f.countryId.errors }" appendTo="body" [clearable]="false" placeholder="Select Country">
+
+                                        <ng-option *ngFor="let countryId of masterList['countryIdList']" [value]="countryId?._id">{{ countryId?.name }}</ng-option>
+
+                                    </ng-select>
+
+                                    <div *ngIf="(f.countryId?.touched || formSubmitted) && f.countryId.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.countryId.errors.required">Country is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-3">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="state" class="mb-2">State/Province</label>
+
+                                    <input type="text" class="form-control" id="state" formControlName="state" placeholder="Enter State" [ngClass]="{ 'is-invalid': (f.state?.touched || formSubmitted) && f.state.errors }">
+
+                                    <div *ngIf="(f.state?.touched || formSubmitted) && f.state.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.state.errors.required">State is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-3">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="city" class="mb-2">City</label>
+
+                                    <input type="text" class="form-control" id="city" formControlName="city" placeholder="Enter City" [ngClass]="{ 'is-invalid': (f.city?.touched || formSubmitted) && f.city.errors }">
+
+                                    <div *ngIf="(f.city?.touched || formSubmitted) && f.city.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.city.errors.required">City is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-3">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="pincode" class="mb-2">Pincode</label>
+
+                                    <input type="text" class="form-control" id="pincode" formControlName="pincode" placeholder="Enter Pincode" [ngClass]="{ 'is-invalid': (f.pincode?.touched || formSubmitted) && f.pincode.errors }">
+
+                                    <div *ngIf="(f.pincode?.touched || formSubmitted) && f.pincode.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.pincode.errors.required">Pincode is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="role" class="mb-2">Role</label>
+
+                                    <ng-select name="role" id="role" class="form-control" formControlName="role" [ngClass]="{ 'is-invalid': (f.role?.touched || formSubmitted) && f.role.errors }" appendTo="body" [clearable]="false" placeholder="Select Role">
+
+                                        <ng-container *ngFor="let role of masterList['rolesList']">
+
+                                            <ng-option [value]="role?._id" *ngIf="role.roleCategoryId?.category == 'Service Staff'">{{ role?.roleName }}</ng-option>
+
+                                        </ng-container>
+
+                                    </ng-select>
+
+                                     <div *ngIf="(f.role?.touched || formSubmitted) && f.role.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.role.errors.required">Role is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Property Manager Mapping -->
+                <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                    <div class="card-header bg-white">
+        
+                        <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+            
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119 ;">Property Manager Mapping: </h6>
+                            
+                        </div>
+                            
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="row">
+
+                            <div class="col-md-6 form-group required mb-3">
+
+                                <label for="property" class="mb-2">Property Name</label>
+                                
+                                <ng-select class="form-control" [items]="masterList['propertyList']" bindLabel="propertyName" bindValue="_id" formControlName="propertyName" [multiple]="true" [closeOnSelect]="true" [clearable]="true" [virtualScroll]="true" [searchable]="false" appendTo="body" [ngClass]="{ 'is-invalid': (f.propertyName?.touched || formSubmitted) && f.propertyName.errors }" (change)="onPropertyChange()" placeholder="Select Property">
+                                    
+                                    <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                                        <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 2">
+                                            
+                                            <div class="d-flex">
+
+                                                <span class="ng-value-label ellipsis ms-1">
+
+                                                    <span>{{ _.get(item,'propertyName') }}</span> 
+
+                                                </span>
+
+                                                <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                                                <span style="width: 1px; height: 20px; background-color: black;"></span>
+                                                
+                                            </div>
+
+                                        </div>
+
+                                        <div class="ng-value multiple ms-2" *ngIf="items.length > 2">
+
+                                            <span class="ng-value-label ellipsis"> + {{ items.length - 2 }} more</span>
+
+                                        </div>
+
+                                    </ng-template>    
+
+                                    <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                                        <div class="form-check d-flex align-items-center"> 
+                                            
+                                            <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'propertyName')"/>
+    
+                                            <label class="form-check-label mt-1">{{ item?.propertyName }}</label>
+    
+                                        </div>
+                                            
+                                    </ng-template>
+                                
+                                </ng-select>
+
+                                <div *ngIf="(f.propertyName?.touched || formSubmitted) && f.propertyName.errors" class="invalid-feedback">
+        
+                                    <div *ngIf="f.propertyName.errors.required">Property Name is required</div>
+            
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6 form-group required mb-3">
+
+                                <label for="issues" class="mb-2">Manager</label>
+                              
+                                <ng-select class="form-control" [items]="this.masterList['managerList']" bindLabel="manager" bindValue="_id" formControlName="manager" [multiple]="true" [closeOnSelect]="true" [clearable]="true" [virtualScroll]="true"[searchable]="false" appendTo="body" [ngClass]="{ 'is-invalid': (f.manager?.touched || formSubmitted) && f.manager.errors }" placeholder="Select Manager">
+
+                                    <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                                        <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 2">
+                                            
+                                            <div class="d-flex">
+
+                                                <span class="ng-value-label ellipsis ms-1">
+
+                                                    <span>{{ _.get(item,'firstName') + ' ' + _.get(item,'lastName') }}</span> 
+
+                                                </span>
+
+                                                <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                                                <span style="width: 1px; height: 20px; background-color: black;"></span>
+                                                
+                                            </div>
+
+                                        </div>
+
+                                        <div class="ng-value multiple ms-2" *ngIf="items.length > 2">
+
+                                            <span class="ng-value-label ellipsis"> + {{ items.length - 2 }} more</span>
+
+                                        </div>
+
+                                    </ng-template>    
+                                
+                                    <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                                        <div class="form-check d-flex align-items-center"> 
+                                            
+                                            <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'manager')"/>
+    
+                                            <label class="form-check-label mt-1">{{ item?.firstName + ' ' + item?.lastName }}</label>
+    
+                                        </div>
+                                            
+                                    </ng-template>
+                                    
+                                </ng-select>
+                                
+                                <div *ngIf="(f.manager?.touched || formSubmitted) && f.manager.errors" class="invalid-feedback">
+    
+                                    <div *ngIf="f.manager.errors.required">Manager is required</div>
+            
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Images & Issue Mapping -->
+            <div class="col-md-4">
+
+                <!-- Images -->
+                <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051); height: 504px;">
+
+                    <div class="card-header bg-white d-flex justify-content-between">
+        
+                        <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+            
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Reference Documents : </h6>
+                            
+                        </div>
+    
+                        <div (click)="shareImage()" style="cursor: pointer;">
+    
+                            <img src="images/icons/share-icon.svg" class="mt-2" style="width: 27px;" alt="">
+    
+                        </div>
+                            
+                    </div>
+    
+                    <div class="card-body">
+    
+                        <div class="upload-container">
+                        
+                        <label class="upload-box"(dragover)="onDragOver($event)"
+                        (dragleave)="onDragLeave($event)"
+                        (drop)="onDrop($event)"
+                        [class.dragover]="isDragOver">
+                            
+                                <input type="file" (change)="onFileSelect($event)" multiple hidden />
+                            
+                                <img src="images/uploadImg.png" class="mb-2" style="width: 50px;" alt="">
+                            
+                                <div class="upload-content">
+                            
+                                    <p class="my-0">Drag and Drop or <span class="browse">Browse</span></p>
+                            
+                                    <small class="text-muted">File Supported: Png , Jpg , Pdf , Word </small>
+                            
+                                </div>
+                            
+                            </label>
+            
+                            <div class="upload-scroll-area">
+            
+                                <div *ngFor="let file of uploadFiles; let i = index" class="upload-list">
+
+                                    <ng-container [ngSwitch]="getFileType(file.file.name)">
+                                        
+                                        <img *ngSwitchCase="'pdf'" class="thumbnail" src="images/pdf.png" alt="PDF" (click)="openPreview(file.preview )" />
+
+                                        <a *ngSwitchCase="'word'" [href]="file.preview" [download]="file.file.name">
+
+                                            <img class="thumbnail" src="images/word2.png" alt="Word" />
+
+                                        </a>
+
+                                        <!-- <img *ngSwitchCase="'word'" class="thumbnail" src="images/word2.png" alt="Word"  /> -->
+
+                                        <img *ngSwitchDefault class="thumbnail" [src]="file.preview" alt="Preview" (click)="openPreview(file.preview)" />
+                                        
+                                    </ng-container>
+            
+                                    <div class="file-info">
+            
+                                        <p>{{ file.file.name }}</p>
+            
+                                        <p [class.completed]="file.status == 'Completed'">{{ file.status }}</p>
+            
+                                        <div class="progress-bar">
+            
+                                            <div class="progress" [style.width.%]="file.progress" [class.completed]="file.status == 'Completed'"></div>
+            
+                                        </div>
+            
+                                    </div>
+            
+                                    <button class="closebutton" (click)="removeImage(i)">✖</button>
+            
+                                </div>
+            
+                            </div>
+            
+                        </div>
+                        
+                    </div>
+    
+                </div>
+
+                <!-- Selected Issue -->
+                <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051); height: 177px;">
+
+                    <div class="card-header bg-white d-flex justify-content-between">
+        
+                        <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+          
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119 ;">Issue Mapping : </h6>
+                          
+                        </div>
+                          
+                    </div>
+    
+                    <div class="card-body">                   
+    
+                        <div class="col-md-12 form-group required mb-3">
+    
+                            <label for="issues" class="mb-2">Issues</label>
+                          
+                            <ng-select class="form-control" [items]="masterList['issueList']" bindLabel="issueName" bindValue="_id" formControlName="issues" [multiple]="true" [closeOnSelect]="true" [clearable]="true" [virtualScroll]="true" [searchable]="false" appendTo="body" [ngClass]="{ 'is-invalid': (f.issues?.touched || formSubmitted) && f.issues.errors }" placeholder="Select Issue">
+                                
+                                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                                    <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 2">
+                                        
+                                        <div class="d-flex">
+
+                                            <span class="ng-value-label ellipsis ms-1">
+
+                                                <span>{{ _.get(item,'issueName') }}</span> 
+
+                                            </span>
+
+                                            <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                                            <span style="width: 1px; height: 20px; background-color: black;"></span>
+                                            
+                                        </div>
+
+                                    </div>
+
+                                    <div class="ng-value multiple ms-2" *ngIf="items.length > 2">
+
+                                        <span class="ng-value-label ellipsis"> + {{ items.length - 2 }} more</span>
+
+                                    </div>
+
+                                </ng-template>    
+                            
+                                <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                                    <div class="form-check d-flex align-items-center"> 
+                                        
+                                        <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'issues')"/>
+
+                                        <label class="form-check-label mt-1">{{ item?.issueName }}</label>
+
+                                    </div>
+                                        
+                                </ng-template>
+
+                            </ng-select>
+
+                            <div *ngIf="(f.issues?.touched || formSubmitted) && f.issues.errors" class="invalid-feedback">
+    
+                                <div *ngIf="f.issues.errors.required">Issues is required</div>
+        
+                            </div>
+    
+                        </div>
+    
+                    </div>
+    
+                </div>
+
+            </div>
+
+            <!-- Property Level Issue Mapping -->
+            <div class="col-md-12" *ngIf="this.mode == 'Update'">
+
+                <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                    <div class="card-header bg-white">
+        
+                        <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+        
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Property Level Issue Mapping : ({{ f.propertyLevelIssue.controls?.length }}) </h6>
+
+                        </div>
+                        
+                    </div>
+        
+                    <div class="card-body p-0">
+        
+                        <div class="table-responsive" formArrayName="propertyLevelIssue">
+
+                            <table class="table table-borderless align-middle table-striped table-scroll">
+
+                                <thead class="bg-light text-secondary">
+
+                                    <tr>
+
+                                        <th style="width: 6%">Action</th>
+
+                                        <th style="width: 25%">Property</th>
+
+                                        <th style="width: 20%">Issue Category</th>
+
+                                        <th style="width: 20%">Priority</th>
+
+                                        <th style="width: 15%">TAT</th>
+
+                                        <th style="width: 20%">Manager</th>
+                                        
+                                        <th style="width: 15%">Active Date</th>
+
+                                        <th style="width: 15%" class="th-action">Inactive Date</th>
+
+                                    </tr>
+
+                                </thead>
+                            
+                                <tbody>
+
+                                    <ng-container *ngIf="!_.isEmpty(f.propertyLevelIssue.controls); else other">
+                                        
+                                        <ng-container *ngFor="let config of f.propertyLevelIssue.controls; let i = index; let last = last; let first = first">
+
+                                            <ng-container [formGroup]="config" *ngIf="config.controls as pif">
+
+                                                <tr>
+
+                                                    <td>
+
+                                                        <div class="d-flex justify-content-between align-items-center" style="height: 100%;">
+
+                                                            <p (click)="deleteIssue('property', i)" style="color: #FF4949 !important; font-size: 18px; cursor: pointer; margin: 0; display: flex; align-items: center;">
+
+                                                                <i class="bi bi-dash-lg fw-bold"></i>
+                                                            
+                                                            </p>
+                                                        
+                                                            <p *ngIf="last" (click)="addIssue('property')" class="fw-bold" style="cursor: pointer; margin: 0; display: flex; align-items: center;">
+        
+                                                                <i class="bi bi-plus-lg fw-bold"></i>
+        
+                                                            </p>
+
+                                                        </div>
+
+                                                    </td>
+
+                                                    <td>
+                                                    
+                                                        <ng-select class="form-control" formControlName="propertyName" id="propertyName" appendTo="body" [clearable]="false" placeholder="Select Property">
+
+                                                            <ng-option *ngFor="let item of this.masterList['propertyLevelIssueList']" [value]="item?._id">{{ item.propertyName }}</ng-option>
+
+                                                        </ng-select>
+
+                                                    </td>
+
+                                                    <td>
+                                                
+                                                        <ng-select class="form-control" formControlName="issueCategory" id="issueCategory" (change)="changeValue('issueCategory',i)" [ngClass]="{ 'is-invalid': (pif.issueCategory?.touched || formSubmitted) && pif.issueCategory?.errors }" appendTo="body" [clearable]="false" placeholder="Select Issue">
+        
+                                                            <ng-option *ngFor="let issue of masterList['issueList']" [value]="issue._id">{{ issue.issueName }}</ng-option>
+        
+                                                        </ng-select>
+        
+                                                    </td>
+        
+                                                    <td>
+        
+                                                        <ng-select name="" id="priority" class="form-control" formControlName="priority" placeholder="Select Priority" autocomplete="off" [ngClass]="{ 'is-invalid': (pif.priority?.touched || formSubmitted) && pif.priority?.errors }" appendTo="body" [clearable]="false">
+        
+                                                            <ng-option value="hight">High</ng-option>
+        
+                                                            <ng-option value="medium">Medium</ng-option>
+        
+                                                            <ng-option value="low">Low</ng-option>
+                                                            
+                                                        </ng-select>
+        
+                                                    </td>
+        
+                                                    <td>
+        
+                                                        <!-- <div class="w-100 d-flex">
+        
+                                                            <input type="text" class="form-control" id="tat" formControlName="tat" numbersOnly>
+        
+                                                            <input type="text" class="form-control ms-1" id="tatType" formControlName="tatType"> 
+        
+                                                        </div> -->
+
+                                                        <div class="d-flex w-100">
+
+                                                            <div class="col-md-5">
+
+                                                                <input type="number" class="form-control" id="tat" formControlName="tat" numbersOnly autocomplete="off" placeholder="-" [ngClass]="{ 'is-invalid': (pif.tat?.touched || formSubmitted) && pif.tat?.errors }"/>
+                                                                
+                                                            </div>
+                                                            
+                                                            <!-- <div class="col-md-1 m-0 p-0">
+                                                                
+                                                                <div style="width: 0.9px;height: 30px;margin-top: 4px;background-color: #dee2e6;"></div>
+
+                                                            </div> -->
+                                                        
+                                                            <div class="col-md-6">
+
+                                                                <ng-select name="tatType" id="tatType" formControlName="tatType" class="form-control" [ngClass]="{ 'is-invalid': (pif.tatType?.touched || formSubmitted) && pif.tatType?.errors }" appendTo="body" [clearable]="false" placeholder="Select Type">
+
+                                                                    <ng-option value="days">Days</ng-option>
+                                                                    
+                                                                    <ng-option value="hours">Hours</ng-option>
+                                                                    
+                                                                </ng-select>
+                                                            
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        
+                                                    </td>
+        
+                                                    <td>
+
+                                                        <ng-select class="form-control" [items]="this.masterList['issueManagerList'] || []" bindLabel="manager" bindValue="_id" formControlName="manager" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body" placeholder="Select Manager">
+
+                                                            <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                                                                <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                                                                    
+                                                                    <div class="d-flex">
+
+                                                                        <span class="ng-value-label ellipsis ms-1">
+
+                                                                            <span>{{ _.get(item,'firstName') + ' ' + _.get(item,'lastName') }}</span> 
+
+                                                                        </span>
+
+                                                                        <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                                                                        <span style="width: 1px; height: 20px; background-color: black;"></span>
+                                                                        
+                                                                    </div>
+
+                                                                </div>
+
+                                                                <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                                                                    <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                                                                </div>
+
+                                                            </ng-template>   
+
+                                                            <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                                                                <div class="form-check d-flex align-items-center"> 
+                                                                    
+                                                                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'propertyLevelIssueManager')"/>
+                            
+                                                                    <label class="form-check-label mt-1">{{ item?.firstName + ' ' + item?.lastName }}</label>
+                            
+                                                                </div>
+                                                                    
+                                                            </ng-template>
+                                                        
+                                                        </ng-select>
+        
+                                                    </td>
+                                                    
+                                                    <td>
+
+                                                        <input type="text" class="form-control" formControlName="activeDate" placeholder="Add Date">
+
+                                                    </td>
+
+                                                    <td class="td-action">
+
+                                                        <input type="text" class="form-control" formControlName="inactiveDate" placeholder="Add Date">
+
+                                                    </td>
+
+                                                </tr>
+
+                                            </ng-container>
+
+                                        </ng-container>
+
+                                    </ng-container>
+
+                                    <ng-template #other>
+
+                                        <tr>
+
+                                            <td colspan="8" style="text-align: center !important;">No  Records Found</td>
+
+                                        </tr>
+
+                                    </ng-template>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+        
+                    </div>
+        
+                </div>
+
+            </div>
+
+            <!-- Unit Level Issue Mapping -->
+            <div class="col-md-12" *ngIf="this.mode == 'Update'">
+
+                <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                    <div class="card-header bg-white">
+        
+                        <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+        
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Unit Level Issue Mapping : ({{ f.unitLevelIssue.controls?.length }}) </h6>
+
+                        </div>
+                        
+                    </div>
+        
+                    <div class="card-body p-0">
+        
+                        <div class="table-responsive" formArrayName="unitLevelIssue">
+
+                            <table class="table table-borderless align-middle table-striped table-scroll">
+
+                                <thead class="bg-light text-secondary">
+
+                                    <tr>
+
+                                        <th style="width: 6%">Action</th>
+
+                                        <th style="width: 20%">Property</th>
+
+                                        <th style="width: 15%">Unit</th>
+
+                                        <th style="width: 20%">Priority</th>
+
+                                        <th style="width: 15%">TAT</th>
+
+                                        <th style="width: 20%">Manager</th>
+                                        
+                                        <th style="width: 15%">Active Date</th>
+
+                                        <th style="width: 15%" class="th-action">Inactive Date</th>
+
+                                    </tr>
+
+                                </thead>
+                            
+                                <tbody>
+
+                                    <ng-container *ngIf="!_.isEmpty(f.unitLevelIssue.controls); else other">
+
+                                        <ng-container *ngFor="let config of f.unitLevelIssue.controls; let i = index; let last = last; let first = first">
+
+                                            <ng-container [formGroup]="config" *ngIf="config.controls as uif">
+
+                                                <tr>
+
+                                                    <td>
+
+                                                        <div class="d-flex justify-content-between align-items-center" style="height: 100%;">
+
+                                                            <p (click)="deleteIssue('unit', i)" style="color: #FF4949 !important; font-size: 18px; cursor: pointer; margin: 0; display: flex; align-items: center;">
+
+                                                                <i class="bi bi-dash-lg fw-bold"></i>
+                                                            
+                                                            </p>
+                                                        
+                                                            <p *ngIf="last" (click)="addIssue('unit')" class="fw-bold" style="cursor: pointer; margin: 0; display: flex; align-items: center;">
+        
+                                                                <i class="bi bi-plus-lg fw-bold"></i>
+        
+                                                            </p>
+
+                                                        </div>
+
+                                                    </td>
+
+                                                    <td>
+                                                    
+                                                        <ng-select class="form-control" formControlName="propertyName" id="propertyName" appendTo="body" [clearable]="false" placeholder="Select Property">
+
+                                                            <ng-option *ngFor="let item of this.masterList['unitLevelIssueList']" [value]="item.propertyName?._id">
+                                                                
+                                                                {{ item.propertyName?.propertyName }}
+                                                            
+                                                            </ng-option>
+
+                                                        </ng-select>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <ng-select class="form-control" formControlName="unitName" id="unitName" appendTo="body" [clearable]="false" placeholder="Select Unit">
+                                                    
+                                                            <ng-option *ngFor="let item of masterList['unitLevelIssueList']" [value]="item?._id">
+                                                    
+                                                                {{ (item?.unitName) }}
+                                                    
+                                                            </ng-option>
+                                                    
+                                                        </ng-select>
+                                                    
+                                                    </td>
+        
+                                                    <td>
+        
+                                                        <ng-select name="" id="priority" class="form-control" formControlName="priority" autocomplete="off" [ngClass]="{ 'is-invalid': (uif.priority?.touched || formSubmitted) && uif.priority?.errors }" appendTo="body" [clearable]="false" placeholder="Select Priority">
+        
+                                                            <ng-option value="hight">High</ng-option>
+        
+                                                            <ng-option value="medium">Medium</ng-option>
+        
+                                                            <ng-option value="low">Low</ng-option>
+                                                            
+                                                        </ng-select>
+        
+                                                    </td>
+        
+                                                    <td>
+        
+                                                        <!-- <div class="w-100 d-flex">
+        
+                                                            <input type="text" class="form-control" id="tat" formControlName="tat" numbersOnly>
+        
+                                                            <input type="text" class="form-control ms-1" id="tatType" formControlName="tatType"> 
+        
+                                                        </div> -->
+
+                                                        <div class="d-flex w-100">
+
+                                                            <div class="col-md-5">
+
+                                                                <input type="number" class="form-control" id="tat" formControlName="tat" numbersOnly autocomplete="off" placeholder="-" [ngClass]="{ 'is-invalid': (uif.tat?.touched || formSubmitted) && uif.tat?.errors }"/>
+                                                                
+                                                            </div>
+                                                            
+                                                            <!-- <div class="col-md-1 m-0 p-0">
+                                                                
+                                                                <div style="width: 0.9px;height: 30px;margin-top: 4px;background-color: #dee2e6;"></div>
+
+                                                            </div> -->
+                                                        
+                                                            <div class="col-md-6">
+
+                                                                <ng-select name="tatType" id="tatType" formControlName="tatType" class="form-control" [ngClass]="{ 'is-invalid': (uif.tatType?.touched || formSubmitted) && uif.tatType?.errors }" appendTo="body" [clearable]="false" placeholder="Select Type">
+
+                                                                    <ng-option value="days">Days</ng-option>
+                                                                    
+                                                                    <ng-option value="hours">Hours</ng-option>
+                                                                    
+                                                                </ng-select>
+                                                            
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        
+                                                    </td>
+        
+                                                    <td>
+
+                                                        <ng-select class="form-control" [items]="this.masterList['issueManagerList'] || []" bindLabel="manager" bindValue="_id" formControlName="manager" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body" placeholder="Select Manager">
+
+                                                            <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                                                                <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                                                                    
+                                                                    <div class="d-flex">
+
+                                                                        <span class="ng-value-label ellipsis ms-1">
+
+                                                                            <span>{{ _.get(item,'firstName') + ' ' + _.get(item,'lastName') }}</span> 
+
+                                                                        </span>
+
+                                                                        <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                                                                        <span style="width: 1px; height: 20px; background-color: black;"></span>
+                                                                        
+                                                                    </div>
+
+                                                                </div>
+
+                                                                <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                                                                    <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                                                                </div>
+
+                                                            </ng-template>   
+
+                                                            <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                                                                <div class="form-check d-flex align-items-center"> 
+                                                                    
+                                                                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'unitLevelIssueManager')"/>
+                            
+                                                                    <label class="form-check-label mt-1">{{ item?.firstName + ' ' + item?.lastName }}</label>
+                            
+                                                                </div>
+                                                                    
+                                                            </ng-template>
+                                                        
+                                                        </ng-select>
+        
+                                                    </td>
+
+                                                    <td>
+
+                                                        <input type="text" class="form-control" formControlName="activeDate" placeholder="Add Date">
+
+                                                    </td>
+
+                                                    <td class="td-action">
+
+                                                        <input type="text" class="form-control" formControlName="inactiveDate" placeholder="Add Date">
+
+                                                    </td>
+
+                                                </tr>
+
+                                            </ng-container>
+
+                                        </ng-container>
+                                        
+                                    </ng-container>
+
+                                    <ng-template #other>
+
+                                        <tr>
+
+                                            <td colspan="8" style="text-align: center !important;">No  Records Found</td>
+
+                                        </tr>
+
+                                    </ng-template>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+        
+                    </div>
+        
+                </div>
+
+            </div>
+
+            <!-- Tenant Level Issue Mapping -->
+            <div class="col-md-12" *ngIf="this.mode == 'Update'">
+
+                <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                    <div class="card-header bg-white">
+        
+                        <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+        
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Tenant Level Issue Mapping : ({{ f.tenantLevelIssue.controls?.length }}) </h6>
+
+                        </div>
+                        
+                    </div>
+        
+                    <div class="card-body p-0">
+        
+                        <div class="table-responsive" formArrayName="tenantLevelIssue">
+
+                            <table class="table table-borderless align-middle table-striped table-scroll">
+
+                                <thead class="bg-light text-secondary">
+
+                                    <tr>
+
+                                        <th style="width: 6%">Action</th>
+
+                                        <th style="min-width: 200px !important">Property</th>
+
+                                        <th style="min-width: 180px !important">Unit</th>
+                                        
+                                        <th style="min-width: 180px !important">Tenant</th>
+
+                                        <th style="width: 20%">Issue Category</th>
+
+                                        <th style="width: 20%">Priority</th>
+
+                                        <th style="width: 15%">TAT</th>
+
+                                        <th style="width: 20%">Manager</th>
+                                        
+                                        <th style="width: 15%">Active Date</th>
+
+                                        <th style="width: 15%" class="th-action">Inactive Date</th>
+
+                                    </tr>
+
+                                </thead>
+                            
+                                <tbody>
+
+                                    <ng-container *ngIf="!_.isEmpty(f.tenantLevelIssue.controls); else other">
+
+                                        <ng-container *ngFor="let tenant of f.tenantLevelIssue.controls; let i = index; let last = last; let first = first">
+
+                                            <ng-container [formGroup]="tenant" *ngIf="tenant.controls as tif">
+
+                                                <tr>
+
+                                                    <td>
+
+                                                        <div class="d-flex justify-content-between align-items-center" style="height: 100%;">
+
+                                                            <p (click)="deleteIssue('tenant', i)" style="color: #FF4949 !important; font-size: 18px; cursor: pointer; margin: 0; display: flex; align-items: center;">
+
+                                                                <i class="bi bi-dash-lg fw-bold"></i>
+                                                            
+                                                            </p>
+                                                        
+                                                            <p *ngIf="last" (click)="addIssue('tenant')" class="fw-bold" style="cursor: pointer; margin: 0; display: flex; align-items: center;">
+        
+                                                                <i class="bi bi-plus-lg fw-bold"></i>
+        
+                                                            </p>
+
+                                                        </div>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <ng-select class="form-control" formControlName="propertyName" id="propertyName" appendTo="body" [clearable]="false" placeholder="Select Property">
+
+                                                            <ng-option *ngFor="let item of this.masterList['tenantLevelIssueList']" [value]="item?.propertyName[0]?._id">{{ item.propertyName[0]?.propertyName }}</ng-option>
+
+                                                        </ng-select>
+                                                        
+                                                    </td>
+                                                    
+                                                   <td>
+
+                                                        <ng-select class="form-control" formControlName="unitName" id="unitName" appendTo="body" [clearable]="false" placeholder="Select Unit">
+                                                    
+                                                            <ng-option *ngFor="let item of masterList['tenantLevelIssueList']" [value]="item?.unitName?._id">
+                                                    
+                                                                {{ (item.unitName?.unitName) }}
+                                                    
+                                                            </ng-option>
+                                                    
+                                                        </ng-select>
+                                                    
+                                                    </td>
+
+                                                    <td>
+
+                                                        <ng-select class="form-control" formControlName="tenantName" id="tenantName" (change)="onTenantChange(i)" appendTo="body" [clearable]="false" placeholder="Select Tenant">
+                                                      
+                                                            <ng-option *ngFor="let item of masterList['tenantLevelIssueList']" [value]="item?._id">
+                                                      
+                                                                {{ item.firstName + ' ' + item.lastName }}
+                                                      
+                                                            </ng-option>
+                                                      
+                                                        </ng-select>
+                                                      
+                                                    </td>
+
+                                                    <td>
+                                                
+                                                        <ng-select class="form-control" formControlName="issueCategory" id="issueCategory" (change)="changeValue('issueCategory',i)" [ngClass]="{ 'is-invalid': (tif.issueCategory?.touched || formSubmitted) && tif.issueCategory?.errors }" appendTo="body" [clearable]="false" placeholder="Select Issue">
+        
+                                                            <ng-option *ngFor="let issue of masterList['issueList']" [value]="issue?._id">{{ issue.issueName }}</ng-option>
+        
+                                                        </ng-select>
+        
+                                                    </td>
+        
+                                                    <td>
+        
+                                                        <ng-select name="" id="priority" class="form-control" formControlName="priority" autocomplete="off" [ngClass]="{ 'is-invalid': (tif.priority?.touched || formSubmitted) && tif.priority?.errors }" appendTo="body" [clearable]="false" placeholder="Select Priority">
+        
+                                                            <ng-option value="hight">High</ng-option>
+        
+                                                            <ng-option value="medium">Medium</ng-option>
+        
+                                                            <ng-option value="low">Low</ng-option>
+                                                            
+                                                        </ng-select>
+        
+                                                    </td>
+        
+                                                    <td>
+        
+                                                        <!-- <div class="w-100 d-flex">
+        
+                                                            <input type="text" class="form-control" id="tat" formControlName="tat" numbersOnly>
+        
+                                                            <input type="text" class="form-control ms-1" id="tatType" formControlName="tatType"> 
+        
+                                                        </div> -->
+
+                                                        <div class="d-flex w-100">
+
+                                                            <div class="col-md-5">
+
+                                                                <input type="number" class="form-control" id="tat" formControlName="tat" numbersOnly autocomplete="off" placeholder="-" [ngClass]="{ 'is-invalid': (tif.tat?.touched || formSubmitted) && tif.tat?.errors }"/>
+                                                                
+                                                            </div>
+                                                            
+                                                            <!-- <div class="col-md-1 m-0 p-0">
+                                                                
+                                                                <div style="width: 0.9px;height: 30px;margin-top: 4px;background-color: #dee2e6;"></div>
+
+                                                            </div> -->
+                                                        
+                                                            <div class="col-md-6">
+
+                                                                <ng-select name="tatType" id="tatType" formControlName="tatType" class="form-control" [ngClass]="{ 'is-invalid': (tif.tatType?.touched || formSubmitted) && tif.tatType?.errors }" appendTo="body" [clearable]="false" placeholder="Select Type">
+
+                                                                    <ng-option value="days">Days</ng-option>
+                                                                    
+                                                                    <ng-option value="hours">Hours</ng-option>
+                                                                    
+                                                                </ng-select>
+                                                            
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        
+                                                    </td>
+        
+                                                    <td>
+
+                                                        <ng-select class="form-control" [items]="this.masterList['issueManagerList'] || []" bindLabel="manager" bindValue="_id" formControlName="manager" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body" placeholder="Select Manager">
+
+                                                            <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                                                                <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                                                                    
+                                                                    <div class="d-flex">
+
+                                                                        <span class="ng-value-label ellipsis ms-1">
+
+                                                                            <span>{{ _.get(item,'firstName') + ' ' + _.get(item,'lastName') }}</span> 
+
+                                                                        </span>
+
+                                                                        <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                                                                        <span style="width: 1px; height: 20px; background-color: black;"></span>
+                                                                        
+                                                                    </div>
+
+                                                                </div>
+
+                                                                <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                                                                    <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                                                                </div>
+
+                                                            </ng-template>   
+
+                                                            <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                                                                <div class="form-check d-flex align-items-center"> 
+                                                                    
+                                                                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'tenantLevelIssueManager')"/>
+                            
+                                                                    <label class="form-check-label mt-1">{{ item?.firstName + ' ' + item?.lastName }}</label>
+                            
+                                                                </div>
+                                                                    
+                                                            </ng-template>
+                                                        
+                                                        </ng-select>
+        
+                                                    </td>
+
+                                                    <td>
+
+                                                        <input type="text" class="form-control" formControlName="activeDate" placeholder="Add Date">
+
+                                                    </td>
+
+                                                    <td class="td-action">
+
+                                                        <input type="text" class="form-control" formControlName="inactiveDate" placeholder="Add Date">
+
+                                                    </td>
+
+                                                </tr>
+
+                                            </ng-container>
+
+                                        </ng-container>
+                                        
+                                    </ng-container>
+
+                                    <ng-template #other>
+
+                                        <tr>
+
+                                            <td colspan="8" style="text-align: center !important;">No  Records Found</td>
+
+                                        </tr>
+
+                                    </ng-template>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+        
+                    </div>
+        
+                </div>
+
+            </div>
+
+            <div class="d-flex justify-content-end mt-3 mb-3">
+
+                <button class="btn btn-outline-secondary mt-3 me-2" (click)="this.service.navigate({ 'url': 'app/staff' })">Discard</button>
+
+                <button class="btn btn-secondary mt-3 mx-2" (click)="submit()">Save</button>
+
+            </div>
+            
+        </div>
+        
+    </form>
+
+</div>
+
+<div class="file-modal" *ngIf="previewUrl" (click)="closePreview()">
+
+  <ng-container *ngIf="isPdfPreview; else imagePreview">
+
+    <iframe [src]="previewUrl" class="modal-file" frameborder="0" type="application/pdf"></iframe>
+
+  </ng-container>
+
+  <ng-template #imagePreview> <img [src]="previewUrl" class="modal-img" /> </ng-template>
+
+</div>
