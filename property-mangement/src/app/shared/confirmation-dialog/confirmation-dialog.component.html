@@ -1,0 +1,91 @@
+<div class="border-0">
+
+  <div class="modal-body d-flex justify-content-center pb-0  border-0 " style=" font-family: 'Inter', sans-serif !important;">
+
+  <div *ngIf="type == 'error'"  class="p-4">
+
+    <div class="d-flex justify-content-center mb-3">
+
+      <div>
+
+        <img src="images/error-confirmation.png" alt="" width="100px" height="100px">
+        
+      </div>
+
+    </div>
+
+    <div class="text-center">
+
+      <h5 class="fw-bold mb-2 text-dark">{{ title || 'Are You Sure?'}}</h5>
+
+      <p class="text-muted mb-4 text-dark">{{ message || 'Do you want to save your changes before exiting' }}</p>
+      
+    </div>
+
+    <div class=" d-flex justify-content-center border-0  pt-0 my-0 py-0" *ngIf="btnCancelShow || btnOkShow ">
+    
+      <button matRipple class="btn  cancel-btn-delete btn-sm   fw-normal  mx-2  px-5" (click)="decline()" *ngIf="btnCancelShow"> {{ btnCancelText | titlecase }} </button>
+        
+      <button matRipple class="btn  confirm-btn-delete text-white btn-sm fw-normal  mx-2 px-5"   (click)="accept()" *ngIf="btnOkShow"> {{ btnOkText | titlecase }} </button>
+
+    </div>
+
+  </div>
+
+  <div *ngIf="type == 'success'"  class="p-4">
+
+    <div class="d-flex justify-content-center mb-3">
+
+      <div>
+
+        <img src="images/success-confirm.png" alt="" width="100px" height="100px">
+        
+      </div>
+
+    </div>
+
+    <div class="text-center">
+
+      <h5 class="fw-bold mb-2 text-dark">{{ title || 'Are You Sure?'}}</h5>
+
+      <p class="text-muted mb-4 text-dark">{{ message || 'Do you want to save your changes before exiting' }}</p>
+      
+    </div>
+
+    <div class=" d-flex justify-content-center border-0  pt-0 my-0 py-0" *ngIf="btnCancelShow || btnOkShow ">
+    
+      <button matRipple class="btn  cancel-btn-success btn-sm   fw-normal  mx-2  px-5" (click)="decline()" *ngIf="btnCancelShow"> {{ btnCancelText | titlecase }} </button>
+        
+      <button matRipple class="btn  confirm-btn-success text-white btn-sm fw-normal  mx-2 px-5"   (click)="accept()" *ngIf="btnOkShow"> {{ btnOkText | titlecase }} </button>
+
+    </div>
+
+  </div>
+
+  <div *ngIf="type == 'info'" class="p-4">
+
+    <div class="d-flex justify-content-center mb-3">
+
+      <div> <img src="images/confirmation-warning.png" alt="" width="100px" height="100px"> </div>
+
+    </div>
+
+    <div class="text-center">
+
+      <h5 class="fw-bold mb-2 text-dark">{{ title || 'Are You Sure?'}}</h5>
+
+      <p class="text-muted mb-4 text-dark">{{ message || 'Do you want to save your changes before exiting' }}</p>
+      
+    </div>
+
+    <div class=" d-flex justify-content-center border-0  pt-0 my-0 py-0" *ngIf="btnCancelShow || btnOkShow ">
+    
+      <button matRipple class="btn  cancel-btn-warning btn-sm   fw-normal  mx-2  px-5" (click)="decline()" *ngIf="btnCancelShow"> {{ btnCancelText | titlecase }} </button>
+        
+      <button matRipple class="btn  confirm-btn-warning text-white btn-sm fw-normal  mx-2 px-5"   (click)="accept()" *ngIf="btnOkShow"> {{ btnOkText | titlecase }} </button>
+
+    </div>
+
+  </div>
+
+</div>
