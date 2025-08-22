@@ -4,7 +4,6 @@ on:
   pull_request:
     branches: [ main, master ]
 
-# Permissions needed to read code
 permissions:
   contents: read
 
@@ -19,21 +18,18 @@ jobs:
       - name: Install Semgrep
         run: python -m pip install semgrep
 
-      # This step will FAIL the job if violations are found
-      # and print the raw output to the log. Added JSON output for webhook.
       - name: Run Semgrep and Fail on Findings
         run: |
           semgrep ci \
             --config "rules.yaml" \
             --no-suppress-errors \
-            --json > semgrep.json  # Saves results as JSON file
+            --json > semgrep.json  # Generate JSON for sending
 
-      # New step: Send JSON results to your Render webhook (runs even on failure)
-      - name: Send Results to Webhook
-        if: always()
+      - name: Send Results to Central Webhook
+        if: always()  # Runs even if scan fails
         env:
-          WEBHOOK_URL: https://review-test1.onrender.com/receiver
-          API_TOKEN: ${{ secrets.API_TOKEN }}  # Add this secret in GitHub Settings with your token value (e.g., qwertyuiop123)
+          WEBHOOK_URL: https://semgrep-receiver.onrender.com/receiver  # Your central Render URL
+          API_TOKEN: ${{ secrets.API_TOKEN }}  # Shared token
         run: |
           curl -v -X POST "$WEBHOOK_URL" \
             -H "Authorization: Bearer $API_TOKEN" \
