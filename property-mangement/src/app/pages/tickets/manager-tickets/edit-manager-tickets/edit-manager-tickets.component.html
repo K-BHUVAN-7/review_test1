@@ -1,0 +1,276 @@
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-end mb-3">
+
+        <small><span class="text-primary">Manager Issue</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-primary" (click)="this.service.navigate({ 'url': 'app/tickets/manager-tickets' })" style="cursor: pointer;">Manager Issue List</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"><span class="text-dark"> {{ this.mode == 'Create' ? 'Create' : 'Update' }} Manager Issue</span> </small>
+
+    </div>
+
+    <div class="row" [formGroup]="managerIssueForm">
+
+        <div class="col-md-8">
+
+            <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                <div class="card-header bg-white">
+
+                    <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+        
+                        <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Edit Raise New Ticket :</h6>
+                    
+                    </div>
+                    
+                </div>
+
+                <div class="card-body d-flex">
+                    
+                    <!-- Edit Raise New Ticket -->
+                    <div class="col-md-6">
+
+                        <div class="row">
+    
+                            <!-- Property Name -->
+                            <div class="col-md-6">
+    
+                                <div class="form-group required mb-3">
+    
+                                    <label for="propertyName" class="mb-2">Property Name</label>
+    
+                                    <ng-select name="propertyName" id="propertyName" class="form-control" formControlName="propertyName" [ngClass]="{ 'is-invalid': (f.propertyName?.touched || formSubmitted) && f.propertyName.errors }" (change)="changeValue('propertyName')" appendTo="body" [clearable]="false" placeholder="Select Property">
+    
+                                        <ng-option *ngFor="let propertyName of masterList['propertyList']" [value]="propertyName?._id">{{ propertyName?.propertyName }}</ng-option>
+    
+                                    </ng-select>
+    
+                                    <div *ngIf="(f.propertyName?.touched || formSubmitted) && f.propertyName.errors" class="invalid-feedback">
+    
+                                        <div *ngIf="f.propertyName.errors.required">Proeprty Name is required</div>
+                
+                                    </div>
+    
+                                </div>
+    
+                            </div>
+    
+                            <!-- Unit Name -->
+                            <div class="col-md-6">
+    
+                                <div class="form-group required mb-3">
+    
+                                    <label for="unitName" class="mb-2">Unit Name</label>
+    
+                                    <ng-select name="unitName" id="unitName" class="form-control" formControlName="unitName" [ngClass]="{ 'is-invalid': (f.unitName?.touched || formSubmitted) && f.unitName.errors }" (change)="changeValue('unitName')" appendTo="body" [clearable]="false" placeholder="Select Unit">
+    
+                                        <ng-option *ngFor="let unitName of filteredUnitList" [value]="unitName?._id">{{ unitName?.unitName }}</ng-option>
+    
+                                    </ng-select>
+    
+                                    <div *ngIf="(f.unitName?.touched || formSubmitted) && f.unitName.errors" class="invalid-feedback">
+    
+                                        <div *ngIf="f.unitName.errors.required">Unit is required</div>
+                
+                                    </div>
+    
+                                </div>
+    
+                            </div>
+
+                            <!-- Tenant Name -->
+                            <div class="col-md-6">
+    
+                                <div class="form-group required mb-3">
+    
+                                    <label for="tenant" class="mb-2">Tenant</label>
+    
+                                    <ng-select name="tenant" id="tenantName" class="form-control" formControlName="tenantName" [ngClass]="{ 'is-invalid': (f.tenantName?.touched || formSubmitted) && f.tenantName.errors }" appendTo="body" [clearable]="false" placeholder="Select Tenant">
+    
+                                        <ng-option *ngFor="let tenant of filteredTenantList" [value]="tenant?._id">{{ tenant?.firstName + ' ' + tenant?.lastName }}</ng-option>
+    
+                                    </ng-select>
+    
+                                    <div *ngIf="(f.tenantName?.touched || formSubmitted) && f.tenantName.errors" class="invalid-feedback">
+    
+                                        <div *ngIf="f.tenantName.errors.required">Tenant is required</div>
+                
+                                    </div>
+    
+                                </div>
+    
+                            </div>
+    
+                            <!-- Issue Name -->
+                            <div class="col-md-6">
+    
+                                <div class="form-group required mb-3">
+    
+                                    <label for="issueName" class="mb-2">Issue Name</label>
+    
+                                    <ng-select name="issueName" id="issueName" class="form-control" formControlName="issueName" [ngClass]="{ 'is-invalid': (f.issueName?.touched || formSubmitted) && f.issueName.errors }" appendTo="body" [clearable]="false" placeholder="Select Issue">
+    
+                                        <ng-option *ngFor="let issueName of masterList['issueList']" [value]="issueName?._id">{{ issueName?.issueName }}</ng-option>
+    
+                                    </ng-select>
+    
+                                    <div *ngIf="(f.issueName?.touched || formSubmitted) && f.issueName.errors" class="invalid-feedback">
+    
+                                        <div *ngIf="f.issueName.errors.required">Issue Name is required</div>
+                
+                                    </div>
+    
+                                </div>
+    
+                            </div>
+
+                            <!-- Tat & Tat Type -->
+                            <div class="col-md-6 form-group mb-3">
+    
+                                <label for="tat" class="mb-2">TAT</label>
+
+                                <div class="w-100 d-flex">
+
+                                    <input type="number" class="form-control" id="tat" formControlName="tat" [readOnly]="true" style="background-color: #e9e9e9 !important;" placeholder="Enter TAT">
+
+                                    <input type="text" class="form-control ms-1" id="tatType" formControlName="tatType" [readOnly]="true" style="background-color: #e9e9e9 !important;" placeholder="Enter Type"> 
+
+                                </div>
+    
+                            </div>
+
+                            <!-- Service Staff -->
+                            <div class="col-md-6 form-group mb-3">
+
+                                <label for="staffName" class="mb-2">Service Staff</label>
+                                
+                                <ng-select class="form-control" id="staffName" formControlName="staffName" style="background-color: #e9e9e9 !important;" appendTo="body" [clearable]="false" placeholder="Select Staff">
+                                
+                                    <ng-option *ngFor="let staff of filteredStaffList" [value]="staff._id">
+                                
+                                        {{ staff.firstName }} {{ staff.lastName }}
+                                
+                                    </ng-option>
+                                
+                                </ng-select>
+                                
+                            </div>
+    
+                            <!-- Issue Description -->
+                            <div class="col-md-12 form-group mb-3">
+    
+                                <label for="issueDescription">Issue Description</label>
+                        
+                                <textarea class="form-control mt-1" id="issueDescription" formControlName="issueDescription" rows="3" placeholder="Enter Issue Description...."></textarea>
+                        
+                            </div>
+    
+                        </div>
+
+                    </div>
+                    
+                    <!-- Upload Images -->
+                    <div class="col-md-5 ms-5">
+
+                        <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051); height: 371px;">
+
+                            <div class="card-header bg-white d-flex justify-content-between">
+                
+                                <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+                
+                                    <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Upload Images : </h6>
+                                
+                                </div>
+
+                                <div (click)="shareImage()" style="cursor: pointer;">
+
+                                    <img src="images/icons/share-icon.svg" class="mt-2" style="width: 27px;" alt="">
+
+                                </div>
+                                
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="upload-container">
+                            
+                                    <label class="upload-box" (dragover)="onDragOver($event)"
+                                    (dragleave)="onDragLeave($event)"
+                                    (drop)="onDrop($event)"
+                                    [class.dragover]="isDragOver">
+                                    
+                                        <input type="file" (change)="onFileSelect($event)" multiple hidden />
+                                    
+                                        <img src="images/uploadImg.png" class="mb-2" style="width: 50px;" alt="">
+                                    
+                                        <div class="upload-content">
+                                    
+                                            <p class="my-0">Drag and Drop or <span class="browse">Browse</span></p>
+                                    
+                                            <small class="text-muted">File Supported: Png, Jpg</small>
+                                    
+                                        </div>
+                                    
+                                    </label>
+                    
+                                    <div class="upload-scroll-area">
+                    
+                                        <div *ngFor="let file of uploadFiles; let i = index" class="upload-list">
+                    
+                                            <ng-container [ngSwitch]="getFileType(file.file.name)">
+                                                
+                                                <img *ngSwitchCase="'pdf'" class="thumbnail" src="images/pdf.png" alt="PDF" (click)="openPreview(file.preview )" />
+
+                                                <a *ngSwitchCase="'word'" [href]="file.preview" [download]="file.file.name">
+
+                                                    <img class="thumbnail" src="images/word2.png" alt="Word" />
+
+                                                </a>
+
+                                                <img *ngSwitchDefault class="thumbnail" [src]="file.preview" alt="Preview" (click)="openPreview(file.preview)" />
+                                                
+                                            </ng-container>
+                    
+                                            <div  class="file-info">
+                    
+                                                <p>{{ file.file.name }}</p>
+                    
+                                                <p [class.completed]="file.status == 'Completed'">{{ file.status }}</p>
+                    
+                                                <div class="progress-bar">
+                    
+                                                    <div class="progress" [style.width.%]="file.progress" [class.completed]="file.status == 'Completed'"></div>
+                    
+                                                </div>
+                    
+                                            </div>
+                    
+                                            <button class="closebutton" (click)="removeImage(i)">✖</button>
+                    
+                                        </div>
+                    
+                                    </div>
+                    
+                                </div>
+                            
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex justify-content-end mt-3">
+    
+                <button class="btn btn-outline-secondary mt-3 px-3 py-0" (click)="close()">Discard</button>
+    
+                <button class="btn btn-secondary mt-3 px-3 py-1 ms-2" (click)="onSubmit()">Add</button>
+                
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

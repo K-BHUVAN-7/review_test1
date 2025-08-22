@@ -1,0 +1,135 @@
+<div class="custom-multi-select">
+    
+    <ng-select
+
+        [items]="itemList"
+
+        [multiple]="multiple"
+        
+        [bindLabel]="bindLabelName != 'item' ? bindLabelName : ''"
+
+        [bindValue]="bindValueName"
+
+        [placeholder]="placeholder"
+
+        [closeOnSelect]="false"
+
+        [appendTo]="appendProperty"
+
+        [selectableGroup]="true"
+
+        [selectableGroupAsModel]="false"
+
+        [disabled]="isDisabled"
+
+        [clearable]="isClearable"
+
+        [(ngModel)]="selectedValue"
+
+        groupBy="all"
+
+        (change)="valueChanged()"
+
+        (keyup)="keyUpEvent($event)"
+
+        (clear)="clearAll()"
+
+        [ngClass]="{ 'is-invalid': showError }">
+
+        <!-- Multi label template -->
+
+        <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+            <div class="ng-value multiple" *ngFor="let item of items | slice:0:2">
+
+                <span class="ng-value-label ellipsis">
+
+                    {{ getLabel(item) }}
+
+                </span>
+
+            </div>
+
+            <div class="ng-value multiple" *ngIf="items.length > 2">
+
+                <span class="ng-value-label ellipsis"> + {{items.length - 2}} more</span>
+
+            </div>
+
+        </ng-template>
+
+        <!-- Single label template -->
+
+        <ng-template ng-single-label-tmp let-item="item">
+
+            {{ getLabel(item) }}
+
+        </ng-template>
+
+        <!-- Dropdown group option template -->
+
+        <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
+            
+            <div *ngIf="multiple" class="form-check">
+
+                <input id="{{bindLabelName}}-item-{{index}}" type="checkbox" [ngModel]="item$.selected" class="form-check-input me-1"/>
+
+                <label class="custom-control-label form-check-label">{{ item.all | uppercase }}</label>
+
+            </div>
+
+        </ng-template>
+
+        <!-- Dropdown option template -->
+
+        <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+
+            <div *ngIf="multiple" class="form-check">
+
+                <input id="{{bindLabelName}}-{{index}}" type="checkbox" [ngModel]="item$.selected" class="form-check-input"/>
+                
+                <label class="custom-control-label form-check-label d-flex justify-content-between align-items-center">
+
+                    {{ getLabel(item) }}
+
+                    <ng-container *ngIf="showInActiveBadge && !item.is_active">
+                        <span class="alert alert-danger badge p-1 border-0 fw-normal my-auto">In-Active</span>
+                    </ng-container>
+
+                </label>
+
+            </div>
+
+            <label *ngIf="!multiple">
+
+                {{ getLabel(item) }}
+
+            </label>
+
+        </ng-template>
+        
+        <!-- Footer template -->
+
+        <ng-template ng-footer-tmp *ngIf="multiple && itemList?.length > 0">
+
+            <div class="d-flex justify-content-between py-1">
+
+                <button class="btn btn-sm btn-primary" (click)="selectAll()">
+
+                    Select All
+
+                </button>
+
+                <button class="btn btn-sm btn-secondary mx-2" (click)="clearAll()" *ngIf="!isClearable">
+
+                    Clear
+
+                </button>
+
+            </div>
+
+        </ng-template>
+        
+    </ng-select>
+    
+</div>
