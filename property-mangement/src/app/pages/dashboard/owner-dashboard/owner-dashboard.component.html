@@ -1,0 +1,1443 @@
+
+<div class="container-fluid">
+
+  <!-- Top Status -->
+  <div class="row mb-4 g-3 pt-3">
+
+    <div class="d-flex flex-wrap justify-content-between">
+      
+      <div class="card-wrapper mt-1" *ngFor="let card of topStats">
+  
+        <div class="card shadow-sm border-0 text-center p-3 h-100 me-4">
+  
+          <div class="d-flex justify-content-between">
+            
+            <h4 class="fw-semibold mb-1 fs-5">{{ card.count }}</h4>
+
+            <img [src]="card.icon" width="32" height="32" alt="icon"/>
+
+          </div>
+          
+          <div class="text-start">
+            
+            <p class="text-muted mb-0" style="font-size: 12px;">{{ card.label }}</p>
+
+          </div>
+  
+        </div>
+  
+      </div>
+  
+    </div>
+
+  </div>
+
+  <!-- Outstanding & Outstanding Ageing -->
+  <div class="row mt-4">
+
+    <!-- Outstanding Details -->
+    <div class="col-md-4">
+
+      <div class="card shadow-sm border-0">
+
+        <div class="card-body py-4">
+
+          <h6 class="mb-0" style="border-left: 3px solid #D2A119; padding-left: 8px;">Outstanding Details : </h6>
+
+          <div class="d-flex justify-content-center">
+
+            <div class="mt-3" style="width: 400px; height: 346px;">
+
+              <apx-chart
+                [chart]="outstandingChartOptions.chart"
+                [labels]="outstandingChartOptions.labels"
+                [series]="outstandingChartOptions.series"
+                [colors]="outstandingChartOptions.colors"
+                [dataLabels]="outstandingChartOptions.dataLabels"
+                [tooltip]="outstandingChartOptions.tooltip"
+                [legend]="outstandingChartOptions.legend"
+                [plotOptions]="outstandingChartOptions.plotOptions"
+                [responsive]="outstandingChartOptions.responsive">
+              </apx-chart>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+      
+    </div>
+
+    <!-- Outstanding Ageing -->
+    <div class="col-md-8">
+
+      <div class="open-ticket-ageing-table card p-0 shadow-sm border-0">
+
+        <div class="row d-flex justify-content-between align-items-center p-3 border-bottom">
+    
+          <div class="col-md-4">
+    
+            <h6 class="mb-0">
+    
+              <span class="border-start border-3 border-warning ps-2">Outstanding Ageing :</span>
+    
+            </h6>
+    
+          </div>
+          
+          <div class="col-md-6 ms-3">
+          
+            <div class="d-flex align-items-center justify-content-end gap-2" [formGroup]="filterForm">
+
+              <div class="w-50">
+
+                <ng-container *ngIf="filterForm?.get('outsPropertyOrUnit')?.value == false; else unit">
+
+                  <ng-select class="form-control" [items]="masterList['propertyList']" bindLabel="propertyName" bindValue="_id" formControlName="outsProperty" [multiple]="true" [closeOnSelect]="false" [clearable]="false" placeholder="Select Property" [virtualScroll]="true" [searchable]="true" appendTo="body" (change)="getRentCollectionList()">
+
+                    <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                      <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                          
+                        <div class="d-flex">
+
+                          <span class="ng-value-label ellipsis ms-1">
+
+                            <span>{{ _.get(item, 'propertyName') }}</span> 
+
+                          </span>
+
+                          <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                          <span style="width: 1px; height: 20px; background-color: black;"></span>
+                            
+                        </div>
+
+                      </div>
+
+                      <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                        <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                      </div>
+
+                    </ng-template>                                
+
+                    <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                      <div class="form-check d-flex align-items-center"> 
+                          
+                        <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'outsProperty')"/>
+
+                        <label class="form-check-label mt-1">{{ item?.propertyName }}</label>
+
+                      </div>
+                            
+                    </ng-template>
+                
+                  </ng-select>
+
+                  <!-- <ng-select name="data" id="data" class="form-control" formControlName="outsProperty" (change)="getRentCollectionList()" appendTo="body" [clearable]="false" placeholder="Select Property">
+
+                    <ng-option *ngFor="let data of masterList['propertyList']" [value]="data?._id">{{ data.propertyName }}</ng-option>
+
+                  </ng-select> -->
+
+                </ng-container>
+
+                <ng-template #unit>
+
+                  <ng-select class="form-control" [items]="masterList['unitList']" bindLabel="propertyName" bindValue="_id" formControlName="outsUnit" [multiple]="true" [closeOnSelect]="false" [clearable]="false" placeholder="Select Unit" [virtualScroll]="true" [searchable]="true" appendTo="body" (change)="getRentCollectionList()">
+
+                    <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                      <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                          
+                        <div class="d-flex">
+
+                          <span class="ng-value-label ellipsis ms-1">
+
+                            <span>{{ _.get(item, 'propertyName.propertyName') + ' - ' + _.get(item, 'unitName') }}</span> 
+
+                          </span>
+
+                          <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                          <span style="width: 1px; height: 20px; background-color: black;"></span>
+                            
+                        </div>
+
+                      </div>
+
+                      <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                        <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                      </div>
+
+                    </ng-template>                                
+
+                    <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                      <div class="form-check d-flex align-items-center"> 
+                          
+                        <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'outsUnit')"/>
+
+                        <label class="form-check-label mt-1">{{ item?.propertyName?.propertyName + ' - ' + item.unitName }}</label>
+
+                      </div>
+                            
+                    </ng-template>
+                
+                  </ng-select>
+
+                  <!-- <ng-select name="data" id="data" class="form-control" formControlName="outsUnit" (change)="getRentCollectionList()" appendTo="body" [clearable]="false" placeholder="Select Unit">
+
+                    <ng-option *ngFor="let data of masterList['unitList']" [value]="data?._id">{{ data?.propertyName?.propertyName + ' - ' + data.unitName }}</ng-option>
+
+                  </ng-select> -->
+
+                </ng-template>
+
+              </div>
+
+              <div class="ms-2 d-flex justify-content-end">
+            
+                <label class="form-check-label small">Property</label>
+      
+                <div class="form-check form-switch" style="margin-left: 10px; margin-right: 3px; margin-top: 1px;">
+
+                  <input class="form-check-input check-switch-color" type="checkbox" role="switch" id="flexSwitchCheckChecked" formControlName="outsPropertyOrUnit" (change)="changeValue({ fieldName: 'outsPropertyOrUnit' })" checked>
+
+                </div>
+
+                <label class="form-check-label small">Unit</label>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="table-responsive">
+
+          <table class="table custom-ageing-table text-center align-middle mb-0">
+
+            <thead>
+
+              <tr>
+
+                <th style="width: 140px;">{{ filterForm.get('outsPropertyOrUnit')?.value ? 'Unit' : 'Property' }}</th>
+
+                <th class="bg-grey-1">{{ filterForm.get('outsPropertyOrUnit')?.value ? 'View Property' : 'View Unit' }}</th>
+
+                <th class="bg-blue-1 text-white">2 Weeks</th>
+          
+                <th class="bg-blue-2 text-white">1 Month</th>
+          
+                <th class="bg-blue-3 text-white">2 Month</th>
+          
+                <th class="bg-yellow-1 text-white">3 Month</th>
+          
+                <th class="bg-yellow-2 text-white">&lt; 3 Month</th>
+          
+              </tr>
+          
+            </thead>
+
+            <tbody>
+              
+              <!-- Property Outs Ageing -->
+              <ng-container *ngIf="filterForm.get('outsPropertyOrUnit')?.value == false">
+
+                <ng-container *ngIf="!_.isEmpty(masterList['ticketAgeingPropertyOrUnitList']); else noManager">
+              
+                  <tr *ngFor="let manager of masterList['ticketAgeingPropertyOrUnitList']">
+              
+                    <td [matTooltip]="manager.managerName || 'N/A'" matTooltipPosition="above" matTooltipClass="custom-tooltip">
+
+                      <span>{{ (manager.managerName || 'N/A').length > 10 ? (manager.managerName || 'N/A').slice(0, 10) + '...' : (manager.managerName || 'N/A') }}</span>
+
+                    </td>
+
+                    <td class="bg-grey-1 text-center">
+
+                      <i class="bi bi-eye text-secondary" (click)="openTicketAgeingView(manager, 'manager')" [attr.aria-label]="'View details for ' + (manager.managerName || 'manager')" role="button" tabindex="0"></i>
+                      
+                    </td>
+              
+                    <td class="bg-blue-1 text-white">{{ manager.ageing['0-2 Days'] || 0 }}</td>
+              
+                    <td class="bg-blue-2 text-white">{{ manager.ageing['2-7 Days'] || 0 }}</td>
+              
+                    <td class="bg-blue-3 text-white">{{ manager.ageing['7 Days - 2 Weeks'] || 0 }}</td>
+              
+                    <td class="bg-yellow-1 text-white">{{ manager.ageing['2 Weeks - 1 Month'] || 0 }}</td>
+              
+                    <td class="bg-yellow-2 text-white">{{ manager.ageing['> 1 Month'] || 0 }}</td>
+              
+                  </tr>
+              
+                </ng-container>
+
+                <ng-template #noManager>
+                
+                  <tr>
+                
+                    <td colspan="7" style="text-align: center !important;">No Records Found</td>
+                
+                  </tr>
+                
+                </ng-template>
+
+              </ng-container>
+
+              <!-- Unit Outs Ageing -->
+              <ng-container *ngIf="filterForm.get('managerOrStaff')?.value == true">
+
+                <ng-container *ngIf="!_.isEmpty(masterList['ticketAgeingStaffList']); else noStaff">
+                
+                  <ng-container>
+            
+                    <tr *ngFor="let staff of masterList['ticketAgeingStaffList']">
+            
+                      <td [matTooltip]="staff.staffName || 'N/A'" matTooltipPosition="above" matTooltipClass="custom-tooltip">
+
+                        {{ (staff.staffName || 'N/A').length > 10 ? (staff.staffName || 'N/A').slice(0, 10) + '...' : (staff.staffName || 'N/A') }}
+
+                      </td>
+            
+                      <td class="bg-grey-1"><i class="bi bi-eye text-secondary" (click)="openTicketAgeingView(staff, 'staff')"></i></td>
+            
+                      <td class="bg-blue-1 text-white">{{ staff.ageing['0-2 Days'] || 0 }}</td>
+            
+                      <td class="bg-blue-2 text-white">{{ staff.ageing['2-7 Days'] || 0 }}</td>
+            
+                      <td class="bg-blue-3 text-white">{{ staff.ageing['7 Days - 2 Weeks'] || 0 }}</td>
+            
+                      <td class="bg-yellow-1 text-white">{{ staff.ageing['2 Weeks - 1 Month'] || 0 }}</td>
+            
+                      <td class="bg-yellow-2 text-white">{{ staff.ageing['> 1 Month'] || 0 }}</td>
+            
+                    </tr>
+            
+                  </ng-container>
+              
+                </ng-container>
+
+                <ng-template #noStaff>
+                
+                  <tr>
+                
+                    <td colspan="7" style="text-align: center !important;">No Records Found</td>
+                
+                  </tr>
+                
+                </ng-template>
+
+              </ng-container>
+          
+            </tbody>
+
+          </table>
+
+        </div>
+        
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Unit Details & Open Tickets Ageing -->
+  <div class="row mt-4">
+
+    <!-- Unit Details -->
+    <div class="col-md-4">
+
+      <div class="card shadow-sm border-0">
+
+        <div class="card-body py-4">
+
+          <h6 class="mb-0" style="border-left: 3px solid #D2A119; padding-left: 8px;">Unit Details : </h6>
+
+          <div class="d-flex justify-content-center">
+
+            <div class="mt-3" style="width: 400px; height: 346px;">
+
+              <apx-chart
+                [chart]="unitChartOptions.chart"
+                [labels]="unitChartOptions.labels"
+                [series]="unitChartOptions.series"
+                [colors]="unitChartOptions.colors"
+                [dataLabels]="unitChartOptions.dataLabels"
+                [tooltip]="unitChartOptions.tooltip"
+                [legend]="unitChartOptions.legend"
+                [plotOptions]="unitChartOptions.plotOptions"
+                [responsive]="unitChartOptions.responsive">
+              </apx-chart>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+      
+    </div>
+
+    <!-- Open Tickets Ageing -->
+    <div class="col-md-8">
+
+      <div class="open-ticket-ageing-table card p-0 shadow-sm border-0">
+
+        <div class="row d-flex justify-content-between align-items-center p-3 border-bottom">
+    
+          <div class="col-md-4">
+    
+            <h6 class="mb-0">
+    
+              <span class="border-start border-3 border-warning ps-2">Open Tickets Ageing :</span>
+    
+            </h6>
+    
+          </div>
+          
+          <div class="col-md-6 ms-3">
+          
+            <div class="d-flex align-items-center justify-content-end gap-2" [formGroup]="filterForm">
+
+              <div class="w-50">
+
+                <ng-container *ngIf="filterForm.get('managerOrStaff')?.value == false; else staffView">
+
+                  <ng-select class="form-control" [items]="masterList['managerList']" bindLabel="firstName" bindValue="_id" formControlName="managerName" [multiple]="true" [closeOnSelect]="false" [clearable]="false" placeholder="Select Manager" [virtualScroll]="true" [searchable]="true" appendTo="body" (change)="getOpenTicketAgeingList()">
+
+                    <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                      <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                          
+                        <div class="d-flex">
+
+                          <span class="ng-value-label ellipsis ms-1">
+
+                            <span>{{ _.get(item, 'firstName') }}</span> 
+
+                          </span>
+
+                          <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                          <span style="width: 1px; height: 20px; background-color: black;"></span>
+                            
+                        </div>
+
+                      </div>
+
+                      <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                        <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                      </div>
+
+                    </ng-template>                                
+
+                    <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                      <div class="form-check d-flex align-items-center"> 
+                          
+                        <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'managerName')"/>
+
+                        <label class="form-check-label mt-1">{{ item?.firstName }}</label>
+
+                      </div>
+                            
+                    </ng-template>
+                
+                  </ng-select>
+
+                  <!-- <ng-select class="form-control" formControlName="managerName" (change)="getOpenTicketAgeingList()" appendTo="body" [clearable]="false"
+                  placeholder="Select Manager">
+            
+                    <ng-option *ngFor="let data of masterList['managerList']" [value]="data._id">{{ data.firstName }}</ng-option>
+            
+                  </ng-select> -->
+            
+                </ng-container>
+  
+                <ng-template #staffView>
+
+                  <ng-select class="form-control" [items]="masterList['staffList']" bindLabel="firstName" bindValue="_id" formControlName="staffName" [multiple]="true" [closeOnSelect]="false" [clearable]="false" placeholder="Select Staff" [virtualScroll]="true" [searchable]="true" appendTo="body" (change)="getOpenTicketAgeingList()">
+
+                    <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                      <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                          
+                        <div class="d-flex">
+
+                          <span class="ng-value-label ellipsis ms-1">
+
+                            <span>{{ _.get(item, 'firstName') }}</span> 
+
+                          </span>
+
+                          <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                          <span style="width: 1px; height: 20px; background-color: black;"></span>
+                            
+                        </div>
+
+                      </div>
+
+                      <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                        <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                      </div>
+
+                    </ng-template>
+
+                    <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                      <div class="form-check d-flex align-items-center"> 
+                          
+                        <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'staffName')"/>
+
+                        <label class="form-check-label mt-1">{{ item?.firstName }}</label>
+
+                      </div>
+                            
+                    </ng-template>
+                
+                  </ng-select>
+
+                  <!-- <ng-select class="form-control" formControlName="staffName" (change)="getOpenTicketAgeingList()" appendTo="body" [clearable]="false" 
+                  placeholder="Select Staff">
+  
+                    <ng-option *ngFor="let data of masterList['staffList']" [value]="data._id">{{ data.firstName }}</ng-option>
+                
+                  </ng-select> -->
+                
+                </ng-template>
+
+              </div>
+
+              <div class="ms-2 d-flex justify-content-end">
+            
+                <label class="form-check-label small">Manager</label>
+      
+                <div class="form-check form-switch" style="margin-left: 10px; margin-right: 3px; margin-top: 1px;">
+
+                  <input class="form-check-input check-switch-color" type="checkbox" role="switch" id="flexSwitchCheckChecked" formControlName="managerOrStaff" (change)="changeValue({ fieldName: 'managerOrStaff' })" checked>
+
+                </div>
+
+                <label class="form-check-label small">Staff</label>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="table-responsive">
+
+          <table class="table custom-ageing-table text-center align-middle mb-0">
+
+            <thead>
+
+              <tr>
+
+                <th style="width: 140px;">{{ filterForm.get('managerOrStaff')?.value ? 'Staff' : 'Manager' }}</th>
+
+                <th class="bg-grey-1">{{ filterForm.get('managerOrStaff')?.value ? 'View Manager' : 'View Staff' }}</th>
+
+                <th class="bg-blue-1 text-white">0-2 Days</th>
+          
+                <th class="bg-blue-2 text-white">2-7 Days</th>
+          
+                <th class="bg-blue-3 text-white">7 Days - 2 Weeks</th>
+          
+                <th class="bg-yellow-1 text-white">2 Weeks - 1 Month</th>
+          
+                <th class="bg-yellow-2 text-white">&gt; 1 Month</th>
+          
+              </tr>
+          
+            </thead>
+
+            <tbody>
+              
+              <!-- Manager Tickets Ageing -->
+              <ng-container *ngIf="filterForm.get('managerOrStaff')?.value == false">
+
+                <ng-container *ngIf="!_.isEmpty(masterList['ticketAgeingManagerList']); else noManager">
+              
+                  <tr *ngFor="let manager of masterList['ticketAgeingManagerList']">
+              
+                    <td [matTooltip]="manager.managerName || 'N/A'" matTooltipPosition="above" matTooltipClass="custom-tooltip">
+
+                      <span>{{ (manager.managerName || 'N/A').length > 10 ? (manager.managerName || 'N/A').slice(0, 10) + '...' : (manager.managerName || 'N/A') }}</span>
+
+                    </td>
+
+                    <td class="bg-grey-1 text-center">
+
+                      <i class="bi bi-eye text-secondary" (click)="openTicketAgeingView(manager, 'manager')" [attr.aria-label]="'View details for ' + (manager.managerName || 'manager')" role="button" tabindex="0"></i>
+                      
+                    </td>
+              
+                    <td class="bg-blue-1 text-white">{{ manager.ageing['0-2 Days'] || 0 }}</td>
+              
+                    <td class="bg-blue-2 text-white">{{ manager.ageing['2-7 Days'] || 0 }}</td>
+              
+                    <td class="bg-blue-3 text-white">{{ manager.ageing['7 Days - 2 Weeks'] || 0 }}</td>
+              
+                    <td class="bg-yellow-1 text-white">{{ manager.ageing['2 Weeks - 1 Month'] || 0 }}</td>
+              
+                    <td class="bg-yellow-2 text-white">{{ manager.ageing['> 1 Month'] || 0 }}</td>
+              
+                  </tr>
+              
+                </ng-container>
+
+                <ng-template #noManager>
+                
+                  <tr>
+                
+                    <td colspan="7" style="text-align: center !important;">No Records Found</td>
+                
+                  </tr>
+                
+                </ng-template>
+
+              </ng-container>
+
+              <!-- Staff Tickets Ageing -->
+              <ng-container *ngIf="filterForm.get('managerOrStaff')?.value == true">
+
+                <ng-container *ngIf="!_.isEmpty(masterList['ticketAgeingStaffList']); else noStaff">
+                
+                  <ng-container>
+            
+                    <tr *ngFor="let staff of masterList['ticketAgeingStaffList']">
+            
+                      <td [matTooltip]="staff.staffName || 'N/A'" matTooltipPosition="above" matTooltipClass="custom-tooltip">
+
+                        {{ (staff.staffName || 'N/A').length > 10 ? (staff.staffName || 'N/A').slice(0, 10) + '...' : (staff.staffName || 'N/A') }}
+
+                      </td>
+            
+                      <td class="bg-grey-1"><i class="bi bi-eye text-secondary" (click)="openTicketAgeingView(staff, 'staff')"></i></td>
+            
+                      <td class="bg-blue-1 text-white">{{ staff.ageing['0-2 Days'] || 0 }}</td>
+            
+                      <td class="bg-blue-2 text-white">{{ staff.ageing['2-7 Days'] || 0 }}</td>
+            
+                      <td class="bg-blue-3 text-white">{{ staff.ageing['7 Days - 2 Weeks'] || 0 }}</td>
+            
+                      <td class="bg-yellow-1 text-white">{{ staff.ageing['2 Weeks - 1 Month'] || 0 }}</td>
+            
+                      <td class="bg-yellow-2 text-white">{{ staff.ageing['> 1 Month'] || 0 }}</td>
+            
+                    </tr>
+            
+                  </ng-container>
+              
+                </ng-container>
+
+                <ng-template #noStaff>
+                
+                  <tr>
+                
+                    <td colspan="7" style="text-align: center !important;">No Records Found</td>
+                
+                  </tr>
+                
+                </ng-template>
+
+              </ng-container>
+          
+            </tbody>
+
+          </table>
+
+        </div>
+        
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Rent Collection Trend & Utility Collection Trend -->
+  <div class="row mt-4">
+
+    <!-- Rent Collection Trend -->
+    <div class="col-md-6">
+
+      <div class="card p-3 shadow-sm border-0" [formGroup]="filterForm">
+  
+        <div class="d-flex justify-content-between align-items-center mb-3">
+    
+          <h6 class="mb-0" style="border-left: 3px solid #D2A119; padding-left: 8px;">Rent Collection Trend :</h6>
+
+          <div class="btn-group btn-group-sm" role="group">
+
+            <button class="btn btn-sm me-2" [ngClass]="{ 'selected-btn': selectedRentDuration == '1week', 'btn-white': selectedRentDuration != '1week' }" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="getRentCollectionList('1week')"> <span style="font-size: 12px; font-weight: 400; color: #282828;">1 Week</span> </button>
+
+            <button class="btn btn-sm me-2" [ngClass]="{ 'selected-btn': selectedRentDuration == '1month', 'btn-white': selectedRentDuration != '1month' }" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="getRentCollectionList('1month')"> <span style="font-size: 12px; font-weight: 400; color: #282828;">1 Month</span> </button>
+
+            <button class="btn btn-sm me-2" [ngClass]="{ 'selected-btn': selectedRentDuration == '6month', 'btn-white': selectedRentDuration != '6month' }" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="getRentCollectionList('6month')"> <span style="font-size: 12px; font-weight: 400; color: #282828;">6 Month</span> </button>
+
+            <button class="btn btn-sm me-2" [ngClass]="{ 'selected-btn': selectedRentDuration == '1year', 'btn-white': selectedRentDuration != '1year' }" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="getRentCollectionList('1year')"> <span style="font-size: 12px; font-weight: 400; color: #282828;">1 Year</span> </button>
+
+            <!-- Navigation buttons -->
+            <button class="btn btn-sm btn-outline-primary" *ngIf="selectedRentDuration == '1year' && rentNavigateNext" (click)="rentNavigateNextFun()" style="margin-right: 5px;">
+             
+              <i class="bi bi-arrow-right"></i>
+           
+            </button>
+           
+            <button class="btn btn-sm btn-outline-primary" *ngIf="selectedRentDuration == '1year' && rentNavigatePrev" (click)="rentNavigatePrevFun()">
+           
+              <i class="bi bi-arrow-left"></i>
+           
+            </button>
+
+          </div>
+       
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-2">
+
+          <div class="col-md-5 ms-3">
+
+            <ng-container *ngIf="filterForm?.get('rentPropertyOrUnit')?.value == false; else unit">
+
+              <ng-select name="data" id="data" class="form-control" formControlName="rentPropertyName" (change)="getRentCollectionList()" appendTo="body" [clearable]="false" placeholder="Select Property">
+
+                <ng-option *ngFor="let data of masterList.propertyList" [value]="data?._id">{{ data.propertyName }}</ng-option>
+
+              </ng-select>
+
+            </ng-container>
+
+            <ng-template #unit>
+
+              <ng-select name="data" id="data" class="form-control" formControlName="rentUnitName" (change)="getRentCollectionList()" appendTo="body" [clearable]="false" placeholder="Select Unit">
+
+                <ng-option *ngFor="let data of masterList.unitList" [value]="data?._id">{{ data?.propertyName?.propertyName + ' - ' + data.unitName }}</ng-option>
+
+              </ng-select>
+
+            </ng-template>
+
+          </div>
+
+          <div class="col-md-2">
+
+            <label for="" class="ms-2 fw-400" style="font-size: 14px;">Currency : {{ this.service.currencyCode?.currencyCode }}</label>
+
+          </div>
+
+          <div class="col-md-4 d-flex justify-content-end">
+            
+            <label class="form-check-label small">Property</label>
+  
+            <div class="form-check form-switch" style="margin-left: 10px; margin-right: 3px; margin-top: 1px;">
+
+              <input class="form-check-input check-switch-color" type="checkbox" role="switch" id="flexSwitchCheckChecked" formControlName="rentPropertyOrUnit" (change)="changeValue({ fieldName: 'rentPropertyOrUnit' }) || getRentCollectionList()" checked>
+
+            </div>
+
+            <label class="form-check-label small">Unit</label>
+
+          </div>
+
+        </div>
+
+        <apx-chart
+          *ngIf="rentTrendChart"
+          [series]="rentTrendChart.series"
+          [chart]="rentTrendChart.chart"
+          [xaxis]="rentTrendChart.xaxis"
+          [yaxis]="rentTrendChart.yaxis"
+          [plotOptions]="rentTrendChart.plotOptions"
+          [dataLabels]="rentTrendChart.dataLabels"
+          [stroke]="rentTrendChart.stroke"
+          [fill]="rentTrendChart.fill"
+          [colors]="rentTrendChart.colors"
+          [markers]="rentTrendChart.markers"
+          [legend]="rentTrendChart.legend">
+        </apx-chart>
+
+      </div>
+
+    </div>
+
+    <!-- Utility Collection Trend -->
+    <div class="col-md-6">
+
+      <div class="card p-3 shadow-sm border-0" [formGroup]="filterForm">
+  
+        <div class="d-flex justify-content-between align-items-center mb-3">
+    
+          <h6 class="mb-0" style="border-left: 3px solid #D2A119; padding-left: 8px;">Utility Collection Trend :</h6>
+
+          <div class="btn-group btn-group-sm" role="group">
+
+            <button class="btn btn-sm me-2" [ngClass]="{ 'selected-btn': selectedUtilityDuration == '1week', 'btn-white': selectedUtilityDuration != '1week' }" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="getUtilityCollectionList('1week')"> <span style="font-size: 12px; font-weight: 400; color: #282828;">1 Week</span> </button>
+
+            <button class="btn btn-sm me-2" [ngClass]="{ 'selected-btn': selectedUtilityDuration == '1month', 'btn-white': selectedUtilityDuration != '1month' }" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="getUtilityCollectionList('1month')"> <span style="font-size: 12px; font-weight: 400; color: #282828;">1 Month</span> </button>
+
+            <button class="btn btn-sm me-2" [ngClass]="{ 'selected-btn': selectedUtilityDuration == '6month', 'btn-white': selectedUtilityDuration != '6month' }" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="getUtilityCollectionList('6month')"> <span style="font-size: 12px; font-weight: 400; color: #282828;">6 Month</span> </button>
+
+            <button class="btn btn-sm me-2" [ngClass]="{ 'selected-btn': selectedUtilityDuration == '1year', 'btn-white': selectedUtilityDuration != '1year' }" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="getUtilityCollectionList('1year')"> <span style="font-size: 12px; font-weight: 400; color: #282828;">1 Year</span> </button>
+
+            <!-- Navigation buttons -->
+            <button class="btn btn-sm btn-outline-primary" *ngIf="selectedUtilityDuration == '1year' && utilityNavigateNext" (click)="utilityNavigateNextFun()" style="margin-right: 5px;">
+
+              <i class="bi bi-arrow-right"></i>
+
+            </button>
+
+            <button class="btn btn-sm btn-outline-primary" *ngIf="selectedUtilityDuration == '1year' && utilityNavigatePrev" (click)="utilityNavigatePrevFun()">
+              
+              <i class="bi bi-arrow-left"></i>
+           
+            </button>
+         
+          </div>
+       
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-2">
+
+          <div class="col-md-4 ms-3">
+
+            <ng-container *ngIf="filterForm?.get('utilityProperty')?.value == false; else utility">
+  
+              <ng-select name="data" id="data" class="form-control" formControlName="utilityPropertyName" (change)="getUtilityCollectionList()" appendTo="body" [clearable]="false" placeholder="Select Property">
+
+                <ng-option *ngFor="let data of this.masterList['propertyList']" [value]="data?._id">{{ data.propertyName }}</ng-option>
+      
+              </ng-select>
+
+            </ng-container>
+
+            <ng-template #utility>
+
+              <ng-select name="data" id="data" class="form-control" formControlName="utilityName" (change)="getUtilityCollectionList()" appendTo="body" [clearable]="false" placeholder="Select Utility">
+      
+                <ng-option *ngFor="let data of this.masterList['utilityList']" [value]="data?._id">{{ data.utilityName }}</ng-option>
+      
+              </ng-select>
+
+            </ng-template>
+  
+          </div>
+
+          <div class="col-md-2">
+
+            <label for="" class="ms-2 fw-400" style="font-size: 14px;">Currency : {{ this.service.currencyCode?.currencyCode }}</label>
+
+          </div>
+
+          <div class="col-md-4 d-flex justify-content-end">
+            
+            <label class="form-check-label small">Property</label>
+  
+            <div class="form-check form-switch" style="margin-left: 10px; margin-right: 3px; margin-top: 1px;">
+
+              <input class="form-check-input check-switch-color" type="checkbox" role="switch" id="flexSwitchCheckChecked" formControlName="utilityProperty" (change)="changeValue({fieldName: 'utilityProperty'}) || getUtilityCollectionList()" checked>
+
+            </div>
+
+            <label class="form-check-label small">Utility</label>
+
+          </div>
+
+        </div>
+
+        <!-- Chart -->
+        <apx-chart *ngIf="utilityTrendChart"
+          [series]="utilityTrendChart.series"
+          [chart]="utilityTrendChart.chart"
+          [xaxis]="utilityTrendChart.xaxis"
+          [yaxis]="utilityTrendChart.yaxis"
+          [plotOptions]="utilityTrendChart.plotOptions"
+          [dataLabels]="utilityTrendChart.dataLabels"
+          [stroke]="utilityTrendChart.stroke"
+          [fill]="utilityTrendChart.fill"
+          [colors]="utilityTrendChart.colors"
+          [markers]="rentTrendChart.markers"
+          [legend]="utilityTrendChart.legend">
+        </apx-chart>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Rent Overdue & Overdue -->
+  <div class="row mt-4">
+
+    <!-- Rent Overdue -->
+    <div class="col-md-4">
+     
+      <div class="card shadow-sm border-0">
+     
+        <div class="card-body py-4">
+     
+          <div class="d-flex justify-content-between align-items-center mb-2">
+     
+            <div>
+     
+              <h6 class="mb-0" style="border-left: 3px solid #D2A119; padding-left: 8px;">Rent Overdue :</h6>
+     
+            </div>
+     
+            <div style="width: 170px;" [formGroup]="filterForm">
+     
+              <ng-select name="data" id="data" class="form-control" formControlName="rentOverduePropertyName" (change)="getRentOverdueChartList()" appendTo="body" [clearable]="false" placeholder="Select Property">
+
+                <ng-option *ngFor="let data of masterList['propertyList']" [value]="data?._id">{{ data.propertyName }}</ng-option>
+     
+              </ng-select>
+     
+            </div>
+     
+          </div>
+          
+          <div class="d-flex justify-content-center">
+          
+            <div class="mt-4" style="width: 400px; height: 362px;">
+          
+              <apx-chart
+                *ngIf="rentOverdueChartOption"
+                [chart]="rentOverdueChartOption.chart"
+                [labels]="rentOverdueChartOption.labels"
+                [series]="rentOverdueChartOption.series"
+                [colors]="rentOverdueChartOption.colors"
+                [dataLabels]="rentOverdueChartOption.dataLabels"
+                [tooltip]="rentOverdueChartOption.tooltip"
+                [legend]="rentOverdueChartOption.legend"
+                [plotOptions]="rentOverdueChartOption.plotOptions"
+                [responsive]="rentOverdueChartOption.responsive">
+              </apx-chart>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Overview -->
+    <div class="col-md-8">
+
+      <div class="overview-tabel card p-0 shadow-sm border-0">
+
+        <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+
+          <div class="col-md-8 d-flex justify-content-start align-items-center">
+
+            <h6 class="mb-0"><span class="border-start border-3 border-warning ps-2 pe-3">Overview :</span></h6>
+
+            <div style="width: 340px;" [formGroup]="filterForm">
+
+              <ng-select name="data" id="data" class="form-control" formControlName="overviewPay" (change)="getOverviewList()" appendTo="body" [clearable]="false">
+      
+                <ng-option value="propertyTaxPayHistory">Property Tax Payment History</ng-option>
+
+                <ng-option value="recentRentHistory">Recent Rent Received</ng-option>
+      
+              </ng-select>
+
+            </div>
+
+          </div>
+
+          <div class="col-md-3 ms-3 text-end">
+
+            <button class="btn btn-sm" style="background-color: #F0F0F0;" (click)="openOverviewExpand()">
+
+              <span class="fw-400 me-2" style="font-size: 12px;">View More</span> 
+              
+              <img src="images/icons/direction-left.svg" style="width: 18px;" alt="">
+            
+            </button>
+
+          </div>
+
+        </div>
+
+        <!-- List -->
+        <div class="table-responsive">
+
+          <table class="table table-borderless align-middle">
+
+            <thead class="bg-light text-secondary">
+
+              <tr style="font-size: 14px; font-weight: 500;">
+
+                <th>Property</th>
+
+                <th>Unit</th>
+
+                <th>Payment Date</th>
+
+                <th style="text-align: center !important; min-width: 210px !important;" class="th-action"> 
+
+                  <span *ngIf="this.filterForm.get('overviewPay')?.value == 'propertyTaxPayHistory'; else rent">Tax Amount</span>
+
+                  <ng-template #rent>Rent Amount</ng-template>
+                
+                </th>
+
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              <ng-container *ngIf="!_.isEmpty(this.masterList['overViewList']); else other">
+
+                <tr *ngFor="let overview of limitedOverviewList" style="font-size: 14px; font-weight: 400;">
+
+                  <td>{{ overview.property }}</td>
+
+                  <td>{{ overview.unit }}</td>
+
+                  <td>{{ overview.paymentDate | date: 'dd-MM-yyyy' }}</td>
+
+                  <td class="d-flex justify-content-center th-action">{{ this.service.currencyCode?.currencyCode }}. {{ (overview.amount | number: '1.0') }}</td>
+
+                </tr>
+
+              </ng-container>
+
+              <ng-template #other>
+
+                <tr>
+
+                  <td colspan="10" style="text-align: center !important;">No Records Found</td>
+
+                </tr>
+
+              </ng-template>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- New Rent Collection Trend -->
+  <div class="row mt-4">
+  
+    <div class="col-12 col-md-6">
+  
+      <div class="card p-3 shadow-sm border-0" [formGroup]="filterForm">
+  
+        <div class="d-flex justify-content-between align-items-center mb-3">
+  
+          <h6 class="mb-0" style="border-left: 3px solid #D2A119; padding-left: 8px;">Rent Collection Trend:</h6>
+  
+          <div class="btn-group btn-group-sm" role="group">
+  
+            <button class="btn btn-sm me-2" [ngClass]="{'selected-btn': selectedNewRentDuration === 'daily', 'btn-white': selectedNewRentDuration !== 'daily'}" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="getNewRentCollectionList('daily')" aria-label="View daily">
+  
+              <span style="font-size: 12px; font-weight: 400; color: #282828;">Daily</span>
+  
+            </button>
+  
+            <button class="btn btn-sm me-2" [ngClass]="{'selected-btn': selectedNewRentDuration === 'weekly', 'btn-white': selectedNewRentDuration !== 'weekly'}" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="getNewRentCollectionList('weekly')" aria-label="View weekly">
+  
+              <span style="font-size: 12px; font-weight: 400; color: #282828;">Weekly</span>
+  
+            </button>
+  
+            <button class="btn btn-sm me-2" [ngClass]="{'selected-btn': selectedNewRentDuration === 'monthly', 'btn-white': selectedNewRentDuration !== 'monthly'}" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);" (click)="getNewRentCollectionList('monthly')" aria-label="View monthly">
+  
+              <span style="font-size: 12px; font-weight: 400; color: #282828;">Monthly</span>
+  
+            </button>
+  
+          </div>
+  
+        </div>
+  
+        <div class="d-flex justify-content-between align-items-center mb-2">
+  
+          <div class="col-5 col-md-5 ms-3">
+  
+            <ng-container *ngIf="!filterForm?.get('newRentPropertyOrUnit')?.value; else unit">
+
+              <ng-select class="form-control" [items]="masterList['propertyList']" bindLabel="propertyName" bindValue="_id" formControlName="newRentPropertyName" [multiple]="true" [closeOnSelect]="false" [clearable]="false" placeholder="Select Property" [virtualScroll]="true" [searchable]="true" appendTo="body" (change)="getNewRentCollectionList(selectedNewRentDuration)">
+
+                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                  <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                      
+                    <div class="d-flex">
+
+                      <span class="ng-value-label ellipsis ms-1">
+
+                        <span>{{ _.get(item, 'propertyName') }}</span> 
+
+                      </span>
+
+                      <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                      <span style="width: 1px; height: 20px; background-color: black;"></span>
+                        
+                    </div>
+
+                  </div>
+
+                  <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                    <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                  </div>
+
+                </ng-template>                                
+
+                <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                  <div class="form-check d-flex align-items-center"> 
+                      
+                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'newRentPropertyName')"/>
+
+                    <label class="form-check-label mt-1">{{ item?.propertyName }}</label>
+
+                  </div>
+                        
+                </ng-template>
+            
+              </ng-select>
+  
+              <!-- <ng-select name="newRentPropertyName" id="newRentPropertyName" class="form-control" formControlName="newRentPropertyName" (change)="getNewRentCollectionList(selectedNewRentDuration)" appendTo="body" [clearable]="false" aria-label="Select property" placeholder="Select Property">
+  
+                <ng-option *ngFor="let data of masterList['propertyList']" [value]="data?._id">{{ data.propertyName }}</ng-option>
+  
+              </ng-select> -->
+  
+            </ng-container>
+  
+            <ng-template #unit>
+
+              <ng-select class="form-control" [items]="masterList['unitList']" bindLabel="propertyName" bindValue="_id" formControlName="newRentUnitName" [multiple]="true" [closeOnSelect]="false" [clearable]="false" placeholder="Select Unit" [virtualScroll]="true" [searchable]="true" appendTo="body" (change)="getNewRentCollectionList(selectedNewRentDuration)">
+
+                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                  <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                      
+                    <div class="d-flex">
+
+                      <span class="ng-value-label ellipsis ms-1">
+
+                        <span>{{ _.get(item, 'propertyName.propertyName') + ' - ' + _.get(item, 'unitName') }}</span> 
+
+                      </span>
+
+                      <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                      <span style="width: 1px; height: 20px; background-color: black;"></span>
+                        
+                    </div>
+
+                  </div>
+
+                  <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                    <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                  </div>
+
+                </ng-template>                                
+
+                <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                  <div class="form-check d-flex align-items-center"> 
+                      
+                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'newRentUnitName')"/>
+
+                    <label class="form-check-label mt-1">{{ item?.propertyName?.propertyName + ' - ' + item.unitName }}</label>
+
+                  </div>
+                        
+                </ng-template>
+            
+              </ng-select>
+  
+              <!-- <ng-select name="newRentUnitName" id="newRentUnitName" class="form-control" formControlName="newRentUnitName" (change)="getNewRentCollectionList(selectedNewRentDuration)" appendTo="body" [clearable]="false" aria-label="Select property" placeholder="Select Property">
+  
+                <ng-option *ngFor="let data of masterList['unitList']" [value]="data?._id">{{ data?.propertyName?.propertyName + ' - ' + data.unitName }}</ng-option>
+  
+              </ng-select> -->
+  
+            </ng-template>
+  
+          </div>
+  
+          <div class="col-2 col-md-2">
+  
+            <label class="ms-2 fw-400" style="font-size: 14px;">Currency: {{ this.service.currencyCode?.currencyCode }}</label>
+  
+          </div>
+  
+          <div class="col-4 col-md-4 d-flex justify-content-end">
+  
+            <label class="form-check-label small" for="flexSwitchCheckChecked">Property</label>
+  
+            <div class="form-check form-switch" style="margin-left: 10px; margin-right: 3px; margin-top: 1px;">
+  
+              <input class="form-check-input check-switch-color" type="checkbox" role="switch" id="flexSwitchCheckChecked" formControlName="newRentPropertyOrUnit" (change)="changeValue({ fieldName: 'newRentPropertyOrUnit' }) || getNewRentCollectionList()" aria-label="Toggle between property and unit"/>
+  
+            </div>
+  
+            <label class="form-check-label small">Unit</label>
+  
+          </div>
+  
+        </div>
+  
+        <div class="position-relative chart-container">
+  
+          <button class="btn btn-sm navigation-arrow left-arrow" (click)="navigatePrev()" [disabled]="!canNavigatePrev" aria-label="Previous period">
+
+            <i class="bi bi-caret-left fs-5 text-primary"></i>
+
+            <!-- <i class="bi bi-arrow-left"></i> -->
+
+          </button>
+
+          <apx-chart
+            *ngIf="newRentTrendChart"
+            [series]="newRentTrendChart.series"
+            [chart]="newRentTrendChart.chart"
+            [xaxis]="newRentTrendChart.xaxis"
+            [yaxis]="newRentTrendChart.yaxis"
+            [colors]="newRentTrendChart.colors"
+            [legend]="newRentTrendChart.legend"
+            [dataLabels]="newRentTrendChart.dataLabels"
+            [plotOptions]="newRentTrendChart.plotOptions"
+            [stroke]="newRentTrendChart.stroke"
+            [fill]="newRentTrendChart.fill"
+            [markers]="newRentTrendChart.markers">
+          </apx-chart>
+        
+          <button class="btn btn-sm navigation-arrow right-arrow" (click)="navigateNext()" [disabled]="!canNavigateNext" aria-label="Next period">
+
+            <i class="bi bi-caret-right fs-5 text-primary"></i>
+
+          </button>
+        
+        </div>
+        
+      </div>
+      
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Open Tickets Ageing View -->
+<ng-template #openTicketAgeingModal let-modal>
+  
+  <div class="modal-header">
+  
+    <div class="d-flex justify-content-between align-items-center w-100">
+  
+      <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">
+
+        <span class="pt-4">{{ viewType == 'manager' ? this.selectedData?.managerName : this.selectedData?.staffName }}</span> 
+  
+      </h6>
+  
+      <i class="bi bi-x-lg pe-2 fw-bold" (click)="modal.close()"></i>
+  
+    </div>
+  
+  </div>
+
+  <div class="modal-body open-ticket-ageing-table">
+  
+    <div class="table-responsive mt-3">
+  
+      <table class="table custom-ageing-table text-center align-middle mb-0">
+  
+        <thead>
+  
+          <tr>
+  
+            <th>{{ viewType == 'manager' ? 'Staff Name' : 'Manager Name' }}</th>
+  
+            <th class="bg-blue-1 text-white">0-2 Days</th>
+  
+            <th class="bg-blue-2 text-white">2-7 Days</th>
+  
+            <th class="bg-blue-3 text-white">7 Days - 2 Weeks</th>
+  
+            <th class="bg-yellow-1 text-white">2 Weeks - 1 Month</th>
+  
+            <th class="bg-yellow-2 text-white">&gt; 1 Month</th>
+  
+          </tr>
+  
+        </thead>
+  
+        <tbody>
+  
+          <!-- Manager clicked: show staff list -->
+          <ng-container *ngIf="viewType == 'manager'">
+  
+            <tr *ngFor="let staff of selectedManagerStaffList">
+  
+              <td>{{ staff.staffName }}</td>
+  
+              <td class="bg-blue-1 text-white">{{ staff.ageing['0-2 Days'] || 0 }}</td>
+  
+              <td class="bg-blue-2 text-white">{{ staff.ageing['2-7 Days'] || 0 }}</td>
+  
+              <td class="bg-blue-3 text-white">{{ staff.ageing['7 Days - 2 Weeks'] || 0 }}</td>
+  
+              <td class="bg-yellow-1 text-white">{{ staff.ageing['2 Weeks - 1 Month'] || 0 }}</td>
+  
+              <td class="bg-yellow-2 text-white">{{ staff.ageing['> 1 Month'] || 0 }}</td>
+  
+            </tr>
+  
+          </ng-container>
+
+          <!-- Staff clicked: show their manager -->
+          <ng-container *ngIf="viewType == 'staff'">
+          
+            <tr *ngFor="let manager of selectedManagerStaffList">
+          
+              <td>{{ manager.managerName }}</td>
+          
+              <td class="bg-blue-1 text-white">{{ manager.ageing['0-2 Days'] || 0 }}</td>
+          
+              <td class="bg-blue-2 text-white">{{ manager.ageing['2-7 Days'] || 0 }}</td>
+          
+              <td class="bg-blue-3 text-white">{{ manager.ageing['7 Days - 2 Weeks'] || 0 }}</td>
+          
+              <td class="bg-yellow-1 text-white">{{ manager.ageing['2 Weeks - 1 Month'] || 0 }}</td>
+          
+              <td class="bg-yellow-2 text-white">{{ manager.ageing['> 1 Month'] || 0 }}</td>
+          
+            </tr>
+          
+          </ng-container>
+        
+        </tbody>
+  
+      </table>
+  
+    </div>
+  
+  </div>
+
+</ng-template>
+
+<!-- Open Overview Expand -->
+<ng-template #openOverviewExpandModal let-modal>
+
+  <div class="modal-header">
+
+    <div class="d-flex justify-content-between align-items-center w-100" style="height: 40px;">
+
+      <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Full Overview List :</h6>
+      
+      <i class="bi bi-x-lg pe-2 fw-bold" style="cursor: pointer;" (click)="modal.close()"></i>
+  
+    </div>
+
+  </div>
+
+  <div class="modal-body p-3">
+
+    <div class="table-responsive">
+
+      <table class="table table-borderless align-middle">
+
+        <thead class="bg-light text-secondary">
+
+          <tr style="font-size: 14px; font-weight: 500;">
+
+            <th>Property</th>
+            
+            <th>Unit</th>
+
+            <th>Payment Date</th>
+
+            <th style="text-align: center !important; min-width: 210px !important;">Tax Amount</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <ng-container *ngIf="!_.isEmpty(masterList['overViewList']); else other">
+
+            <tr *ngFor="let overview of masterList['overViewList']" style="font-size: 14px; font-weight: 400;">
+
+              <td>{{ overview.property }}</td>
+
+              <td>{{ overview.unit }}</td>
+
+              <td>{{ overview.paymentDate | date: 'dd-MM-yyyy' }}</td>
+
+              <td class="d-flex justify-content-center th-action">{{ service.currencyCode?.currencyCode }}. {{ overview.amount }}</td>
+
+            </tr>
+
+          </ng-container>
+
+          <ng-template #other>
+
+            <tr *ngIf="_.isEmpty(masterList['overViewList'])">
+  
+              <td colspan="4" style="text-align: center !important;">No Records Found</td>
+  
+            </tr>
+
+          </ng-template>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+
+    <button class="btn btn-secondary" (click)="modal.close()">Close</button>
+
+  </div>
+
+</ng-template>

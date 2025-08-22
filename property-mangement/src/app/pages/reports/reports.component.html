@@ -1,0 +1,331 @@
+<!-- Reports -->
+<div class="container-fluid p-0 m-0">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-start mb-3 ps-2 pt-4 pb-4 rounded-2" style="background-color: white; box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+        <h5 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Reports</h5>
+
+    </div>
+
+    <!-- Reports Card -->
+    <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+        <div class="card-body rounded-0 pt-4">
+
+            <!-- Property, Unit, Owner & Manager -->
+            <div class="row pb-5">
+                
+                <!-- Property -->
+                <div class="col-md-3">
+    
+                    <div class="card rounded-0 border-0">
+    
+                        <div class="card-header border-0 rounded-2" style="background-color: #F6F9FC;">
+    
+                            <h6 style="font-size: 18px; font-weight: 600; color: #282828;">Property</h6>
+    
+                        </div>
+        
+                        <div class="card-body rounded-0">
+        
+                            <div class="text-start mt-3" style="cursor: pointer;">
+
+                                <img src="images/icons/rigth-arrow.svg" class="mb-1" style="width: 24px;" alt="">
+
+                                <span class="fw-400 ms-s" style="font-size: 16px; color: #D2A119;" (click)="openReports('propertyPropertySummary')">Property Summary</span> 
+                                    
+                            </div>
+
+                            <div class="text-start mt-3" style="cursor: pointer;">
+
+                                <img src="images/icons/rigth-arrow.svg" class="mb-1" style="width: 24px;" alt="">
+
+                                <span class="fw-400 ms-s" style="font-size: 16px; color: #D2A119;" (click)="openReports('propertyIssueSummary')">Issue Summary</span> 
+                                    
+                            </div>
+
+                        </div>
+        
+                    </div>
+    
+                </div>
+
+                <!-- Unit -->
+                <div class="col-md-3">
+    
+                    <div class="card rounded-0 border-0">
+    
+                        <div class="card-header border-0 rounded-2" style="background-color: #F6F9FC;">
+    
+                            <h6 style="font-size: 18px; font-weight: 600; color: #282828;">Units</h6>
+    
+                        </div>
+        
+                        <div class="card-body rounded-0">
+        
+                            <div class="text-start mt-3" style="cursor: pointer;">
+
+                                <img src="images/icons/rigth-arrow.svg" class="mb-1" style="width: 24px;" alt="">
+
+                                <span class="fw-400 ms-s" style="font-size: 16px; color: #D2A119;">Unit Summary</span> 
+                                    
+                            </div>
+
+                            <div class="text-start mt-3" style="cursor: pointer;">
+
+                                <img src="images/icons/rigth-arrow.svg" class="mb-1" style="width: 24px;" alt="">
+
+                                <span class="fw-400 ms-s" style="font-size: 16px; color: #D2A119;">Issue Summary</span> 
+                                    
+                            </div>
+
+                        </div>
+        
+                    </div>
+    
+                </div>
+
+                <!-- Owner -->
+                <div class="col-md-3">
+    
+                    <div class="card rounded-0 border-0">
+    
+                        <div class="card-header border-0 rounded-2" style="background-color: #F6F9FC;">
+    
+                            <h6 style="font-size: 18px; font-weight: 600; color: #282828;">Owner</h6>
+    
+                        </div>
+        
+                        <div class="card-body rounded-0">
+        
+                            <div class="text-start mt-3" style="cursor: pointer;">
+
+                                <img src="images/icons/rigth-arrow.svg" class="mb-1" style="width: 24px;" alt="">
+
+                                <span class="fw-400 ms-s" style="font-size: 16px; color: #D2A119;">Owner Summary</span> 
+                                    
+                            </div>
+
+                            <div class="text-start mt-3" style="cursor: pointer;">
+
+                                <img src="images/icons/rigth-arrow.svg" class="mb-1" style="width: 24px;" alt="">
+
+                                <span class="fw-400 ms-s" style="font-size: 16px; color: #D2A119;">Mapped Manager</span> 
+                                    
+                            </div>
+
+                            <div class="text-start mt-3" style="cursor: pointer;">
+
+                                <img src="images/icons/rigth-arrow.svg" class="mb-1" style="width: 24px;" alt="">
+
+                                <span class="fw-400 ms-s" style="font-size: 16px; color: #D2A119;">Property Summary</span> 
+                                    
+                            </div>
+
+                        </div>
+        
+                    </div>
+    
+                </div>
+
+                <!-- Manager -->
+                <div class="col-md-3">
+    
+                    <div class="card rounded-0 border-0">
+    
+                        <div class="card-header border-0 rounded-2" style="background-color: #F6F9FC;">
+    
+                            <h6 style="font-size: 18px; font-weight: 600; color: #282828;">Manager</h6>
+    
+                        </div>
+        
+                        <div class="card-body rounded-0">
+        
+                            <div class="text-start mt-3" style="cursor: pointer;">
+
+                                <img src="images/icons/rigth-arrow.svg" class="mb-1" style="width: 24px;" alt="">
+
+                                <span class="fw-400 ms-s" style="font-size: 16px; color: #D2A119;">Manager Summary</span> 
+                                    
+                            </div>
+
+                            <div class="text-start mt-3" style="cursor: pointer;">
+
+                                <img src="images/icons/rigth-arrow.svg" class="mb-1" style="width: 24px;" alt="">
+
+                                <span class="fw-400 ms-s" style="font-size: 16px; color: #D2A119;">Mapped Staff</span> 
+                                    
+                            </div>
+
+                            <div class="text-start mt-3" style="cursor: pointer;">
+
+                                <img src="images/icons/rigth-arrow.svg" class="mb-1" style="width: 24px;" alt="">
+
+                                <span class="fw-400 ms-s" style="font-size: 16px; color: #D2A119;">Property Summary</span> 
+                                    
+                            </div>
+
+                            <div class="text-start mt-3" style="cursor: pointer;">
+
+                                <img src="images/icons/rigth-arrow.svg" class="mb-1" style="width: 24px;" alt="">
+
+                                <span class="fw-400 ms-s" style="font-size: 16px; color: #D2A119;">Issue Summary</span> 
+                                    
+                            </div>
+
+                        </div>
+        
+                    </div>
+    
+                </div>
+
+            </div>
+
+            <!-- Staff, Ticket & Payment -->
+            <div class="row pb-5">
+
+                <!-- Staff -->
+                <div class="col-md-3">
+    
+                    <div class="card rounded-0 border-0">
+    
+                        <div class="card-header border-0 rounded-2" style="background-color: #F6F9FC;">
+    
+                            <h6 style="font-size: 18px; font-weight: 600; color: #282828;">Staff</h6>
+    
+                        </div>
+        
+                        <div class="card-body rounded-0">
+        
+                            <div class="text-start mt-3" style="cursor: pointer;">
+
+                                <img src="images/icons/rigth-arrow.svg" class="mb-1" style="width: 24px;" alt="">
+
+                                <span class="fw-400 ms-s" style="font-size: 16px; color: #D2A119;">Staff Summary</span> 
+                                    
+                            </div>
+
+                            <div class="text-start mt-3" style="cursor: pointer;">
+
+                                <img src="images/icons/rigth-arrow.svg" class="mb-1" style="width: 24px;" alt="">
+
+                                <span class="fw-400 ms-s" style="font-size: 16px; color: #D2A119;">Issue Mapping Summary</span> 
+                                    
+                            </div>
+
+                        </div>
+        
+                    </div>
+    
+                </div>
+
+                <!-- Tickets -->
+                <div class="col-md-3">
+    
+                    <div class="card rounded-0 border-0">
+    
+                        <div class="card-header border-0 rounded-2" style="background-color: #F6F9FC;">
+    
+                            <h6 style="font-size: 18px; font-weight: 600; color: #282828;">Ticket</h6>
+    
+                        </div>
+        
+                        <div class="card-body rounded-0">
+        
+                            <div class="text-start mt-3" style="cursor: pointer;">
+
+                                <img src="images/icons/rigth-arrow.svg" class="mb-1" style="width: 24px;" alt="">
+
+                                <span class="fw-400 ms-s" style="font-size: 16px; color: #D2A119;">Owner Ticket Summary</span> 
+                                    
+                            </div>
+
+                            <div class="text-start mt-3" style="cursor: pointer;">
+
+                                <img src="images/icons/rigth-arrow.svg" class="mb-1" style="width: 24px;" alt="">
+
+                                <span class="fw-400 ms-s" style="font-size: 16px; color: #D2A119;">Manager Ticket Summary</span> 
+                                    
+                            </div>
+
+                            <div class="text-start mt-3" style="cursor: pointer;">
+
+                                <img src="images/icons/rigth-arrow.svg" class="mb-1" style="width: 24px;" alt="">
+
+                                <span class="fw-400 ms-s" style="font-size: 16px; color: #D2A119;">Staff Ticket Summary</span> 
+                                    
+                            </div>
+
+                            <div class="text-start mt-3" style="cursor: pointer;">
+
+                                <img src="images/icons/rigth-arrow.svg" class="mb-1" style="width: 24px;" alt="">
+
+                                <span class="fw-400 ms-s" style="font-size: 16px; color: #D2A119;">Tenant Ticket Summary</span> 
+                                    
+                            </div>
+
+                        </div>
+        
+                    </div>
+    
+                </div>
+
+                <!-- Payment -->
+                <div class="col-md-3">
+    
+                    <div class="card rounded-0 border-0">
+    
+                        <div class="card-header border-0 rounded-2" style="background-color: #F6F9FC;">
+    
+                            <h6 style="font-size: 18px; font-weight: 600; color: #282828;">Payment</h6>
+    
+                        </div>
+        
+                        <div class="card-body rounded-0">
+        
+                            <div class="text-start mt-3" style="cursor: pointer;">
+
+                                <img src="images/icons/rigth-arrow.svg" class="mb-1" style="width: 24px;" alt="">
+
+                                <span class="fw-400 ms-s" style="font-size: 16px; color: #D2A119;">Rental Payment Summary</span> 
+                                    
+                            </div>
+
+                            <div class="text-start mt-3" style="cursor: pointer;">
+
+                                <img src="images/icons/rigth-arrow.svg" class="mb-1" style="width: 24px;" alt="">
+
+                                <span class="fw-400 ms-s" style="font-size: 16px; color: #D2A119;">Deposit Summary</span> 
+                                    
+                            </div>
+
+                            <div class="text-start mt-3" style="cursor: pointer;">
+
+                                <img src="images/icons/rigth-arrow.svg" class="mb-1" style="width: 24px;" alt="">
+
+                                <span class="fw-400 ms-s" style="font-size: 16px; color: #D2A119;">Property Tax</span> 
+                                    
+                            </div>
+
+                            <div class="text-start mt-3" style="cursor: pointer;">
+
+                                <img src="images/icons/rigth-arrow.svg" class="mb-1" style="width: 24px;" alt="">
+
+                                <span class="fw-400 ms-s" style="font-size: 16px; color: #D2A119;">Utility Payment</span> 
+                                    
+                            </div>
+
+                        </div>
+        
+                    </div>
+    
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>  

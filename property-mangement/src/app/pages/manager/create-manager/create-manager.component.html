@@ -1,0 +1,1324 @@
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h5 class="text-dark">{{ mode }} Manager</h5>
+
+        <small><span class="text-primary">Manager</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-primary" style="cursor: pointer;" (click)="this.service.navigate({ 'url': 'app/manager' })">Manager List</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-dark">{{ this.mode == 'Create' ? 'Create' : 'Update' }} Manager</span> </small>
+
+    </div>
+
+    <div class="row">
+        
+        <form  *ngIf="!_.isEmpty(managerForm.value)" [formGroup]="managerForm"  class="horizontal-form-fields">
+
+            <!-- Basic Details -->
+            <div class="col-md-8">
+                
+                <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+    
+                    <div class="card-header bg-white">
+        
+                        <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+        
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Basic Details :</h6>
+                        
+                        </div>
+                        
+                    </div>
+    
+                    <div class="card-body">
+    
+                        <div class="row">
+    
+                            <div class="col-md-6">
+    
+                                <div class="form-group required mb-3">
+    
+                                    <label for="firstName" class="mb-2">First Name  </label>
+    
+                                    <input type="text" class="form-control" id="firstName" formControlName="firstName" placeholder="Enter First Name" [ngClass]="{ 'is-invalid': (f.firstName?.touched || formSubmitted) && f.firstName.errors }">
+    
+                                    <div *ngIf="(f.firstName?.touched || formSubmitted) && f.firstName.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.firstName.errors.required">First Name is required</div>
+                
+                                    </div>
+    
+                                </div>
+    
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="lastName" class="mb-2">Last Name </label>
+
+                                    <input type="text" class="form-control" id="lastName" formControlName="lastName" placeholder="Enter Last Name" [ngClass]="{ 'is-invalid': (f.lastName?.touched || formSubmitted) && f.lastName.errors }">
+
+                                    <div *ngIf="(f.lastName?.touched || formSubmitted) && f.lastName.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.lastName.errors.required">Last Name is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="mobileNo" class="mb-2">Contact Number </label>
+
+                                    <input type="text" class="form-control" id="mobileNo" formControlName="mobileNo" placeholder="Enter Contact Number" [ngClass]="{ 'is-invalid': (f.mobileNo?.touched || formSubmitted) && f.mobileNo.errors }" numbersOnly>
+
+                                    <div *ngIf="(f.mobileNo?.touched || formSubmitted) && f.mobileNo.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.mobileNo.errors.required">Contact Number is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="email" class="mb-2">Email </label>
+
+                                    <input type="text" class="form-control" id="email" formControlName="email" placeholder="Enter Email" [ngClass]="{ 'is-invalid': (f.email?.touched || formSubmitted) && f.email.errors }">
+
+                                    <div *ngIf="(f.email?.touched || formSubmitted) && f.email.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.email.errors.required">Email is required</div>
+
+                                        <div *ngIf="f.email.errors.email && !f.email.errors.required">Email must be a valid email address</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <!-- for address line one -->
+                            <div class="col-md-6">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="addressLineOne" class="mb-2">Address</label>
+
+                                    <input type="text" class="form-control" id="addressLineOne" formControlName="addressLineOne" placeholder="Enter Address Line 1" [ngClass]="{ 'is-invalid': (f.addressLineOne?.touched || formSubmitted) && f.addressLineOne.errors }">
+
+                                    <div *ngIf="(f.addressLineOne?.touched || formSubmitted) && f.addressLineOne.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.addressLineOne.errors.required">Address Line 1 is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">  
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="addressLineTwo" class="mb-2 opacity-0">Address Line 2</label>
+
+                                    <input type="text" class="form-control" id="addressLineTwo" formControlName="addressLineTwo" placeholder="Enter Address Line 2" [ngClass]="{ 'is-invalid': (f.addressLineTwo?.touched || formSubmitted) && f.addressLineTwo.errors }">
+
+                                    <div *ngIf="(f.addressLineTwo?.touched || formSubmitted) && f.addressLineTwo.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.addressLineTwo.errors.required">Address Line 2 is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-3">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="countryId" class="mb-2">Country</label>
+
+                                    <ng-select name="countryId" id="countryId" class="form-control" formControlName="countryId" placeholder="Select Country" [ngClass]="{ 'is-invalid': (f.countryId?.touched || formSubmitted) && f.countryId.errors }" appendTo="body" [clearable]="false">
+
+                                        <ng-option *ngFor="let countryId of masterList['countryIdList']" [value]="countryId?._id">{{ countryId?.name }}</ng-option>
+
+                                    </ng-select>
+
+                                    <div *ngIf="(f.countryId?.touched || formSubmitted) && f.countryId.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.countryId.errors.required">Country is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-3">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="state" class="mb-2">State/Province</label>
+
+                                    <input type="text" class="form-control" id="state" formControlName="state" placeholder="Enter State" [ngClass]="{ 'is-invalid': (f.state?.touched || formSubmitted) && f.state.errors }">
+
+                                    <div *ngIf="(f.state?.touched || formSubmitted) && f.state.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.state.errors.required">State is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-3">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="city" class="mb-2">City</label>
+
+                                    <input type="text" class="form-control" id="city" formControlName="city" placeholder="Enter City" [ngClass]="{ 'is-invalid': (f.city?.touched || formSubmitted) && f.city.errors }">
+
+                                    <div *ngIf="(f.city?.touched || formSubmitted) && f.city.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.city.errors.required">City is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-3">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="pincode" class="mb-2">Pincode</label>
+
+                                    <input type="text" class="form-control" id="pincode" formControlName="pincode" placeholder="Enter Pincode" [ngClass]="{ 'is-invalid': (f.pincode?.touched || formSubmitted) && f.pincode.errors }">
+
+                                    <div *ngIf="(f.pincode?.touched || formSubmitted) && f.pincode.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.pincode.errors.required">Pincode is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="role" class="mb-2">Role</label>
+
+                                    <ng-select name="role" id="role" class="form-control" formControlName="role" placeholder="Select Role" [ngClass]="{ 'is-invalid': (f.role?.touched || formSubmitted) && f.role.errors }" appendTo="body" [clearable]="false">
+
+                                        <ng-container *ngFor="let role of masterList['rolesList']">
+
+                                            <ng-option [value]="role?._id" *ngIf="role.roleCategoryId?.category == 'Manager'">{{ role?.roleName }}</ng-option>
+
+                                        </ng-container>
+
+                                    </ng-select>
+
+                                    <div *ngIf="(f.role?.touched || formSubmitted) && f.role.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.role.errors.required">Role is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+    
+                        </div>
+    
+                    </div>
+    
+                </div>
+
+            </div>
+
+            <!-- Staff List -->
+            <div class="col-md-12" *ngIf="this.mode == 'Update'">
+
+                <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                    <div class="card-header bg-white d-flex justify-content-between">
+        
+                        <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+        
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Mapped Staff :</h6>
+                        
+                        </div>
+
+                    </div>
+        
+                    <div class="card-body p-0">
+        
+                        <div class="table-responsive">
+
+                            <table class="table table-borderless align-middle table-striped">
+
+                                <thead class="bg-light text-secondary">
+
+                                    <tr>
+
+                                        <th>Staff Name</th>
+
+                                        <th>Mapped Issues</th>
+
+                                        <th>Contact Number</th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    <ng-container *ngIf="!_.isEmpty(this.masterList['staffList']); else other">
+
+                                        <ng-container *ngFor="let staff of this.masterList['staffList']; let i = index; let last = last; let first = first">
+
+                                            <tr>
+
+                                                <td>{{ staff.firstName + ' ' + staff.lastName }}</td>
+
+                                                <td>
+
+                                                    <ng-container *ngIf="staff.issueNames && staff.issueNames.length">
+
+                                                        <img src="images/icons/view_eye.svg" style="width: 26px; height: auto; margin-left: 5px; vertical-align: middle;" alt="" [matTooltip]="getTooltipList(staff.issueNames, 'Issue')" matTooltipPosition="above" matTooltipClass="custom-tooltip" />
+            
+                                                        {{ staff.issueNames[0].issueName }}
+                                                    
+                                                        <span *ngIf="staff.issueNames.length > 1" class="text-primary"> , +{{ staff.issueNames.length - 1 }}</span>
+                                                    
+                                                    </ng-container>
+
+                                                </td>
+                                                
+                                                <td>{{ staff.mobileNo || '' }}</td>
+
+                                            </tr>
+
+                                        </ng-container>
+
+                                    </ng-container>
+                                    
+                                    <ng-template #other>
+                                    
+                                        <tr>
+
+                                            <td colspan="11" style="text-align: center !important;">No  Records Found</td>
+
+                                        </tr>
+
+                                    </ng-template>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Property List -->
+            <div class="col-md-12" *ngIf="this.mode == 'Update'">
+
+                <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                    <div class="card-header bg-white d-flex justify-content-between">
+
+                        <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Property :</h6>
+
+                        </div>
+
+                        <div>
+
+                            <button class="btn btn-secondary" (click)=" this.service.navigate({ 'url': 'app/property/create-property' })">+ Add New</button>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card-body p-0">
+
+                        <div class="table-responsive">
+
+                            <table class="table table-borderless align-middle table-striped">
+
+                                <thead class="bg-light text-secondary">
+
+                                    <tr>
+
+                                        <th>No</th>
+
+                                        <th>Property Name</th>
+
+                                        <th>Image</th>
+
+                                        <th>Address</th>
+
+                                        <th style="text-align: center !important;">No.Of.Units</th>
+
+                                        <th style="text-align: center !important;">Occupied Units</th>
+
+                                        <th style="text-align: center !important;">Tenant</th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    <ng-container *ngIf="!_.isEmpty(this.masterList['propertyList']); else other">
+
+                                        <ng-container *ngFor="let property of this.masterList['propertyList']; let i = index; let last = last; let first = first">
+
+                                            <tr>
+
+                                                <td>{{ i + 1 }}</td>
+
+                                                <td>{{ property.propertyName }}</td>
+
+                                                <td>
+
+                                                    <ng-container *ngIf="property.propertyImages?.length > 0; else empty">
+
+                                                        <img [src]="service.getFullImagePath({ imgUrl : property.propertyImages[0]?.path })" alt="Property Image" style="width: 43px;height: 28px; border-radius: 4%; object-fit: cover;"> {{ '' }}
+
+                                                    </ng-container>
+
+                                                    <ng-template #empty>
+
+                                                        {{ ' - ' }}
+                                                        
+                                                    </ng-template>
+
+                                                </td>
+
+                                                <td>
+
+                                                    <img *ngIf="property.addressLineOne" src="images/icons/view_eye.svg" style="width: 26px; height: auto;" alt="" matTooltip="{{ property.addressLineOne + ', ' +  property.addressLineTwo + ', ' + property.city + ', ' + property.state + ', ' + property.country?.name + ' - ' + property.pincode }}" matTooltipPosition="above" matTooltipClass="custom-tooltip"/>
+
+                                                    {{ property.addressLineOne.length > 20 ? (property.addressLineOne | slice:0:20) + '...' : property.addressLineOne }}
+
+                                                </td>
+
+                                                <td style="text-align: center !important;">{{ property.noOfUnits || 0 }}</td>
+
+                                                <td style="text-align: center !important;">{{ property.occupiedUnits || 0 }}</td>
+
+                                                <td style="text-align: center !important;">{{ property.tenantCount }}</td>
+
+                                            </tr>
+
+                                        </ng-container>
+
+                                        </ng-container>
+                                    
+                                    <ng-template #other>
+                                    
+                                        <tr>
+
+                                            <td colspan="11" style="text-align: center !important;">No  Records Found</td>
+
+                                        </tr>
+
+                                    </ng-template>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Property Level Issue Mapping -->
+            <div class="col-md-12" *ngIf="this.mode == 'Update'">
+
+                <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                    <div class="card-header bg-white">
+        
+                        <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+        
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Property Level Issue Mapping : ({{ f.propertyLevelIssue.controls?.length }}) </h6>
+
+                        </div>
+                        
+                    </div>
+        
+                    <div class="card-body p-0">
+        
+                        <div class="table-responsive" formArrayName="propertyLevelIssue">
+
+                            <table class="table table-borderless align-middle table-striped table-scroll">
+
+                                <thead class="bg-light text-secondary">
+
+                                    <tr>
+
+                                        <th style="width: 6%">Action</th>
+
+                                        <th style="width: 25%">Property</th>
+
+                                        <th style="width: 20%">Issue Category</th>
+
+                                        <th style="width: 20%">Priority</th>
+
+                                        <th style="width: 15%">TAT</th>
+
+                                        <th style="width: 20%; text-align: start !important" class="th-action">Staff</th>
+
+                                        <th>Active Date</th>
+
+                                        <th>Inactive Date</th>
+                                        
+                                    </tr>
+
+                                </thead>
+                            
+                                <tbody>
+
+                                    <!-- <ng-container *ngIf="!_.isEmpty(this.masterList['propertyLevelIssueList']); else other">
+
+                                        <ng-container *ngFor="let property of this.masterList['propertyLevelIssueList']">
+
+                                            <tr *ngFor="let issue of property.issueConfiguration">
+    
+                                                <td>{{ property.propertyName?.propertyName }}</td>
+
+                                                <td>{{ issue.issueCategory?.issueName }}</td>
+                                                
+                                                <td>{{ issue.priority | titlecase }}</td>
+                                                
+                                                <td>{{ issue.tat + ' (' + (issue.tatType | titlecase ) + ')' }}</td>
+                                                
+                                                <td class="td-action" style="text-align: start !important">
+
+                                                    <ng-container *ngIf="(issue.propertyIds && issue.propertyIds.length > 0); else other">
+
+                                                        <img src="images/icons/view_eye.svg" style="width: 26px; height: auto;" alt="" [matTooltip]="getTooltipList(issue.staffList, 'firstName')" matTooltipPosition="above" matTooltipClass="custom-tooltip"/>
+
+                                                        {{ issue.staffList[0]?.firstName }}
+
+                                                        <span *ngIf="issue.staffList.length > 1">
+
+                                                            , <span class="text-primary">+{{ issue.staffList.length - 1 }}</span>
+                                                        
+                                                        </span>
+
+                                                    </ng-container>
+
+                                                    <ng-template #other>
+
+                                                        {{ '-' }}
+
+                                                    </ng-template>
+
+                                                </td>
+
+                                            </tr>
+
+                                        </ng-container>
+
+                                    </ng-container> -->
+
+                                    <ng-container *ngIf="!_.isEmpty(f.propertyLevelIssue.controls); else other">
+                                        
+                                        <ng-container *ngFor="let config of f.propertyLevelIssue.controls; let i = index; let last = last; let first = first">
+
+                                            <ng-container [formGroup]="config" *ngIf="config.controls as pif">
+
+                                                <tr>
+
+                                                    <td>
+
+                                                        <div class="d-flex justify-content-between align-items-center" style="height: 100%;">
+
+                                                            <p (click)="deleteIssue('property', i)" style="color: #FF4949 !important; font-size: 18px; cursor: pointer; margin: 0; display: flex; align-items: center;">
+
+                                                                <i class="bi bi-dash-lg fw-bold"></i>
+                                                            
+                                                            </p>
+                                                        
+                                                            <p *ngIf="last" (click)="addIssue('property')" class="fw-bold" style="cursor: pointer; margin: 0; display: flex; align-items: center;">
+        
+                                                                <i class="bi bi-plus-lg fw-bold"></i>
+        
+                                                            </p>
+
+                                                        </div>
+
+                                                    </td>
+
+                                                    <td>
+                                                    
+                                                        <ng-select class="form-control" formControlName="propertyName" placeholder="Select Property" id="propertyName" appendTo="body" [clearable]="false">
+
+                                                            <ng-option *ngFor="let item of this.masterList['propertyLevelIssueList']" [value]="item?._id">{{ item.propertyName }}</ng-option>
+
+                                                        </ng-select>
+
+                                                    </td>
+
+                                                    <td>
+                                                
+                                                        <ng-select class="form-control" formControlName="issueCategory" id="issueCategory" placeholder="Select Issue" (change)="changeValue('issueCategory',i)" [ngClass]="{ 'is-invalid': (pif.issueCategory?.touched || formSubmitted) && pif.issueCategory?.errors }" appendTo="body" [clearable]="false">
+        
+                                                            <ng-option *ngFor="let issue of masterList['issueList']" [value]="issue._id">{{ issue.issueName }}</ng-option>
+        
+                                                        </ng-select>
+        
+                                                    </td>
+        
+                                                    <td>
+        
+                                                        <ng-select name="" id="priority" class="form-control" placeholder="Select Priority" formControlName="priority" autocomplete="off" [ngClass]="{ 'is-invalid': (pif.priority?.touched || formSubmitted) && pif.priority?.errors }" appendTo="body" [clearable]="false">
+        
+                                                            <ng-option value="hight">High</ng-option>
+        
+                                                            <ng-option value="medium">Medium</ng-option>
+        
+                                                            <ng-option value="low">Low</ng-option>
+                                                            
+                                                        </ng-select>
+        
+                                                    </td>
+        
+                                                    <td>
+        
+                                                        <div class="d-flex w-100">
+
+                                                            <div class="col-md-5">
+
+                                                                <input type="number" class="form-control" id="tat" formControlName="tat" numbersOnly autocomplete="off" placeholder="-" [ngClass]="{ 'is-invalid': (pif.tat?.touched || formSubmitted) && pif.tat.errors }"/>
+                                                                
+                                                            </div>
+                                                            
+                                                            <div class="col-md-6">
+
+                                                                <ng-select name="tatType" id="tatType" formControlName="tatType" placeholder="Select Type" class="form-control" [ngClass]="{ 'is-invalid': (pif.tatType?.touched || formSubmitted) && pif.tatType?.errors }" appendTo="body" [clearable]="false">
+
+                                                                    <ng-option value="days">Days</ng-option>
+                                                                    
+                                                                    <ng-option value="hours">Hours</ng-option>
+                                                                    
+                                                                </ng-select>
+                                                            
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        
+                                                    </td>
+        
+                                                    <td>
+
+                                                        <ng-select class="form-control" [items]="config.get('staffList')?.value || []" placeholder="Select Staff" bindLabel="staff" bindValue="_id" formControlName="staff" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body">
+
+                                                            <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                                                                <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                                                                    
+                                                                    <div class="d-flex">
+
+                                                                        <span class="ng-value-label ellipsis ms-1">
+
+                                                                            <span>{{ _.get(item,'firstName') + ' ' + _.get(item,'lastName') }}</span> 
+
+                                                                        </span>
+
+                                                                        <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                                                                        <span style="width: 1px; height: 20px; background-color: black;"></span>
+                                                                        
+                                                                    </div>
+
+                                                                </div>
+
+                                                                <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                                                                    <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                                                                </div>
+
+                                                            </ng-template>   
+
+                                                            <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                                                                <div class="form-check d-flex align-items-center"> 
+                                                                    
+                                                                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'manager')"/>
+                            
+                                                                    <label class="form-check-label mt-1">{{ item?.firstName + ' ' + item?.lastName }}</label>
+                            
+                                                                </div>
+                                                                    
+                                                            </ng-template>
+                                                        
+                                                        </ng-select>
+        
+                                                    </td>
+
+                                                    <td>
+
+                                                        <input type="text" class="form-control" formControlName="activeDate" placeholder="Add Date">
+
+                                                    </td>
+
+                                                    <td class="td-action">
+
+                                                        <input type="text" class="form-control" formControlName="inactiveDate" placeholder="Add Date">
+
+                                                    </td>
+
+                                                </tr>
+
+                                            </ng-container>
+
+                                        </ng-container>
+
+                                    </ng-container>
+
+                                    <ng-template #other>
+
+                                        <tr>
+
+                                            <td colspan="8" style="text-align: center !important;">No  Records Found</td>
+
+                                        </tr>
+
+                                    </ng-template>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+        
+                    </div>
+        
+                </div>
+
+            </div>
+
+            <!-- Unit Level Issue Mapping -->
+            <div class="col-md-12" *ngIf="this.mode == 'Update'">
+
+                <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                    <div class="card-header bg-white">
+        
+                        <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+        
+                            <!-- <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Unit Level Issue Mapping : ({{ f.unitLevelIssue.controls?.length }}) </h6> -->
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Unit Level Issue Mapping : ({{ this.masterList['unitLevelIssueList']?.length }}) </h6>
+
+                        </div>
+                        
+                    </div>
+        
+                    <div class="card-body p-0">
+        
+                        <div class="table-responsive" formArrayName="unitLevelIssue">
+
+                            <table class="table table-borderless align-middle table-striped table-scroll">
+
+                                <thead class="bg-light text-secondary">
+
+                                    <tr>
+
+                                        <!-- <th style="width: 6%">Action</th> -->
+
+                                        <th style="width: 20%">Property</th>
+
+                                        <th style="width: 15%">Unit</th>
+
+                                        <th style="width: 20%">Issue Category</th>
+
+                                        <th style="width: 20%">Priority</th>
+
+                                        <th style="width: 15%">TAT</th>
+
+                                        <th style="width: 20%; text-align: start !important;"  class="th-action">Staff</th>
+
+                                        <th style="width: 20%; text-align: start !important;"  class="th-action">Active Date</th>
+
+                                        <th style="width: 20%; text-align: start !important;"  class="th-action">Inactive Date</th>
+                                        
+                                    </tr>
+
+                                </thead>
+                            
+                                <tbody>
+
+                                    <!-- <ng-container *ngIf="!_.isEmpty(this.masterList['unitLevelIssueList']); else other">
+
+                                        <ng-container *ngFor="let unit of this.masterList['unitLevelIssueList']">
+
+                                            <tr *ngFor="let issue of unit.issueConfiguration">
+    
+                                                <td>{{ unit.propertyName?.propertyName }}</td>
+
+                                                <td>{{ unit.unitName }}</td>
+                                                
+                                                <td>{{ issue.issueCategory?.issueName }}</td>
+                                                
+                                                <td>{{ issue.priority | titlecase }}</td>
+                                                
+                                                <td>{{ issue.tat + ' (' + (issue.tatType | titlecase ) + ')' }}</td>
+                                                
+                                                <td class="td-action" style="text-align: start !important">
+
+                                                    <ng-container *ngIf="(issue.propertyIds && issue.propertyIds.length > 0); else other">
+
+                                                        <img src="images/icons/view_eye.svg" style="width: 26px; height: auto;" alt="" [matTooltip]="getTooltipList(issue.staffList, 'firstName')" matTooltipPosition="above" matTooltipClass="custom-tooltip"/>
+
+                                                        {{ issue.staffList[0]?.firstName }}
+
+                                                        <span *ngIf="issue.staffList.length > 1">
+
+                                                            , <span class="text-primary">+{{ issue.staffList.length - 1 }}</span>
+                                                        
+                                                        </span>
+
+                                                    </ng-container>
+
+                                                    <ng-template #other>
+
+                                                        {{ '-' }}
+
+                                                    </ng-template>
+
+                                                </td>
+
+                                            </tr>
+
+                                        </ng-container>
+
+                                    </ng-container> -->
+
+                                    <ng-container *ngIf="!_.isEmpty(f.unitLevelIssue.controls); else other">
+
+                                        <ng-container *ngFor="let config of f.unitLevelIssue.controls; let i = index; let last = last; let first = first">
+
+                                            <ng-container [formGroup]="config" *ngIf="config.controls as uif">
+
+                                                <tr>
+
+                                                    <td>
+
+                                                        <div class="d-flex justify-content-between align-items-center" style="height: 100%;">
+
+                                                            <p (click)="deleteIssue('unit', i)" style="color: #FF4949 !important; font-size: 18px; cursor: pointer; margin: 0; display: flex; align-items: center;">
+
+                                                                <i class="bi bi-dash-lg fw-bold"></i>
+                                                            
+                                                            </p>
+                                                        
+                                                            <p *ngIf="last" (click)="addIssue('unit')" class="fw-bold" style="cursor: pointer; margin: 0; display: flex; align-items: center;">
+        
+                                                                <i class="bi bi-plus-lg fw-bold"></i>
+        
+                                                            </p>
+
+                                                        </div>
+
+                                                    </td>
+
+                                                    <td>
+                                                    
+                                                        <ng-select class="form-control" formControlName="propertyName" id="propertyName" appendTo="body" [clearable]="false" placeholder="Select Property">
+
+                                                            <ng-option *ngFor="let item of this.masterList['unitLevelIssueList']" [value]="item.propertyName?._id">
+                                                                
+                                                                {{ item.propertyName?.propertyName }}
+                                                            
+                                                            </ng-option>
+
+                                                        </ng-select>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <ng-select class="form-control" formControlName="unitName" id="unitName" appendTo="body" [clearable]="false" placeholder="Select Unit">
+                                                    
+                                                            <ng-option *ngFor="let item of masterList['unitLevelIssueList']" [value]="item?._id">
+                                                    
+                                                                {{ (item?.unitName) }}
+                                                    
+                                                            </ng-option>
+                                                    
+                                                        </ng-select>
+                                                    
+                                                    </td>
+
+                                                    <td>
+                                                
+                                                        <ng-select class="form-control" formControlName="issueCategory" id="issueCategory" (change)="changeValue('issueCategory',i)" [ngClass]="{ 'is-invalid': (uif.issueCategory?.touched || formSubmitted) && uif.issueCategory?.errors }" appendTo="body" [clearable]="false" placeholder="Select Issue">
+        
+                                                            <ng-option *ngFor="let issue of masterList['issueList']" [value]="issue?._id">{{ issue.issueName }}</ng-option>
+        
+                                                        </ng-select>
+        
+                                                    </td>
+        
+                                                    <td>
+        
+                                                        <ng-select name="" id="priority" class="form-control" formControlName="priority" autocomplete="off" [ngClass]="{ 'is-invalid': (uif.priority?.touched || formSubmitted) && uif.priority?.errors }" appendTo="body" [clearable]="false" placeholder="Select Priority">
+        
+                                                            <ng-option value="hight">High</ng-option>
+        
+                                                            <ng-option value="medium">Medium</ng-option>
+        
+                                                            <ng-option value="low">Low</ng-option>
+                                                            
+                                                        </ng-select>
+        
+                                                    </td>
+        
+                                                    <td>
+
+                                                        <div class="d-flex w-100">
+
+                                                            <div class="col-md-5">
+
+                                                                <input type="number" class="form-control" id="tat" formControlName="tat" numbersOnly autocomplete="off" placeholder="-" [ngClass]="{ 'is-invalid': (uif.issueCategory?.touched || formSubmitted) && uif.issueCategory?.errors }"/>
+                                                                
+                                                            </div>
+                                                            
+                                                            <div class="col-md-6">
+
+                                                                <ng-select name="tatType" id="tatType" formControlName="tatType" class="form-control" [ngClass]="{ 'is-invalid': (uif.tatType?.touched || formSubmitted) && uif.tatType?.errors }" appendTo="body" [clearable]="false" placeholder="Select Type">
+
+                                                                    <ng-option value="days">Days</ng-option>
+                                                                    
+                                                                    <ng-option value="hours">Hours</ng-option>
+                                                                    
+                                                                </ng-select>
+                                                            
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        
+                                                    </td>
+        
+                                                    <td>
+
+                                                        <ng-select class="form-control" [items]="config.get('staffList')?.value || []" bindLabel="staff" bindValue="_id" formControlName="staff" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body" placeholder="Select Staff">
+
+                                                            <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                                                                <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                                                                    
+                                                                    <div class="d-flex">
+
+                                                                        <span class="ng-value-label ellipsis ms-1">
+
+                                                                            <span>{{ _.get(item,'firstName') + ' ' + _.get(item,'lastName') }}</span> 
+
+                                                                        </span>
+
+                                                                        <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                                                                        <span style="width: 1px; height: 20px; background-color: black;"></span>
+                                                                        
+                                                                    </div>
+
+                                                                </div>
+
+                                                                <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                                                                    <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                                                                </div>
+
+                                                            </ng-template>   
+
+                                                            <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                                                                <div class="form-check d-flex align-items-center"> 
+                                                                    
+                                                                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'manager')"/>
+                            
+                                                                    <label class="form-check-label mt-1">{{ item?.firstName + ' ' + item?.lastName }}</label>
+                            
+                                                                </div>
+
+                                                            </ng-template>
+                                                        
+                                                        </ng-select>
+        
+                                                    </td>
+
+                                                    <td>
+
+                                                        <input type="text" class="form-control" formControlName="activeDate" placeholder="Add Date">
+
+                                                    </td>
+
+                                                    <td class="td-action">
+
+                                                        <input type="text" class="form-control" formControlName="inactiveDate" placeholder="Add Date">
+
+                                                    </td>
+
+                                                </tr>
+
+                                            </ng-container>
+
+                                        </ng-container>
+                                        
+                                    </ng-container>
+
+                                    <ng-template #other>
+
+                                        <tr>
+
+                                            <td colspan="8" style="text-align: center !important;">No Records Found</td>
+
+                                        </tr>
+
+                                    </ng-template>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+        
+                    </div>
+        
+                </div>
+
+            </div>
+
+            <!-- Tenant Level Issue Mapping -->
+            <div class="col-md-12" *ngIf="this.mode == 'Update'">
+
+                <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                    <div class="card-header bg-white">
+        
+                        <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+        
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Tenant Level Issue Mapping : ({{ f.tenantLevelIssue.controls?.length }}) </h6>
+
+                        </div>
+                        
+                    </div>
+        
+                    <div class="card-body p-0">
+        
+                        <div class="table-responsive" formArrayName="tenantLevelIssue">
+
+                            <table class="table table-borderless align-middle table-striped table-scroll">
+
+                                <thead class="bg-light text-secondary">
+
+                                    <tr>
+
+                                        <th style="min-width: 80px !important" class="th-first-field">Action</th>
+
+                                        <th style="min-width: 200px !important">Property</th>
+
+                                        <th style="min-width: 180px !important">Unit</th>
+                                        
+                                        <th style="min-width: 180px !important">Tenant</th>
+
+                                        <th style="min-width: 180px !important">Issue Category</th>
+
+                                        <th style="min-width: 150px !important">Priority</th>
+
+                                        <th style="min-width: 220px !important">TAT</th>
+
+                                        <th style="min-width: 200px !important">Staff</th>
+                                        
+                                        <th style="min-width: 120px !important">Active Date</th>
+
+                                        <th style="min-width: 150px !important" class="th-action">Inactive Date</th>
+
+                                    </tr>
+
+                                </thead>
+                            
+                                <tbody>
+
+                                    <ng-container *ngIf="!_.isEmpty(f.tenantLevelIssue.controls); else other">
+
+                                        <ng-container *ngFor="let tenant of f.tenantLevelIssue.controls; let i = index; let last = last; let first = first">
+
+                                            <ng-container [formGroup]="tenant" *ngIf="tenant.controls as tif">
+
+                                                <tr>
+
+                                                    <td class="td-first-field" style="min-width: 80px !important">
+
+                                                        <div class="d-flex justify-content-between align-items-center" style="height: 100%;">
+
+                                                            <p (click)="deleteIssue('tenant', i)" style="color: #FF4949 !important; font-size: 18px; cursor: pointer; margin: 0; display: flex; align-items: center;">
+
+                                                                <i class="bi bi-dash-lg fw-bold"></i>
+                                                            
+                                                            </p>
+                                                        
+                                                            <p *ngIf="last" (click)="addIssue('tenant')" class="fw-bold" style="cursor: pointer; margin: 0; display: flex; align-items: center;">
+        
+                                                                <i class="bi bi-plus-lg fw-bold"></i>
+        
+                                                            </p>
+
+                                                        </div>
+
+                                                    </td>
+
+                                                    <td>
+                                                    
+                                                        <!-- <select class="form-select" formControlName="propertyName" id="propertyName">
+
+                                                            <option *ngFor="let item of this.masterList['tenantLevelIssueList']" [value]="item?.propertyName">{{ item.propertyName[0]?.propertyName }}</option>
+
+                                                        </select> -->
+
+                                                        <ng-select class="form-control" formControlName="propertyName" id="propertyName" appendTo="body" [clearable]="false" placeholder="Select Property">
+
+                                                            <ng-option *ngFor="let item of this.masterList['tenantLevelIssueList']" [value]="item?.propertyName[0]?._id">{{ item.propertyName[0]?.propertyName }}</ng-option>
+
+                                                        </ng-select>
+                                                        
+                                                    </td>
+                                                    
+                                                   <td>
+
+                                                        <ng-select class="form-control" formControlName="unitName" id="unitName" appendTo="body" [clearable]="false" placeholder="Select Unit">
+                                                    
+                                                            <ng-option *ngFor="let item of masterList['tenantLevelIssueList']" [value]="item?.unitName?._id">
+                                                    
+                                                                {{ (item.unitName?.unitName) }}
+                                                    
+                                                            </ng-option>
+                                                    
+                                                        </ng-select>
+                                                    
+                                                    </td>
+
+                                                    <td>
+
+                                                        <ng-select class="form-control" formControlName="tenantName" id="tenantName" (change)="onTenantChange(i)" appendTo="body" [clearable]="false" placeholder="Select Tenant">
+                                                      
+                                                            <ng-option *ngFor="let item of masterList['tenantLevelIssueList']" [value]="item?._id">
+                                                      
+                                                                {{ item.firstName + ' ' + item.lastName }}
+                                                      
+                                                            </ng-option>
+                                                      
+                                                        </ng-select>
+                                                      
+                                                    </td>
+
+                                                    <td>
+                                                
+                                                        <ng-select class="form-control" formControlName="issueCategory" id="issueCategory" (change)="changeValue('issueCategory',i)" [ngClass]="{ 'is-invalid': (tif.issueCategory?.touched || formSubmitted) && tif.issueCategory?.errors }" appendTo="body" [clearable]="false" placeholder="Select Issue">
+        
+                                                            <ng-option *ngFor="let issue of masterList['issueList']" [value]="issue?._id">{{ issue.issueName }}</ng-option>
+        
+                                                        </ng-select>
+        
+                                                    </td>
+        
+                                                    <td>
+        
+                                                        <ng-select name="" id="priority" class="form-control" formControlName="priority" autocomplete="off" [ngClass]="{ 'is-invalid': (tif.priority?.touched || formSubmitted) && tif.priority?.errors }" appendTo="body" [clearable]="false" placeholder="Select Priority">
+        
+                                                            <ng-option value="hight">High</ng-option>
+        
+                                                            <ng-option value="medium">Medium</ng-option>
+        
+                                                            <ng-option value="low">Low</ng-option>
+                                                            
+                                                        </ng-select>
+        
+                                                    </td>
+        
+                                                    <td>
+        
+                                                        <!-- <div class="w-100 d-flex">
+        
+                                                            <input type="text" class="form-control" id="tat" formControlName="tat" numbersOnly>
+        
+                                                            <input type="text" class="form-control ms-1" id="tatType" formControlName="tatType"> 
+        
+                                                        </div> -->
+
+                                                        <div class="d-flex w-100">
+
+                                                            <div class="col-md-5">
+
+                                                                <input type="number" class="form-control" id="tat" formControlName="tat" numbersOnly autocomplete="off" placeholder="-" [ngClass]="{ 'is-invalid': (tif.tat?.touched || formSubmitted) && tif.tat?.errors }"/>
+                                                                
+                                                            </div>
+                                                            
+                                                            <!-- <div class="col-md-1 m-0 p-0">
+                                                                
+                                                                <div style="width: 0.9px;height: 30px;margin-top: 4px;background-color: #dee2e6;"></div>
+
+                                                            </div> -->
+                                                        
+                                                            <div class="col-md-6">
+
+                                                                <ng-select name="tatType" id="tatType" formControlName="tatType" class="form-control" [ngClass]="{ 'is-invalid': (tif.tatType?.touched || formSubmitted) && tif.tatType?.errors }" appendTo="body" [clearable]="false" placeholder="Select Type">
+
+                                                                    <ng-option value="days">Days</ng-option>
+                                                                    
+                                                                    <ng-option value="hours">Hours</ng-option>
+                                                                    
+                                                                </ng-select>
+                                                            
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        
+                                                    </td>
+        
+                                                    <td>
+
+                                                        <ng-select class="form-control" [items]="tenant.get('staffList')?.value || []" bindLabel="staff" bindValue="_id" formControlName="staff" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body" placeholder="Select Staff">
+
+                                                            <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                                                                <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                                                                    
+                                                                    <div class="d-flex">
+
+                                                                        <span class="ng-value-label ellipsis ms-1">
+
+                                                                            <span>{{ _.get(item,'firstName') + ' ' + _.get(item,'lastName') }}</span> 
+
+                                                                        </span>
+
+                                                                        <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                                                                        <span style="width: 1px; height: 20px; background-color: black;"></span>
+                                                                        
+                                                                    </div>
+
+                                                                </div>
+
+                                                                <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                                                                    <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                                                                </div>
+
+                                                            </ng-template>   
+
+                                                            <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                                                                <div class="form-check d-flex align-items-center"> 
+                                                                    
+                                                                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'manager')"/>
+                            
+                                                                    <label class="form-check-label mt-1">{{ item?.firstName + ' ' + item?.lastName }}</label>
+                            
+                                                                </div>
+                                                                    
+                                                            </ng-template>
+                                                        
+                                                        </ng-select>
+        
+                                                        <!-- <select name="staff" id="staff" class="form-select" formControlName="staff" autocomplete="off">
+        
+                                                            <option *ngFor="let staff of config.get('staffList')?.value" [value]="staff._id">
+        
+                                                                {{ staff.firstName + ' ' + staff.lastName }}
+                                                            
+                                                            </option>
+        
+                                                        </select> -->
+        
+                                                    </td>
+
+                                                    <td>
+
+                                                        <input type="text" class="form-control" formControlName="activeDate" placeholder="Add Date">
+
+                                                    </td>
+
+                                                    <td class="td-action">
+
+                                                        <input type="text" class="form-control" formControlName="inactiveDate" placeholder="Add Date">
+
+                                                    </td>
+
+                                                </tr>
+
+                                            </ng-container>
+
+                                        </ng-container>
+                                        
+                                    </ng-container>
+
+                                    <ng-template #other>
+
+                                        <tr>
+
+                                            <td colspan="10" style="text-align: center !important;">No Records Found</td>
+
+                                        </tr>
+
+                                    </ng-template>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+        
+                    </div>
+        
+                </div>
+
+            </div>
+
+            <!-- Save & Discard Buttons -->
+            <div class="d-flex justify-content-end mt-3 mb-3">
+
+                <button class="btn btn-outline-secondary mt-3 ms-2" (click)="this.service.navigate({ 'url': 'app/manager' })">Discard</button>
+
+                <button class="btn btn-secondary mt-3 mx-2" (click)="submit()">Save</button>
+
+            </div>
+        
+        </form>
+
+    </div>
+
+</div>

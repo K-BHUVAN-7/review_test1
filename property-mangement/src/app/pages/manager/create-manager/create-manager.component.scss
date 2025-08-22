@@ -1,0 +1,25 @@
+.select-tat{
+  border-right: none !important; 
+  border-radius: 5px 0px 0px 5px !important;
+  &:focus {
+    border-color: #dee2e6; 
+    box-shadow: 0 0 0 0;
+  }
+}
+
+.select-tat-type{
+
+  border-left: none !important; 
+  margin-left: -20px !important; 
+  border-radius: 0px 5px 5px 0px !important;
+
+  &:focus {
+    border-color: #dee2e6; 
+    box-shadow: 0 0 0 0;
+  }
+}
+
+::ng-deep .custom-tooltip {
+ white-space: pre-line !important;
+} 
+
