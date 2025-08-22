@@ -20,20 +20,20 @@ jobs:
         run: python -m pip install semgrep
 
       # This step will FAIL the job if violations are found
-      # and print the raw output to the log.
+      # and print the raw output to the log. Added JSON output for webhook.
       - name: Run Semgrep and Fail on Findings
         run: |
           semgrep ci \
             --config "rules.yaml" \
             --no-suppress-errors \
-            --json > semgrep.json  # Add JSON output for webhook
+            --json > semgrep.json  # Saves results as JSON file
 
-      # New step: Send JSON results to your Render webhook
+      # New step: Send JSON results to your Render webhook (runs even on failure)
       - name: Send Results to Webhook
-        if: always()  # Runs even if Semgrep fails
+        if: always()
         env:
           WEBHOOK_URL: https://review-test1.onrender.com/receiver
-          API_TOKEN: ${{ secrets.API_TOKEN }}  # Your token secret (add in GitHub Settings)
+          API_TOKEN: ${{ secrets.API_TOKEN }}  # Add this secret in GitHub Settings with your token value (e.g., qwertyuiop123)
         run: |
           curl -v -X POST "$WEBHOOK_URL" \
             -H "Authorization: Bearer $API_TOKEN" \
