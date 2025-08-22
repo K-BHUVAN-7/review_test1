@@ -1,116 +1,29 @@
-# .github/workflows/semgrep.yml
 
-name: 'Semgrep Scan & Gemini Summary'
+name: 'Semgrep Rule Check'
 
 on:
-  # This workflow runs on all pull requests
-  pull_request: {}
+  pull_request:
+    branches: [ main, master ]
+
+# Permissions needed to read code
+permissions:
+  contents: read
 
 jobs:
-  semgrep_and_summarize:
-    name: 'Scan & Summarize'
+  semgrep_scan:
+    name: Semgrep Scan
     runs-on: ubuntu-latest
-
     steps:
-      # Step 1: Check out the code so the action can scan it
-      - name: 'Checkout repository'
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Run the Semgrep scan with your custom rule
-      - name: 'Run Semgrep Scan'
-        id: semgrep_scan
-        uses: semgrep/semgrep-action@v1
-        continue-on-error: true # Allows the workflow to continue even if issues are found
-        with:
-          # This is updated. It uses default rules AND your rule file from the root.
-          # IMPORTANT: Replace 'your-rule-file.yml' with the actual name of your rule file.
-          # If you have multiple rule files, list them with spaces: 'p/default rule1.yml rule2.yml'
-          config: 'p/default your-rule-file.yml'
-          generate_sarif: 'true' # Generates a machine-readable output for the script
-          post_comment: false # Prevents Semgrep from posting its own, more verbose comments
+      - name: Install Semgrep
+        run: python -m pip install semgrep
 
-      # Step 3: If the scan failed, run the Gemini summarizer
-      - name: 'Summarize Findings with Gemini'
-        # This step ONLY runs if the 'semgrep_scan' step found issues (i.e., failed)
-        if: steps.semgrep_scan.outcome == 'failure'
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} # Use a secret named GEMINI_API_KEY
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+      # This step will FAIL the job if violations are found
+      # and print the raw output to the log.
+      - name: Run Semgrep and Fail on Findings
         run: |
-          # This Python script reads the Semgrep output and calls the Gemini API
-          python - <<'END_SCRIPT'
-          import os
-          import json
-          import requests
-
-          # --- 1. Read and Format Semgrep's Findings ---
-          sarif_file = 'semgrep.sarif'
-          findings_text = ""
-          try:
-              with open(sarif_file, 'r') as f:
-                  sarif_data = json.load(f)
-              
-              results = sarif_data['runs'][0]['results']
-              if not results:
-                  print("No results to summarize.")
-                  exit()
-
-              findings_text += f"Found {len(results)} issues:\n"
-              for result in results:
-                  message = result['message']['text']
-                  path = result['locations'][0]['physicalLocation']['artifactLocation']['uri']
-                  line = result['locations'][0]['physicalLocation']['region']['startLine']
-                  findings_text += f"- In `{path}` (Line {line}): {message}\n"
-          except Exception as e:
-              print(f"Error reading or parsing SARIF file: {e}")
-              exit()
-
-          # --- 2. Construct Prompt and Call the Gemini API ---
-          prompt = f"""
-          You are a security analyst. Summarize the following Semgrep findings from a pull request.
-          Provide a brief, high-level overview of the risks. Keep the summary concise and easy for a developer to understand.
-
-          Findings:
-          {findings_text}
-          """
-
-          api_key = os.getenv('GEMINI_API_KEY')
-          # This is the updated API endpoint for Google Gemini
-          url = f'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}'
-          
-          # This is the updated payload structure for Gemini
-          payload = {
-              'contents': [{'parts': [{'text': prompt}]}]
-          }
-
-          try:
-              response = requests.post(url, headers={'Content-Type': 'application/json'}, json=payload)
-              response.raise_for_status()
-              # This is the updated way to parse the response from Gemini
-              summary = response.json()['candidates'][0]['content']['parts'][0]['text']
-          except Exception as e:
-              print(f"Error calling Gemini API: {e}")
-              print(f"Response body: {response.text}")
-              exit()
-
-          # --- 3. Post the summary as a comment on the Pull Request ---
-          github_token = os.getenv('GITHUB_TOKEN')
-          pr_number = os.getenv('PR_NUMBER')
-          repo = os.getenv('GITHUB_REPOSITORY')
-          
-          comment_url = f'https://api.github.com/repos/{repo}/issues/{pr_number}/comments'
-          comment_payload = {'body': f'### ♊ AI Security Scan Summary (Gemini)\n\n{summary}'}
-          
-          post_response = requests.post(
-              comment_url,
-              headers={'Authorization': f'token {github_token}'},
-              json=comment_payload
-          )
-
-          if post_response.status_code == 201:
-              print("Successfully posted Gemini summary to the pull request.")
-          else:
-              print(f"Failed to post comment: {post_response.status_code} {post_response.text}")
-
-          END_SCRIPT
+          semgrep ci \
+            --config "rules.yaml" \
+            --no-suppress-errors
