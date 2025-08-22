@@ -19,8 +19,4 @@ async def receive_semgrep(request: Request):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@app.get('/')
-def health_check():
-    return {'status': 'ok'}
-
 
