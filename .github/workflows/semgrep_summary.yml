@@ -19,7 +19,7 @@ jobs:
       # Step 2: Run the Semgrep scan with your custom rule
       - name: 'Run Semgrep Scan'
         id: semgrep_scan
-        uses: semgrep/semgrep-action@v2
+        uses: semgrep/semgrep-action@v1
         continue-on-error: true # Allows the workflow to continue even if issues are found
         with:
           # This is updated. It uses default rules AND your rule file from the root.
