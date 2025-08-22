@@ -1,4 +1,3 @@
-
 name: 'Semgrep Rule Check'
 
 on:
@@ -26,4 +25,17 @@ jobs:
         run: |
           semgrep ci \
             --config "rules.yaml" \
-            --no-suppress-errors
+            --no-suppress-errors \
+            --json > semgrep.json  # Add JSON output for webhook
+
+      # New step: Send JSON results to your Render webhook
+      - name: Send Results to Webhook
+        if: always()  # Runs even if Semgrep fails
+        env:
+          WEBHOOK_URL: https://review-test1.onrender.com/receiver
+          API_TOKEN: ${{ secrets.API_TOKEN }}  # Your token secret (add in GitHub Settings)
+        run: |
+          curl -v -X POST "$WEBHOOK_URL" \
+            -H "Authorization: Bearer $API_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d @semgrep.json
