@@ -1,0 +1,359 @@
+<div class="container-fluid">
+
+    <!-- Custom Report Button & Close Button -->
+    <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+        <div class="card-body p-3 d-flex justify-content-between">
+
+            <div style="border-right: 2px solid #C1C1C1;">
+
+                <button class="btn btn-sm btn-outline-secondary ps-3 pe-3 pt-2 pb-2 me-3" (click)="openCustomReportModal()">
+    
+                    <img src="images/icons/custom-report-icon.svg" class="pe-1" style="width: 33px;" alt="">
+                    
+                    <span class="fw-400" style="font-size: 15px;">Customize Report</span>
+                
+                </button>
+
+            </div>
+
+            <div style="border-left: 2px solid #C1C1C1;">
+
+                <div class="ms-3">
+
+                    <img src="images/icons/close.svg" class="pe-1" style="width: 24px; margin-top: 12px; cursor: pointer;" alt="" (click)="this.service.navigate({ 'url': 'app/reports' })">
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Report Type Header & Export Excel Button -->
+    <div class="d-flex justify-content-between">
+
+        <div class="mt-4 ms-2">
+
+            <span class="text-dark" style="font-size: 16px; font-weight: 700;" *ngIf="reportType == 'propertyPropertySummary'">Property Summary :</span>
+
+            <span class="text-dark" style="font-size: 16px; font-weight: 700;" *ngIf="reportType == 'propertyIssueSummary'">Issue Summary :</span>
+
+        </div>
+
+        <div class="mt-4 me-2">
+
+            <button class="btn btn-sm btn-outline-primary ps-3 pe-3 pt-1 pb-1" (click)="exportToExcel()">
+                
+                <span class="fw-400" style="font-size: 13px;">Export Excel</span>
+
+            </button>
+
+        </div>
+
+    </div>
+    
+    <!-- Table -->
+    <div class="mt-3">
+
+        <div class="table-responsive table-wrapper">
+
+            <table class="table table-borderless align-middle table-scroll">
+
+                <thead class="bg-light text-secondary">
+
+                    <tr>
+
+                        <th style="max-width: 200px;">Property Name</th>
+
+                        <th style="max-width: 120px;">Unit</th>
+
+                        <th style="max-width: 180px;">Tenant Name</th>
+
+                        <th style="max-width: 100px;">Last Due Date</th>
+
+                        <th style="max-width: 100px;">Rent Amount</th>
+
+                        <th style="max-width: 100px;">Paid Amount</th>
+
+                        <th style="max-width: 100px;">Frequency</th>
+                        
+                        <th style="max-width: 100px;">Payment Mode</th>
+                        
+                        <th style="max-width: 100px;">PDC</th>
+
+                        <th style="max-width: 100px; text-align: center !important;">PDC Date</th>
+
+                    </tr>
+
+                </thead>
+            
+                <tbody>
+
+                    <ng-container *ngIf="(_.size(this.permissions.viewPermission?.branchIds) > 0); else other">
+
+                        <ng-container *ngIf="!_.isEmpty(reportData);else other">
+                            
+                            <tr *ngFor="let item of reportData">
+
+                                <td>{{ item.propertyName }}</td>
+
+                                <td>{{ item.unit }}</td>
+
+                                <td>{{ item.tenantName }}</td>
+
+                                <td>{{ (item.lastDueDate | date: 'dd-MM-yyyy') || '-' }}</td>
+
+                                <td>{{ this.service.currencyCode?.currencyCode }}. {{ (item.rentAmt | number: '1.0') || 0 }}</td>
+ 
+                                <td>{{ this.service.currencyCode?.currencyCode }}. {{ (item.paidAmt | number: '1.0') || 0 }}</td>
+
+                                <td>{{ item.frequency }}</td>
+
+                                <td>{{ item.paymentMode }}</td>
+
+                                <td>{{ item.isPdc == true ? 'Yes' : 'No' }}</td>
+
+                                <td style="text-align: center !important;">{{ (item.pdcDate | date: 'dd-MM-yyyy') || '-' }}</td>
+                                
+                            </tr>
+
+                        </ng-container>
+
+                        <ng-template #other>
+
+                            <tr>
+
+                                <td colspan="10" style="text-align: center !important;">No Records Found</td>
+
+                            </tr>
+
+                        </ng-template>
+
+                    </ng-container>
+
+                    <ng-template #other>
+
+                        <tr>
+
+                            <td colspan="10" style="text-align: center !important;"><img style="width: 16px !important;" class="me-2" src="images/lock2.png" alt="">Access Denied</td>
+
+                        </tr>
+
+                    </ng-template>
+
+                </tbody>
+
+            </table>
+            
+        </div>
+
+        <div *ngIf="totalCount > 0">
+
+            <mat-paginator 
+            class="custom-paginator"
+            appendTo="body"
+            [length]="totalCount"
+            [pageSize]="pageSize"
+            [pageIndex]="pageIndex"
+            [pageSizeOptions]="[5, 10, 25, 50]"
+            (page)="onPageChange($event)">
+            </mat-paginator>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Custom Report Modal -->
+<ng-template #customReportModal let-modal>
+
+    <div class="modal-header">
+
+        <div class="d-flex justify-content-between align-items-center w-100" style="height: 40px;">
+
+            <div>
+
+                <h6 class="ps-2 my-0 text-dark" style="font-weight: 600; border-left: 3px solid #D2A119;" *ngIf="reportType == 'propertyPropertySummary'">Property Summary</h6>
+    
+                <h6 class="ps-2 my-0 text-dark" style="font-weight: 600; border-left: 3px solid #D2A119;" *ngIf="reportType == 'propertyIssueSummary'">Issue Summary</h6>
+
+            </div>
+            
+            <i class="bi bi-x-lg pe-2 fw-bold" style="cursor: pointer;" (click)="modal.close()"></i>
+        
+        </div>
+
+    </div>
+
+    <div class="modal-body pb-2" style="color: black;">
+
+        <div class="row" *ngIf="!_.isEmpty(filterForm.value)" [formGroup]="filterForm">
+
+            <!-- Property -->
+            <div class="col-md-6 form-group mb-3">
+
+                <label for="" class="mb-2">Property</label>
+
+                <ng-select class="form-control" id="propertyName" formControlName="propertyName" (change)="changeValue({fieldName: 'propertyName'})" appendTo="body" [clearable]="false">
+
+                    <ng-option *ngFor="let item of this.masterList['propertyList']" [value]="item._id">{{ item.propertyName }}</ng-option>
+
+                </ng-select>
+
+            </div>
+
+            <!-- Unit -->
+            <div class="col-md-6 form-group mb-3">
+
+                <label for="" class="mb-2">Unit</label>
+
+                <ng-select class="form-control" id="unitName" formControlName="unitName" (change)="changeValue({fieldName: 'unitName'})" appendTo="body" [clearable]="false">
+
+                    <ng-option *ngFor="let item of filteredUnitList" [value]="item._id">{{ item.unitName }}</ng-option>
+
+                </ng-select>
+
+            </div>
+
+            <!-- Tenant -->
+            <div class="col-md-6 form-group mb-3">
+
+                <label for="" class="mb-2">Tenant</label>
+
+                <ng-select class="form-control" id="tenantName" formControlName="tenantName" appendTo="body" [clearable]="false">
+
+                    <ng-option *ngFor="let item of filteredTenantList" [value]="item._id">{{ item.firstName }}</ng-option>
+
+                </ng-select>
+
+            </div>
+
+            <!-- Report Type -->
+            <div class="col-md-6 form-group mb-3">
+
+                <label for="" class="mb-2">Report Type</label>
+
+                <ng-select class="form-control" id="reportType" formControlName="reportType" appendTo="body" [clearable]="false">
+
+                    <ng-option value="paid">Paid</ng-option>
+
+                    <ng-option value="overdue">Overdue</ng-option>
+
+                    <ng-option value="notYetDue">Not Yet Due</ng-option>
+
+                    <ng-option value="upcoming">Upcoming</ng-option>                   
+
+                </ng-select>
+
+            </div>
+
+            <!-- Date Range -->
+            <div class="col-md-6 form-group mb-3">
+
+                <label for="" class="mb-2">Date Range</label>
+
+                <ng-select class="form-control" name="dateRange" id="dateRange" formControlName="dateRange" appendTo="body" [clearable]="false">
+
+                    <ng-option *ngFor="let item of dateRangeList" [value]="item.value">{{ item.name }}</ng-option>
+
+                </ng-select>
+
+            </div>
+            
+            <!-- Start Date & End Date -->
+            <div class="col-md-6 form-group">
+
+                <div class="d-flex justify-content-between">
+
+                    <div class="col-6">
+    
+                        <label for="">From Date</label>
+    
+                    </div>
+    
+                    <div class="col-6">
+    
+                        <label for="">To Date</label>
+    
+                    </div>
+
+                </div>
+
+                <div class="d-flex justify-content-between mt-2">
+
+                    <div class="col-6 me-1">
+
+                        <div class="input-group">
+
+                            <!-- <ng-container *ngIf="filterDateRange != false; else others"> -->
+                                
+                                <input type="text" class="form-control" id="startDate" autocomplete="off" formControlName="startDate"[matDatepicker]="picker" placeholder="From Date" [readOnly]="filterDateRange == false">
+
+                                <mat-datepicker-toggle matSuffix [for]="picker" class="input-group-text border" style="border-radius: 0px 5px 5px 0px !important; height: 38px">
+
+                                    <ng-container matDatepickerToggleIcon>
+                                        
+                                        <i class="bi bi-calendar4-week fs-5 text-center"></i>
+                                    
+                                    </ng-container>
+                                    
+                                </mat-datepicker-toggle>
+                        
+                                <mat-datepicker #picker></mat-datepicker>
+
+                            <!-- </ng-container>
+
+                            <ng-template #others>
+
+                                <input type="text" class="form-control" id="startDate" autocomplete="off" formControlName="startDate" placeholder="From Date" [readOnly]="filterDateRange == false">
+
+                            </ng-template> -->
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-6">
+
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" id="endDate" autocomplete="off" formControlName="endDate" [matDatepicker]="pickerz" placeholder="To Date" [readOnly]="filterDateRange == false">
+                    
+                            <mat-datepicker-toggle matSuffix [for]="pickerz" class="input-group-text border" style="border-radius: 0px 5px 5px 0px !important; height: 38px">
+        
+                                <ng-container matDatepickerToggleIcon>
+                                    
+                                    <i class="bi bi-calendar4-week fs-5 text-center"></i>
+                                
+                                </ng-container>
+                                
+                            </mat-datepicker-toggle>
+                            
+                            <mat-datepicker #pickerz></mat-datepicker>
+        
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+            
+        </div>
+
+    </div>
+
+    <div class="modal-footer d-flex justify-content-end me-2">
+
+        <!-- <button class="btn btn-sm btn-outline-secondary" style="cursor: pointer;" (click)="closeCustomReportModal()">Close</button> -->
+
+        <button class="btn btn-sm btn-outline-secondary" style="cursor: pointer;" (click)="modal.close()">Close</button>
+
+        <button class="btn btn-sm btn-secondary">Create</button>
+
+    </div>
+
+</ng-template>
