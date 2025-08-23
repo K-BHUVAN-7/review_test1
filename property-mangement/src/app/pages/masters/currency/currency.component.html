@@ -1,0 +1,339 @@
+<!-- Currency List -->
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-end mb-3">
+  
+        <small><span class="text-primary">Currency</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-dark">Currency List</span></small>
+  
+    </div>
+
+    <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+        <div class="card-header bg-white">
+
+            <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+
+                <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Currency List</h6>
+                
+                <img src="images/download.png" style="width: 26px; height: auto; cursor: pointer;" alt="" (click)="xlDownload()">
+              
+            </div>
+              
+        </div>
+
+        <div class="card-body">
+
+            <div class="card rounded-0">
+
+                <div class="card-body rounded-0">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div class="d-flex">
+
+                            <div class="position-relative">
+
+                                <img src="images/searchBlack.png" class="position-absolute search-icon" style="width: 25px;top: 6px;left: 8px;">
+                                
+                                <input type="text" class="form-control" placeholder="Search Currency Name & Code" style="background: transparent !important; border-radius: 8px !important; padding-left: 40px;" [(ngModel)]="searchValue" (change)="this.getCurrencyList();">
+                    
+                            </div>
+
+                            <!-- <div style="border: 1px solid #D8D8D8;" class="px-3 ms-2 d-flex align-items-center rounded-3">
+
+                                <img src="images/filterVapour.png" style="width: 18px;" alt=""><span class="ms-2">Filter</span>
+
+                            </div> -->
+
+                        </div>
+
+                        <div>
+
+                            <button class="btn btn-secondary" (click)="openModal()" *ngIf="_.size(permissions.createPermission.branchIds)>0">+ Add New</button>
+
+                        </div>
+
+                    </div>
+
+                    <div class="mt-3">
+
+                        <div class="table-responsive table-wrapper">
+
+                            <table class="table table-borderless align-middle">
+
+                                <thead class="bg-light text-secondary">
+
+                                    <tr>
+
+                                        <th>S.no</th>
+
+                                        <th>Currency Code</th>
+
+                                        <th>Currency Name</th>
+
+                                        <th>Country Name</th>
+
+                                        <th>Default</th>
+
+                                        <th>Action</th>
+
+                                    </tr>
+
+                                </thead>
+                        
+                                <tbody>
+
+                                    <ng-container *ngIf="_.size(permissions.viewPermission.branchIds) > 0; else other">
+
+                                        <ng-container *ngIf="!_.isEmpty(this.masterList['currencyList']); else other">
+
+                                            <tr *ngFor="let currency of this.masterList['currencyList']; let i = index">
+            
+                                                <td>{{ (pageIndex * pageSize) + i + 1 | number: '2.0-0' }}</td>
+                
+                                                <td>{{ currency?.currencyCode }}</td>
+
+                                                <td>{{ currency?.currencyName }}</td>
+
+                                                <td>{{ currency?.countryName?.name }}</td>
+
+                                                <td>{{ currency?.isDefault ? 'Yes' : '-' }}</td>
+
+                                                <td style="width: 50px !important; text-align: center !important;">
+                
+                                                    <img src="images/bin.png" alt="Delete" *ngIf="_.size(permissions.editPermission.branchIds)>0" (click)="deleteCurrency(currency)" style="width: 18px; cursor: pointer;" class="me-2">
+                                                    
+                                                    <img src="images/edit.png" alt="Edit" (click)="openModal(currency)" *ngIf="_.size(permissions.deletePermission.branchIds)>0" style="width: 18px; cursor: pointer;">
+
+                                                </td>
+            
+                                            </tr>
+
+                                        </ng-container>
+
+                                        <ng-template #other>
+
+                                            <tr>
+
+                                                <td colspan="6" style="text-align: center !important;">No Records Found</td>
+
+                                            </tr>
+
+                                        </ng-template>
+
+                                    </ng-container>
+
+                                    <ng-template #other>
+
+                                        <tr>
+
+                                            <td colspan="6" style="text-align: center !important;"><img style="width: 16px !important;" class="me-2" src="images/lock2.png" alt="">Access Denied</td>
+
+                                        </tr>
+
+                                    </ng-template>
+
+                                </tbody>
+
+                            </table>
+
+                            <div *ngIf="totalCount > 0">
+                        
+                                <mat-paginator
+                                    class="custom-paginator"
+                                    [length]="totalCount"
+                                    [pageSize]="pageSize"
+                                    [pageIndex]="pageIndex"
+                                    [pageSizeOptions]="[5, 10, 25, 50]"
+                                    (page)="onPageChange($event)">
+                                </mat-paginator>
+
+                            </div>
+                            
+                        </div>
+
+                    </div>
+
+                </div>
+                
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Currency Modal -->
+<modal #currencyModal title="{{ mode == 'Create' ? 'Add' : 'Update'}} Currency" [saveBtnTxt]="mode == 'Create' ? 'Save' : 'Update'" size="lg" (onSubmit)="submit()"  >
+
+    <form *ngIf="!_.isEmpty(currencyForm.value)" [formGroup]="currencyForm"  class="horizontal-form-fields">
+
+        <div class="container-fluid">
+
+            <div class="row g-3">
+
+                <div class="col-md-4 form-group required">
+
+                    <label for="countryName" class="form-label text-dark">Country Name</label>
+
+                    <ng-select class="form-control" formControlName="countryName" id="countryName" [ngClass]="{ 'is-invalid': formSubmitted && f.countryName.errors }" appendTo="body" [clearable]="false" placeholder="Select Country">
+
+                        <ng-option *ngFor="let item of  this.masterList['countryList']" [value]="item._id">{{ item.name }}</ng-option>
+
+                    </ng-select>
+
+                    <div *ngIf="(formSubmitted && f.countryName.errors)" class="invalid-feedback">
+        
+                        <div *ngIf="f.countryName.errors.required">Country Name is required</div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 form-group required">
+
+                    <label for="currencyName" class="form-label text-dark">Currency Name</label>
+
+                    <!-- <ng-select class="form-control" formControlName="currencyName" id="currencyName" appendTo="body" [ngClass]="{ 'is-invalid': formSubmitted && f.currencyName.errors }" appendTo="body" [clearable]="false" placeholder="Select Currency Name">
+
+                        <ng-option *ngFor="let item of this.masterList['currencyNameList']" [value]="item.currencyName">{{ item.currencyName }}</ng-option>
+        
+                    </ng-select> -->
+
+                    <input type="text" class="form-control" autocomplete="off" id="currencyName" formControlName="currencyName" name="hidden" [ngClass]="{ 'is-invalid': formSubmitted && f.currencyName.errors }" readonly placeholder="Select Currency Name">
+
+                    <div *ngIf="(f.currencyName?.touched || formSubmitted) && f.currencyName.errors" class="invalid-feedback">
+        
+                        <div *ngIf="f.currencyName.errors.required">Currency Name is required</div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 form-group required">
+                
+                    <label for="currencyCode" class="form-label text-dark">Currency Code</label>
+
+                    <!-- <ng-select class="form-control w-100" formControlName="currencyCode" id="currencyCode" [ngClass]="{ 'is-invalid': formSubmitted && f.currencyCode.errors }" appendTo="body" [clearable]="false" placeholder="Select Currency Code">
+
+                        <ng-option *ngFor="let item of this.masterList['currencyCodeList']" [value]="item.currencyCode">{{ item.currencyCode }}</ng-option>
+        
+                    </ng-select> -->
+
+                    <input type="text" class="form-control" autocomplete="off" id="currencyCode" formControlName="currencyCode" name="hidden" [ngClass]="{ 'is-invalid': formSubmitted && f.currencyCode.errors }" readonly placeholder="Select Currency Code">
+
+
+                    <div *ngIf="(f.currencyCode?.touched || formSubmitted) && f.currencyCode.errors" class="invalid-feedback">
+        
+                        <div *ngIf="f.currencyCode.errors.required">Currency Code is required</div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 form-group required">
+                    
+                    <label for="currencyCents" class="form-label text-dark">Currency Cents</label>
+
+                    <input type="text" class="form-control" autocomplete="off" id="currencyCents" formControlName="currencyCents" name="hidden" [ngClass]="{ 'is-invalid': formSubmitted && f.currencyCents.errors }" readonly placeholder="Enter Currency Cents">
+
+                    <div *ngIf="(formSubmitted && f.currencyCents.errors)" class="invalid-feedback">
+        
+                        <div *ngIf="f.currencyCents.errors.required">Currency Cents is required</div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 form-group">
+
+                    <label for="defaultExchangeRate" class="form-label text-dark">Default Exchange Rate</label>
+
+                    <input type="text" class="form-control" autocomplete="off" id="defaultExchangeRate" formControlName="defaultExchangeRate" name="hidden" [ngClass]="{ 'is-invalid': formSubmitted && f.defaultExchangeRate.errors }" decimalNumbersOnly placeholder="Enter Default Exchange Rate">
+
+                    <span *ngIf="(formSubmitted && f.defaultExchangeRate.errors)" class="invalid-feedback">
+    
+                        <p *ngIf="f.defaultExchangeRate.errors?.pattern">Alphabets Are not Allowed</p>
+    
+                    </span>
+    
+                </div>
+
+                <!-- <div class="col-md-4 form-group">
+
+                    <label for="currentExchangeRate" class="form-label text-dark">Current Exchange Rate</label>
+
+                    <input type="text" class="form-control" autocomplete="off" id="currentExchangeRate" formControlName="currentExchangeRate" name="hidden" [ngClass]="{ 'is-invalid': formSubmitted && f.defaultExchangeRate.errors }" decimalNumbersOnly>
+
+                    <span *ngIf="(formSubmitted && f.currentExchangeRate.errors)" class="invalid-feedback">
+    
+                        <p  *ngIf="f.currentExchangeRate.errors?.pattern">Alphabets Are not Allowed</p>
+    
+                    </span>
+
+                </div> -->
+
+                <div class="col-md-4 form-group required">
+                
+                    <label for="decimalPoints" class="form-label text-dark">Currency Decimal</label>
+    
+                    <input type="number" class="form-control mx-1" autocomplete="off" id="decimalPoints" formControlName="decimalPoints" name="hidden" [ngClass]="{ 'is-invalid': formSubmitted && f.decimalPoints.errors }" numbersOnly placeholder="Enter Currency Decimal">
+    
+                    <div *ngIf="(formSubmitted && f.decimalPoints.errors)" class="invalid-feedback">
+        
+                        <div *ngIf="f.decimalPoints.errors.required">Currency Decimal is required</div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 form-group required">
+
+                    <label for="commaType" class="form-label text-dark">Comma Type</label>
+
+                    <ng-select class="form-control" formControlName="commaType" id="commaType" [ngClass]="{ 'is-invalid': formSubmitted && f.commaType.errors }" appendTo="body" [clearable]="false" placeholder="Enter Comma Type">
+
+                        <ng-option *ngFor="let item of this.service.commaType" [value]="item.value">{{ item.type }}</ng-option>
+        
+                    </ng-select>
+
+                     <div *ngIf="(formSubmitted && f.commaType.errors)" class="invalid-feedback">
+        
+                        <div *ngIf="f.commaType.errors.required">Comma Type is required</div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-12 d-flex justify-content-start mt-4">
+                    
+                    <div class="form-check form-switch d-flex justify-content-center p-0 ">
+
+                        <input class="form-check-input" type="checkbox" role="switch" formControlName="isDefault" >
+
+                    </div>
+
+                    <label for="commaType" class="form-label text-dark pe-3 ms-2">Set currency as default</label>
+
+                </div>
+
+                <div class="col-md-12 d-flex justify-content-center mt-4">
+
+                    <label for="commaType" class="form-label pt-2 pb-2 ps-3 pe-3 rounded-2" style="background-color: #ffe38e62; font-size: 12px; color: #f3b705;">Give note that after changing currency (Set currency as default) please log out and login</label>
+
+                </div>
+
+                <!-- <div class="col-md-12">
+
+                    <span style="background-color: #d2a119;color: #ffffff; font-size: 10px;border-radius: 10px;" class="py-2 px-2">Setting the currency as default requires logging out and logging back in.</span>
+
+                </div> -->
+
+            </div>
+
+        </div>
+
+    </form>
+
+</modal>

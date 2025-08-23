@@ -1,0 +1,16 @@
+.form-check-input {
+    border: 2px solid #888888;
+    transform: scale(1.1); // Increase size (1.5x)
+    margin: 5px; // Optional: spacing
+    box-shadow: none;
+}
+
+.form-check-input:checked {
+    background-color: #d4a017 !important;
+    border-color: #d4a017 !important;
+    box-shadow: none;
+}
+
+::ng-deep .mat-mdc-paginator-container {
+  background-color: #fff!important; /* Light pink background */
+}

@@ -1,0 +1,927 @@
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h5 class="text-dark">{{ mode }} Property</h5>
+
+        <small><span class="text-primary">Property</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-primary" style="cursor: pointer;" (click)="this.service.navigate({ 'url': 'app/property' })">Property List</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-dark">{{ mode == 'Create' ? 'Create ' : 'Update' }} Property</span> </small>
+
+    </div>
+
+    <div class="row" [formGroup]="propertyForm">
+
+        <!-- Basic Details, Owner & Manager Mapping -->
+        <div class="col-md-9">
+
+            <!-- Basic Details -->
+            <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                <div class="card-header bg-white">
+
+                    <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+        
+                        <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Basic Details :</h6>
+                    
+                    </div>
+                        
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="col-md-6 form-group required mb-3">
+
+                            <label for="" class="mb-2">Property Name</label>
+
+                            <input type="text" class="form-control" id="propertyName" formControlName="propertyName" placeholder="Enter Property Name" [ngClass]="{ 'is-invalid': (f.propertyName?.touched || formSubmitted) && f.propertyName.errors }">
+
+                            <div *ngIf="(f.propertyName?.touched || formSubmitted) && f.propertyName.errors" class="invalid-feedback">
+        
+                                <div *ngIf="f.propertyName.errors.required">Property Name is required</div>
+        
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6 form-group required mb-3">
+
+                            <label for="propertyType" class="mb-2">Property Type</label>
+
+                            <ng-select class="form-control" [items]="masterList['propertyTypeList']" bindLabel="propertyType" bindValue="_id" formControlName="propertyType" [multiple]="true" [closeOnSelect]="false" [clearable]="false" placeholder="Select Property Type" [virtualScroll]="true" [searchable]="true" appendTo="body" [ngClass]="{ 'is-invalid': (f.propertyType?.touched || formSubmitted) && f.propertyType.errors }">
+
+                                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                                    <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 2">
+                                        
+                                        <div class="d-flex">
+
+                                            <span class="ng-value-label ellipsis ms-1">
+
+                                                <span>{{ _.get(item, 'propertyName') }}</span> 
+
+                                            </span>
+
+                                            <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                                            <span style="width: 1px; height: 20px; background-color: black;"></span>
+                                            
+                                        </div>
+
+                                    </div>
+
+                                    <div class="ng-value multiple ms-2" *ngIf="items.length > 2">
+
+                                        <span class="ng-value-label ellipsis"> + {{ items.length - 2 }} more</span>
+
+                                    </div>
+
+                                </ng-template>                                
+
+                                <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                                    <div class="form-check d-flex align-items-center"> 
+                                        
+                                        <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'propertyType')"/>
+
+                                        <label class="form-check-label mt-1">{{ item?.propertyName }}</label>
+
+                                    </div>
+                                        
+                                </ng-template>
+                            
+                            </ng-select>
+
+                            <div *ngIf="(f.propertyType?.touched || formSubmitted) && f.propertyType.errors" class="invalid-feedback">
+        
+                                <div *ngIf="f.propertyType.errors.required">Property Type is required</div>
+        
+                            </div>
+
+                            <!-- <select class="form-select" id="propertyType" formControlName="propertyType" [ngClass]="{ 'is-invalid': (f.propertyType?.touched || formSubmitted) && f.propertyType.errors }">
+
+                                <option *ngFor="let property of this.masterList['propertyTypeList']" [value]="property?._id">{{ property?.propertyName }}</option>
+
+                            </select> -->
+
+                            <!-- <div *ngIf="(f.propertyType?.touched || formSubmitted) && f.propertyType.errors" class="invalid-feedback">
+        
+                                <div *ngIf="f.propertyType.errors.required">Property Type is required</div>
+        
+                            </div> -->
+
+                        </div>
+
+                        <div class="col-md-6 form-group required mb-3">
+
+                            <label for="noOfUnits" class="mb-2">No.Of.Units</label>
+
+                            <input type="text" class="form-control" id="noOfUnits" formControlName="noOfUnits" placeholder="--" [ngClass]="{ 'is-invalid': (f.noOfUnits?.touched || formSubmitted) && f.noOfUnits.errors }" numbersOnly>
+
+                            <div *ngIf="(f.noOfUnits?.touched || formSubmitted) && f.noOfUnits.errors" class="invalid-feedback">
+        
+                                <div *ngIf="f.noOfUnits.errors.required">No.Of.Units is required</div>
+        
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6 form-group mb-3">
+
+                            <label for="locationUrl" class="mb-2">location Url</label>
+
+                            <input type="text" class="form-control" id="locationUrl" formControlName="locationUrl" placeholder=" Location URL">
+
+                        </div>
+
+                        <div class="col-md-6 form-group required mb-3">
+
+                            <label for="addressLineOne" class="mb-2">Address</label>
+
+                            <input type="text" class="form-control" id="addressLineOne" autocomplete="off" formControlName="addressLineOne" placeholder="Address Line 1" [ngClass]="{ 'is-invalid': (f.addressLineOne?.touched || formSubmitted) && f.addressLineOne.errors }">
+
+                            <div *ngIf="(f.addressLineOne?.touched || formSubmitted) && f.addressLineOne.errors" class="invalid-feedback">
+        
+                                <div *ngIf="f.addressLineOne.errors.required">Address line 1 is required</div>
+        
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6 form-group mb-3">
+
+                            <label for="addressLineTwo" class="mb-2 opacity-0">Address 2</label>
+
+                            <input type="text" class="form-control" id="addressLineTwo" autocomplete="off" formControlName="addressLineTwo" placeholder="Address Line 2">
+
+                        </div>
+
+                        <div class="col-md-3 form-group required mb-3">
+
+                            <label for="country" class="mb-2">Country</label>
+
+                            <ng-select class="form-control" id="country" formControlName="country" appendTo="body" [clearable]="false" placeholder="Select Country" [ngClass]="{ 'is-invalid': (f.country?.touched || formSubmitted) && f.country.errors }" [searchable]="true">
+
+                                <ng-option *ngFor="let item of masterList['countryList']" [value]="item?._id">{{ item?.name}}</ng-option>
+
+                            </ng-select>
+
+                            <div *ngIf="(f.country?.touched || formSubmitted) && f.country.errors" class="invalid-feedback">
+        
+                                <div *ngIf="f.country.errors.required">Country is required</div>
+        
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-3 form-group required mb-3">
+
+                            <label for="state" class="mb-2">State/Province</label>
+
+                            <input type="text" class="form-control" id="state" placeholder="State/Province" formControlName="state" [ngClass]="{ 'is-invalid': (f.state?.touched || formSubmitted) && f.state.errors }">
+
+                            <div *ngIf="(f.state?.touched || formSubmitted) && f.state.errors" class="invalid-feedback">
+        
+                                <div *ngIf="f.state.errors.required">State is required</div>
+        
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-3 form-group required mb-3">
+
+                            <label for="city" class="mb-2">City</label>
+
+                            <input type="text" class="form-control" id="city" placeholder="City" formControlName="city" [ngClass]="{ 'is-invalid': (f.city?.touched || formSubmitted) && f.city.errors }">
+
+                            <div *ngIf="(f.city?.touched || formSubmitted) && f.city.errors" class="invalid-feedback">
+        
+                                <div *ngIf="f.city.errors.required">City is required</div>
+        
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-3 required form-group mb-3">
+
+                            <label for="pincode" class="mb-2">Pincode</label>
+
+                            <input type="text" class="form-control" id="pincode" placeholder="Pincode" formControlName="pincode" [ngClass]="{ 'is-invalid': (f.pincode?.touched || formSubmitted) && f.pincode.errors }">
+
+                             <div *ngIf="(f.pincode?.touched || formSubmitted) && f.pincode.errors" class="invalid-feedback">
+        
+                                <div *ngIf="f.pincode.errors.required">Pincode is required</div>
+        
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Owner & Manager Mapping -->
+            <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                <div class="card-header bg-white">
+    
+                    <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+      
+                        <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Owner & Manager Mapping :</h6>
+                      
+                    </div>
+                      
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <!-- Owner -->
+                        <div class="col-md-6 form-group required mb-3">
+
+                            <label for="owner" class="mb-2">Owner</label>
+
+                            <ng-select class="form-control" [items]="masterList['ownerList']" bindLabel="owner" bindValue="_id" formControlName="owner" placeholder="Select Owner" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body" [ngClass]="{ 'is-invalid': (f.owner?.touched || formSubmitted) && f.owner.errors }">
+
+                                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                                    <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 2">
+                                        
+                                        <div class="d-flex">
+
+                                            <span class="ng-value-label ellipsis ms-1">
+
+                                                <span>{{ _.get(item,'firstName') + ' ' + _.get(item,'lastName') }}</span> 
+
+                                            </span>
+
+                                            <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                                            <span style="width: 1px; height: 20px; background-color: black;"></span>
+                                            
+                                        </div>
+
+                                    </div>
+
+                                    <div class="ng-value multiple ms-2" *ngIf="items.length > 2">
+
+                                        <span class="ng-value-label ellipsis"> + {{ items.length - 2 }} more</span>
+
+                                    </div>
+
+                                </ng-template>                                
+
+                                <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                                    <div class="form-check d-flex align-items-center"> 
+                                        
+                                        <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'owner')"/>
+
+                                        <label class="form-check-label mt-1">{{ item?.firstName + ' ' + item?.lastName }}</label>
+
+                                    </div>
+                                        
+                                </ng-template>
+                            
+                            </ng-select>
+
+                            <div *ngIf="(f.owner?.touched || formSubmitted) && f.owner.errors" class="invalid-feedback">
+        
+                                <div *ngIf="f.owner.errors.required">Owner is required</div>
+        
+                            </div>
+                            
+                        </div>
+
+                        <!-- Manager -->
+                        <div class="col-md-6 form-group required mb-3">
+
+                            <label for="issues" class="mb-2">Manager</label>
+                          
+                            <ng-select class="form-control" [items]="masterList['managerList']" bindLabel="manager" bindValue="_id" formControlName="manager" [multiple]="true" placeholder="Select Manager" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body" [ngClass]="{ 'is-invalid': (f.manager?.touched || formSubmitted) && f.manager.errors }">
+
+                                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                                    <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 2">
+                                        
+                                        <div class="d-flex">
+
+                                            <span class="ng-value-label ellipsis ms-1">
+
+                                                <span>{{ _.get(item,'firstName') + ' ' + _.get(item,'lastName') }}</span> 
+
+                                            </span>
+
+                                            <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                                            <span style="width: 1px; height: 20px; background-color: black;"></span>
+                                            
+                                        </div>
+
+                                    </div>
+
+                                    <div class="ng-value multiple ms-2" *ngIf="items.length > 2">
+
+                                        <span class="ng-value-label ellipsis"> + {{ items.length - 2 }} more</span>
+
+                                    </div>
+
+                                </ng-template>    
+
+                                <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                                    <div class="form-check d-flex align-items-center"> 
+                                        
+                                        <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'manager')"/>
+
+                                        <label class="form-check-label mt-1">{{ item?.firstName + ' ' + item?.lastName }}</label>
+
+                                    </div>
+                                        
+                                </ng-template>
+                            
+                            </ng-select>
+
+                             <div *ngIf="(f.manager?.touched || formSubmitted) && f.manager.errors" class="invalid-feedback">
+        
+                                <div *ngIf="f.manager.errors.required">Manager is required</div>
+        
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        
+        <!-- Upload Images  & Issue Selection -->
+        <div class="col-md-3">
+
+            <!-- Upload Image -->
+            <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051); height: 432px;">
+
+                <div class="card-header bg-white d-flex justify-content-between">
+    
+                    <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+      
+                        <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Upload Property Images : </h6>
+                      
+                    </div>
+
+                    <div (click)="shareImage()" style="cursor: pointer;">
+
+                        <img src="images/icons/share-icon.svg" class="mt-2" style="width: 27px;" alt="" >
+
+                    </div>
+                      
+                </div>
+
+                <div class="card-body">
+
+                    <div class="upload-container">
+                  
+                        <label class="upload-box" (dragover)="onDragOver($event)"
+                        (dragleave)="onDragLeave($event)"
+                        (drop)="onDrop($event)"
+                        [class.dragover]="isDragOver">
+                        
+                            <input type="file" (change)="onFileSelect($event)" multiple hidden />
+                        
+                            <img src="images/uploadImg.png" class="mb-2" style="width: 50px;" alt="">
+                        
+                            <div class="upload-content">
+                        
+                                <p class="my-0">Drag and Drop or <span class="browse">Browse</span></p>
+                        
+                                <small class="text-muted">File Supported: Png, Jpg</small>
+                        
+                            </div>
+                        
+                        </label>
+        
+                        <div class="upload-scroll-area">
+        
+                            <div *ngFor="let file of uploadFiles; let i = index" class="upload-list">
+        
+                                <ng-container [ngSwitch]="getFileType(file.file.name)">
+                                    
+                                    <img *ngSwitchCase="'pdf'" class="thumbnail" src="images/pdf.png" alt="PDF" (click)="openPreview(file.preview )" />
+
+                                    <a *ngSwitchCase="'word'" [href]="file.preview" [download]="file.file.name">
+
+                                        <img class="thumbnail" src="images/word2.png" alt="Word" />
+
+                                    </a>
+
+                                    <img *ngSwitchDefault class="thumbnail" [src]="file.preview" alt="Preview" (click)="openPreview(file.preview)" />
+                                    
+                                </ng-container>
+        
+                                <div  class="file-info">
+        
+                                    <p>{{ file.file.name }}</p>
+        
+                                    <p [class.completed]="file.status == 'Completed'">{{ file.status }}</p>
+        
+                                    <div class="progress-bar">
+        
+                                        <div class="progress" [style.width.%]="file.progress" [class.completed]="file.status == 'Completed'"></div>
+        
+                                    </div>
+        
+                                </div>
+        
+                                <button class="closebutton" (click)="removeImage(i)">✖</button>
+        
+                            </div>
+        
+                        </div>
+        
+                    </div>
+                  
+                </div>
+
+            </div>
+
+            <!-- Issue Selection -->
+            <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051); height: 175px;">
+
+                <div class="card-header bg-white d-flex justify-content-between">
+    
+                    <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+      
+                        <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119 ;">Issue Mapping : </h6>
+                      
+                    </div>
+                      
+                </div>
+
+                <div class="card-body">
+
+                    <div class="col-md-12 form-group required mb-3">
+
+                        <label for="issues" class="mb-2">Issues</label>
+                      
+                        <ng-select class="form-control" [items]="masterList['issueList']" bindLabel="issueName" bindValue="_id" formControlName="issues" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" placeholder="Select Issue" [searchable]="true" appendTo="body" [ngClass]="{ 'is-invalid': (f.issues?.touched || formSubmitted) && f.issues.errors }" (change)="onIssuesSelected()">
+
+                            <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                                <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                                    
+                                    <div class="d-flex">
+
+                                        <span class="ng-value-label ellipsis ms-1">
+
+                                            <span>{{ _.get(item,'issueName') }}</span> 
+
+                                        </span>
+
+                                        <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                                        <span style="width: 1px; height: 20px; background-color: black;"></span>
+                                        
+                                    </div>
+
+                                </div>
+
+                                <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                                    <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                                </div>
+
+                            </ng-template>    
+
+                            <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                                <div class="form-check d-flex align-items-center"> 
+                                    
+                                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'issues')"/>
+
+                                    <label class="form-check-label mt-1">{{ item?.issueName }}</label>
+
+                                </div>
+                                    
+                            </ng-template>
+                        
+                        </ng-select>
+
+                        <div *ngIf="(f.issues?.touched || formSubmitted) && f.issues.errors" class="invalid-feedback">
+    
+                            <div *ngIf="f.issues.errors.required">Issues is required</div>
+    
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Select Issue Configuration -->
+        <div class="col-md-12">
+
+            <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                <div class="card-header bg-white">
+    
+                    <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+      
+                        <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Issues Configuration : </h6>
+                      
+                    </div>
+                      
+                </div>
+    
+                <div class="card-body p-0">
+    
+                    <div class="table-responsive table-wrapper" formArrayName="issueConfiguration">
+
+                        <table class="table table-borderless align-middle table-striped">
+
+                            <thead class="bg-light text-secondary">
+
+                                <tr>
+
+                                    <th style="width: 6%">Action</th>
+
+                                    <th style="width: 15%">Issue Category</th>
+
+                                    <th style="width: 15%">Priority</th>
+
+                                    <th style="width: 15%">TAT</th>
+
+                                    <th style="width: 20%">Staff</th>
+
+                                    <th style="width: 20%; text-align: center !important;">Managers</th>
+
+                                </tr>
+
+                            </thead>
+                        
+                            <tbody>
+
+                                <ng-container *ngFor="let config of f.issueConfiguration.controls; let i = index; let last = last; let first = first">
+
+                                    <ng-container [formGroup]="config" *ngIf="config.controls as cdf">
+
+                                        <tr>
+
+                                            <td>
+
+                                                <div class="d-flex justify-content-between align-items-center" style="height: 100%;">
+
+                                                    <p (click)="deleteItem(i)" style="color: #FF4949 !important; font-size: 18px; cursor: pointer; margin: 0; display: flex; align-items: center;">
+
+                                                        <i class="bi bi-dash-lg fw-bold"></i>
+                                                    
+                                                    </p>
+                                                
+                                                    <p *ngIf="last" (click)="addItem(i)" class="fw-bold" style="cursor: pointer; margin: 0; display: flex; align-items: center;">
+
+                                                        <i class="bi bi-plus-lg fw-bold"></i>
+
+                                                    </p>
+
+                                                </div>
+
+                                            </td>
+
+                                            <td>
+                                            
+                                                <ng-select class="form-control" formControlName="issueCategory" id="issueCategory" appendTo="body" [clearable]="false" placeholder="Select Issue" (change)="changeValue('issueCategory',i)" [ngClass]="{ 'is-invalid': (cdf.issueCategory?.touched || formSubmitted) && cdf.issueCategory?.errors }">
+
+                                                    <ng-container *ngFor="let issue of masterList['issueList']">
+
+                                                        <ng-container *ngIf="f.issues.value.includes(issue._id)">
+
+                                                          <ng-option [value]="issue._id">{{ issue.issueName }}</ng-option>
+
+                                                        </ng-container>
+
+                                                    </ng-container>
+                                                      
+                                                </ng-select>
+
+                                            </td>
+
+                                            <td>
+
+                                                <ng-select name="" id="priority" class="form-control" appendTo="body" formControlName="priority" appendTo="body" [clearable]="false" placeholder="Select Priority" [ngClass]="{ 'is-invalid': (cdf.priority?.touched || formSubmitted) && cdf.priority?.errors }">
+
+                                                    <ng-option value="hight">High</ng-option>
+
+                                                    <ng-option value="medium">Medium</ng-option>
+
+                                                    <ng-option value="low">Low</ng-option>
+                                                    
+                                                </ng-select>
+
+                                            </td>
+
+                                            <td>
+
+                                                <!-- <div class="w-100 d-flex">
+
+                                                    <input type="text" class="form-control" id="tat" formControlName="tat" numbersOnly>
+
+                                                    <input type="text" class="form-control ms-1" id="tatType" formControlName="tatType"> 
+
+                                                </div> -->
+
+                                                <div class="d-flex w-100">
+
+                                                    <div class="col-md-5">
+
+                                                        <input type="number" class="form-control" id="tat" formControlName="tat" numbersOnly autocomplete="off" placeholder="-" [ngClass]="{ 'is-invalid': (cdf.tat?.touched || formSubmitted) && cdf.tat?.errors }"/>
+                                                        
+                                                    </div>
+                                                    
+                                                    <div class="col-md-6">
+
+                                                        <ng-select name="tatType" id="tatType" formControlName="tatType" placeholder="Select Type" appendTo="body" [clearable]="false" class="form-control" [ngClass]="{ 'is-invalid': (cdf.tatType?.touched || formSubmitted) && cdf.tatType?.errors }">
+
+                                                            <ng-option value="days">Days</ng-option>
+                                                            
+                                                            <ng-option value="hours">Hours</ng-option>
+                                                            
+                                                        </ng-select>
+
+                                                    </div>
+
+                                                </div>
+                                                
+                                            </td>
+
+                                            <td>
+
+                                                <ng-select class="form-control" [items]="config.get('staffList')?.value || []" bindLabel="staff" bindValue="_id" formControlName="staff" placeholder="Select Staff" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body">
+
+                                                    <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                                                        <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                                                            
+                                                            <div class="d-flex">
+
+                                                                <span class="ng-value-label ellipsis ms-1">
+
+                                                                    <span>{{ _.get(item,'firstName') + ' ' + _.get(item,'lastName') }}</span> 
+
+                                                                </span>
+
+                                                                <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                                                                <span style="width: 1px; height: 20px; background-color: black;"></span>
+                                                                
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                                                            <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                                                        </div>
+
+                                                    </ng-template>   
+
+                                                    <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                                                        <div class="form-check d-flex align-items-center"> 
+                                                            
+                                                            <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'staff')"/>
+                    
+                                                            <label class="form-check-label mt-1">{{ item?.firstName + ' ' + item?.lastName }}</label>
+                    
+                                                        </div>
+                                                        
+                                                    </ng-template>
+                                                
+                                                </ng-select>
+
+                                            </td>
+
+                                            <td>
+
+                                                <ng-select class="form-control" [items]="masterList['managerList']" bindLabel="manager" placeholder="Select Manager" bindValue="_id" formControlName="manager" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body">
+
+                                                    <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                                                        <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                                                            
+                                                            <div class="d-flex">
+
+                                                                <span class="ng-value-label ellipsis ms-1">
+
+                                                                    <span>{{ _.get(item,'firstName') + ' ' + _.get(item,'lastName') }}</span> 
+
+                                                                </span>
+
+                                                                <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                                                                <span style="width: 1px; height: 20px; background-color: black;"></span>
+                                                                
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                                                            <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                                                        </div>
+
+                                                    </ng-template>    
+
+                                                    <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                                                        <div class="form-check d-flex align-items-center"> 
+                                                            
+                                                            <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'manager')"/>
+                    
+                                                            <label class="form-check-label mt-1">{{ item?.firstName + ' ' + item?.lastName }}</label>
+                    
+                                                        </div>
+                                                            
+                                                    </ng-template>
+                                                
+                                                </ng-select>
+
+                                            </td>
+
+                                        </tr>
+
+                                    </ng-container>
+
+                                </ng-container>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+    
+                </div>
+    
+            </div>
+
+        </div>
+
+        <!-- Units -->
+        <div class="col-md-12" *ngIf="this.mode == 'Update'">
+
+            <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                <div class="card-header bg-white d-flex justify-content-between">
+    
+                    <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+      
+                        <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Units ( {{ this.masterList['unitList']?.length }} ) : </h6>
+                      
+                    </div>
+
+                    <div>
+
+                        <button class="btn btn-secondary" (click)="createUnits()">+ Add New</button>
+
+                    </div>
+
+                </div>
+    
+                <div class="card-body p-0">
+    
+                    <div class="table-responsive table-wrapper">
+
+                        <table class="table table-borderless align-middle table-striped">
+
+                            <thead class="bg-light text-secondary">
+
+                                <tr>
+
+                                    <th style="min-width: 60px;">No</th>
+
+                                    <th style="min-width: 90px;">Unit Name</th>
+
+                                    <th style="min-width: 90px;">Type</th>
+
+                                    <th style="min-width: 60px;">BHK</th>
+
+                                    <th style="min-width: 120px;">Tenant</th>
+
+                                    <th style="min-width: 50px; text-align: center !important;">Tenant Count</th>
+
+                                    <th style="min-width: 80px;">Rent / Lease</th>
+                                    
+                                    <th style="min-width: 80px;">Deposit Amount</th>
+                                    
+                                    <th style="min-width: 100px;">Contract Start Date</th>
+
+                                    <th style="min-width: 100px;">Cantract End Date</th>
+
+                                    <th style="min-width: 60px; text-align: center !important;">Action</th>
+
+                                </tr>
+
+                            </thead>
+                        
+                            <tbody>
+
+                                <ng-container *ngIf="!_.isEmpty(this.masterList['unitList']); else other">
+
+                                    <!-- <ng-container *ngFor="let unit of this.masterList['unitList']; let i = index; let last = last; let first = first"> -->
+
+                                    <ng-container *ngFor="let unit of this.editData?.units; let i = index; let last = last; let first = first">
+
+                                        <tr>
+
+                                            <td>{{ i + 1 }}</td>
+
+                                            <td>{{ unit.unitName }}</td>
+
+                                            <td>{{ unit.propertyType?.propertyName }}</td>
+
+                                            <td>{{ unit.countOfBedrooms }}</td>
+
+                                            <td>{{ unit.tenantId?.firstName || '-' }}</td>
+
+                                            <td style="text-align: center !important;">{{ (unit.tenantId?.tenantMembers?.length ? unit.tenantId.tenantMembers.length + 1 : '-') }}</td>
+
+                                            <td>{{ this.service.currencyCode?.currencyCode }}. {{ (unit.rentalAmt | number: '1.0') || '0' }}</td>
+
+                                            <td>{{ this.service.currencyCode?.currencyCode }}. {{ (unit.depositAmt | number: '1.0') || '0' }}</td>
+
+                                            <td>{{ unit.tenantId?.contractDetails[0]?.contractStartDate | date: 'dd-MM-yyyy' }}</td>
+
+                                            <td>{{ unit.tenantId?.contractDetails[0]?.contractEndDate | date: 'dd-MM-yyyy' }}</td>
+
+                                            <td style="text-align: center !important;">
+
+                                                <img src="images/edit.png" alt="Edit" style="width: 18px; cursor: pointer;" class="me-2" (click)="openUnitModal(unit._id)">
+
+                                            </td>
+
+                                        </tr>
+
+                                    </ng-container>
+
+                                </ng-container>
+                                
+                                <ng-template #other>
+                                
+                                    <tr>
+
+                                        <td colspan="11" style="text-align: center !important;">No  Records Found</td>
+
+                                    </tr>
+
+                                </ng-template>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+    
+                </div>
+    
+            </div>
+
+        </div>
+
+        <!-- Discard & Save Button -->
+        <div class="d-flex justify-content-end mt-3">
+
+            <button class="btn btn-outline-secondary mt-3 px-3 me-2" (click)="this.service.navigate({ 'url': 'app/property' })">Discard</button>
+
+            <button class="btn btn-secondary mt-3 px-3" (click)="onSubmit()">Save</button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="file-modal" *ngIf="previewUrl" (click)="closePreview()">
+
+    <ng-container *ngIf="isPdfPreview; else imagePreview">
+        
+        <iframe [src]="previewUrl" class="modal-file" frameborder="0" type="application/pdf"></iframe>
+
+    </ng-container>
+
+    <ng-template #imagePreview>
+
+        <img [src]="previewUrl" class="modal-img"/>
+    
+    </ng-template>
+
+</div>
