@@ -1,0 +1,47 @@
+.form-check-input {
+    border: 3px solid black !important;
+    width: 2em;
+    height: 1.2em;
+    position: relative;
+    background-color: white;
+    appearance: none;
+    border-radius: 2em;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.form-switch .form-check-input {
+    width: 2em;
+    height: 1.2em;
+    background-image: none !important;
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    border-radius: 2em;
+    transition: background-color 0.15s ease-in-out;
+    position: relative;
+    box-shadow: none !important;
+}
+
+.form-check-input::before {
+    content: "";
+    position: absolute;
+    width: 31%;
+    height: 66%;
+    background-color: black;
+    border-radius: 50%;
+    left: 10%;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: all 0.15s ease-in-out;
+}
+
+.form-check-input:checked {
+    background-color: black !important;
+    border-color: black !important;
+}
+
+.form-check-input:checked::before {
+    left: 50%;
+    background-color: white;
+}
