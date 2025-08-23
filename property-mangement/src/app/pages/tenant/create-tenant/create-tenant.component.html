@@ -1,0 +1,2124 @@
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h5 class="text-dark">{{ mode }} Tenant</h5>
+
+        <small><span class="text-primary">Tenant</span>  <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"><span class="text-primary" style="cursor: pointer;" (click)="this.service.navigate({ 'url': 'app/tenant' })">Tenant List</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"><span class="text-dark"> {{ this.mode == 'Create' ? 'Create' : 'Update' }} Tenant</span></small>
+
+    </div>
+
+    <form *ngIf="!_.isEmpty(tenantForm.value)" [formGroup]="tenantForm" class="horizontal-form-fields">
+        
+        <!-- property, Unit Mapping Card, Basic Details Card & Contract Details Card -->
+        <div class="row">
+
+            <div class="col-md-9">
+
+                <!-- property & Unit Mapping Card -->
+                <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                    <div class="card-header bg-white">
+        
+                        <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+            
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Property & Unit Mapping :</h6>
+                            
+                        </div>
+                            
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="row">
+
+                            <div class="col-md-6">
+
+                                <div class="form-group required mb-3">
+
+                                    <label for="propertyName" class="mb-2">Property</label>
+
+                                    <!-- <ng-container *ngIf="this.mode == 'Create'; else other"> -->
+
+                                        <!-- <ng-select name="propertyName" id="propertyName" class="form-control" formControlName="propertyName" [ngClass]="{ 'is-invalid': (f.propertyName?.touched || formSubmitted) && f.propertyName.errors }" (change)="changeValue({fieldName: 'propertyName'})" appendTo="body" [clearable]="false" [readonly]="mode == 'Update'">
+
+                                            <ng-option *ngFor="let property of this.masterList['propertyList']" [value]="property?._id">{{ property?.propertyName }}</ng-option>
+
+                                        </ng-select> -->
+
+                                        <select name="propertyName" id="propertyName" class="form-control" formControlName="propertyName" [ngClass]="{ 'is-invalid': (f.propertyName?.touched || formSubmitted) && f.propertyName.errors }" (change)="changeValue({fieldName: 'propertyName'})">
+
+                                            <option *ngFor="let property of this.masterList['propertyList']" [value]="property?._id">{{ property?.propertyName }}</option>
+
+                                        </select>
+
+                                    <!-- </ng-container> -->
+
+                                    <!-- <ng-template #other>
+
+                                       <input type="text" class="form-control" [value]="this.editData?.propertyName[0]?.propertyName" [readOnly]="this.mode == 'Update'">
+
+                                    </ng-template> -->
+
+                                    <div *ngIf="(f.propertyName?.touched || formSubmitted) && f.propertyName.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.propertyName.errors.required">property is required</div>
+                
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group mb-3">
+
+                                    <label for="unitName" class="mb-2">Unit</label>
+
+                                    <ng-container *ngIf="this.mode == 'Create' || (_.isEmpty(this.editData?.contractDetails)); else other">
+
+                                        <ng-select name="unitName" id="unitName" class="form-control" formControlName="unitName" appendTo="body" [clearable]="false" placeholder="Select Unit">
+                                            
+                                            <ng-container *ngFor="let unit of filteredUnitList">
+    
+                                                <ng-option [value]="unit?._id" *ngIf="_.isEmpty(unit.tenantId)">{{ unit?.unitName }}</ng-option>
+    
+                                            </ng-container>
+    
+                                        </ng-select>
+
+                                    </ng-container>
+
+                                    <ng-template #other>
+
+                                       <input type="text" class="form-control" [value]="this.editData?.unitName?.unitName" [readOnly]="this.mode == 'Update'">
+
+                                    </ng-template>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Basic Details Card -->
+                <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                    <div class="card-header bg-white">
+        
+                        <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+            
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Basic Details :</h6>
+                            
+                        </div>
+                            
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="row">
+
+                            <!-- First Name, last Name & Email Row-->
+                            <ng-container>
+
+                                <div class="col-md-4">
+    
+                                    <div class="form-group required mb-3">
+    
+                                        <label for="firstName" class="mb-2">First Name</label>
+    
+                                        <input type="text" class="form-control" id="firstName" formControlName="firstName" placeholder="Enter First Name" [ngClass]="{ 'is-invalid': (f.firstName?.touched || formSubmitted) && f.firstName.errors }">
+    
+                                        <div *ngIf="(f.firstName?.touched || formSubmitted) && f.firstName.errors" class="invalid-feedback">
+            
+                                            <div *ngIf="f.firstName.errors.required">First Name is required</div>
+                    
+                                        </div>
+    
+                                    </div>
+    
+                                </div>
+    
+                                <div class="col-md-4">
+    
+                                    <div class="form-group required mb-3">
+    
+                                        <label for="lastName" class="mb-2">Last Name</label>
+    
+                                        <input type="text" class="form-control" id="lastName" formControlName="lastName" placeholder="Enter Last Name" [ngClass]="{ 'is-invalid': (f.lastName?.touched || formSubmitted) && f.lastName.errors }">
+    
+                                        <div *ngIf="(f.lastName?.touched || formSubmitted) && f.lastName.errors" class="invalid-feedback">
+            
+                                            <div *ngIf="f.lastName.errors.required">Last Name is required</div>
+                    
+                                        </div>
+    
+                                    </div>
+    
+                                </div>
+    
+                                <div class="col-md-4">
+    
+                                    <div class="form-group required mb-3">
+    
+                                        <label for="email" class="mb-2">Email Id</label>
+    
+                                        <input type="text" class="form-control" id="email" formControlName="email" placeholder="Enter Email" [ngClass]="{ 'is-invalid': (f.email?.touched || formSubmitted) && f.email.errors }">
+    
+                                        <div *ngIf="(f.email?.touched || formSubmitted) && f.email.errors" class="invalid-feedback">
+            
+                                            <div *ngIf="f.email.errors.required">Email is required</div>
+                    
+                                        </div>
+    
+                                    </div>
+    
+                                </div>
+
+                            </ng-container>
+
+                            <!-- Gender, Phone No, Categories & Age Row -->
+                            <ng-container>
+
+                                <div class="col-md-3">
+    
+                                    <div class="form-group required mb-3">
+    
+                                        <label for="gender" class="mb-2">Gender</label>
+    
+                                        <ng-select name="gender" id="gender" class="form-control" formControlName="gender" [ngClass]="{ 'is-invalid': (f.gender?.touched || formSubmitted) && f.gender.errors }" appendTo="body" [clearable]="false" placeholder="Select Gender">
+    
+                                            <ng-option *ngFor="let gender of genderList" [value]="gender?.value">{{ gender?.value }}</ng-option>
+    
+                                        </ng-select>
+    
+                                        <div *ngIf="(f.gender?.touched || formSubmitted) && f.gender.errors" class="invalid-feedback">
+            
+                                            <div *ngIf="f.gender.errors.required">Gender is required</div>
+                    
+                                        </div>
+    
+                                    </div>
+    
+                                </div>
+    
+                                <div class="col-md-3">
+    
+                                    <div class="form-group required mb-3">
+    
+                                        <label for="mobileNo" class="mb-2">Phone No</label>
+    
+                                        <input type="text" class="form-control" id="mobileNo" formControlName="mobileNo" placeholder="Enter Mobile No" [ngClass]="{ 'is-invalid': (f.mobileNo?.touched || formSubmitted) && f.mobileNo.errors }" numbersOnly>
+    
+                                        <div *ngIf="(f.mobileNo?.touched || formSubmitted) && f.mobileNo.errors" class="invalid-feedback">
+            
+                                            <div *ngIf="f.mobileNo.errors.required">Phone No is required</div>
+                    
+                                        </div>
+    
+                                    </div>
+    
+                                </div>
+
+                                <div class="col-md-3">
+    
+                                    <div class="form-group mb-3">
+    
+                                        <label for="categories" class="mb-2">Categories</label>
+    
+                                        <ng-select name="categories" id="categories" class="form-control" formControlName="categories" [ngClass]="{ 'is-invalid': (f.categories?.touched || formSubmitted) && f.categories.errors }" appendTo="body" [clearable]="false" placeholder="Select Category">
+    
+                                            <ng-option *ngFor="let categories of categoryList" [value]="categories?.value">{{ categories?.value }}</ng-option>
+    
+                                        </ng-select>
+    
+                                    </div>
+    
+                                </div>
+
+                                <div class="col-md-3">
+    
+                                    <div class="form-group mb-3">
+    
+                                        <label for="age" class="mb-2">Age</label>
+    
+                                        <input type="text" class="form-control" id="age" formControlName="age" placeholder="--" [ngClass]="{ 'is-invalid': (f.age?.touched || formSubmitted) && f.age.errors }">
+    
+                                    </div>
+    
+                                </div>
+
+                            </ng-container>
+
+                            <ng-container>
+
+                                <div class="col-md-6">
+
+                                    <div class="form-group mb-3">
+
+                                        <label for="role" class="mb-2">Role</label>
+
+                                        <ng-select name="role" id="role" class="form-control" formControlName="role" appendTo="body" [clearable]="false" placeholder="Select Role">
+
+                                            <ng-container *ngFor="let role of masterList['rolesList']">
+
+                                                <ng-option [value]="role?._id" *ngIf="role.roleCategoryId?.category == 'Tenant'">
+                                                    
+                                                    <span >{{ role?.roleName }}</span>
+                                                
+                                                </ng-option>
+
+                                            </ng-container>
+
+                                        </ng-select>
+
+                                    </div>
+
+                                </div>
+
+                            </ng-container>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Contract Details Card -->
+                <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                    <div class="card-header bg-white">
+        
+                        <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+            
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Contract details :</h6>
+
+                            <button class="btn btn-sm btn-outline-secondary" *ngIf="mode == 'Update' && isDateReadOnly(cd.at(0)?.get('contractStartDate')?.value)" (click)="closeContract()">Contract Close</button>
+                            
+                        </div>
+                            
+                    </div>
+
+                    <div class="card-body">
+ 
+                        <div class="row" formArrayName="contractDetails">
+
+                            <!-- Charge Type, Rental Type, Frequency, Due Day -->
+                            <ng-container *ngFor="let contractForm of f.contractDetails.controls; let i = index; let last = last; let first = first">
+
+                                <ng-container [formGroup]="contractForm" *ngIf="contractForm.controls as cd">
+
+                                    <div class="col-md-3">
+        
+                                        <div class="form-group required mb-3">
+        
+                                            <label for="chargeType" class="mb-2">Charge Type</label>
+        
+                                            <!-- <select name="chargeType" id="chargeType" class="form-control" formControlName="chargeType" [ngClass]="{ 'is-invalid': (cd.chargeType?.touched || formSubmitted) && cd.chargeType.errors }" [disabled]="isDateReadOnly(contractForm.get('contractStartDate')?.value)"> -->
+                                            <ng-select name="chargeType" id="chargeType" class="form-control" formControlName="chargeType" [ngClass]="{ 'is-invalid': (cd.chargeType?.touched || formSubmitted) && cd.chargeType.errors }" appendTo="body" [clearable]="false" placeholder="Select Charge Type">
+        
+                                                <ng-option *ngFor="let chargeType of  chargeTypeList" [value]="chargeType?.value">{{ chargeType?.value }}</ng-option>
+        
+                                            </ng-select>
+        
+                                            <div *ngIf="(cd.chargeType?.touched || formSubmitted) && cd.chargeType.errors" class="invalid-feedback">
+                
+                                                <div *ngIf="cd.chargeType.errors.required">Charge Type is required</div>
+                        
+                                            </div>
+        
+                                        </div>
+        
+                                    </div>
+
+                                    <div class="col-md-3">
+        
+                                        <div class="form-group required mb-3">
+        
+                                            <label for="rentalType" class="mb-2">Rental Type</label>
+        
+                                            <ng-select name="rentalType" id="rentalType" class="form-control" formControlName="rentalType" [ngClass]="{ 'is-invalid': (cd.rentalType?.touched || formSubmitted) && cd.rentalType.errors }" appendTo="body" [clearable]="false" placeholder="Select Rental Type">
+        
+                                                <ng-option *ngFor="let rentalType of rentalTypeList" [value]="rentalType?.value">{{ rentalType?.value }}</ng-option>
+        
+                                            </ng-select>
+        
+                                            <div *ngIf="(cd.rentalType?.touched || formSubmitted) && cd.rentalType.errors" class="invalid-feedback">
+                
+                                                <div *ngIf="cd.rentalType.errors.required">Charge Type is required</div>
+                        
+                                            </div>
+        
+                                        </div>
+        
+                                    </div>
+
+                                    <div class="col-md-3">
+        
+                                        <div class="form-group required mb-3">
+        
+                                            <label for="frequency" class="mb-2">Frequency</label>
+        
+                                            <ng-select name="frequency" id="frequency" class="form-control" formControlName="frequency" [ngClass]="{ 'is-invalid': (cd.frequency?.touched || formSubmitted) && cd.frequency.errors }" (change)="changeValue({fieldName: 'frequency', index: i})" appendTo="body" [clearable]="false" placeholder="Select Frequency">
+        
+                                                <ng-option *ngFor="let frequency of frequencyList" [value]="frequency?.value">{{ frequency?.value }}</ng-option>
+        
+                                            </ng-select>
+        
+                                            <div *ngIf="(cd.frequency?.touched || formSubmitted) && cd.frequency.errors" class="invalid-feedback">
+                
+                                                <div *ngIf="cd.frequency.errors.required">Charge Type is required</div>
+                        
+                                            </div>
+        
+                                        </div>
+        
+                                    </div>
+
+                                    <div class="col-md-3">
+        
+                                        <div class="form-group required mb-3">
+        
+                                            <label for="dueDay" class="mb-2">Due Day</label>
+
+                                            <input type="text" class="form-control" formControlName="dueDay" placeholder="Enter Day" numbersOnly [ngClass]="{ 'is-invalid': (cd.dueDay?.touched || formSubmitted) && cd.dueDay.errors }" min="1" max="30"/>
+
+                                            <div *ngIf="(cd.dueDay?.touched || formSubmitted) && cd.dueDay.errors" class="invalid-feedback">
+                
+                                                <div *ngIf="cd.dueDay.errors.required">Due Day is required</div>
+                        
+                                            </div>
+        
+                                        </div>
+        
+                                    </div>
+
+                                    <div class="col-md-3">
+        
+                                        <div class="form-group mb-3 position-relative">
+
+                                            <label for="nextDueDay" class="mb-2 d-flex align-items-center">
+                                                
+                                                Next Due Day
+
+                                                <span class="ms-2" tabindex="0" style="cursor: pointer;" [matTooltip]="getDueDatesTooltip()"  matTooltipPosition="above" matTooltipClass="custom-tooltip">
+
+                                                    <i class="bi bi-info-circle-fill text-primary"></i>
+                                                
+                                                </span>
+
+                                            </label>
+
+                                            <input type="text" class="form-control" formControlName="nextDueDay" [value]="getSelectedDueDate(i)" readonly />
+
+                                        </div>
+        
+                                    </div>
+
+                                    <div class="col-md-3">
+
+                                        <div class="form-group mb-3">
+
+                                            <label for="rentalAmt" class="mb-2">Rent Amount {{ this.service.currencyCode?.currencyCode }}</label>
+
+                                            <input type="text" class="form-control" id="rentalAmt" formControlName="rentalAmt" placeholder="Enter Amount" numbersOnly [readOnly]="mode == 'Update' && isDateReadOnly(contractForm.get('contractStartDate')?.value)">
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-3">
+
+                                        <div class="form-group mb-3">
+
+                                            <label for="depositAmt" class="mb-2">Deposit Amount</label>
+
+                                            <input type="text" class="form-control" id="depositAmt" formControlName="depositAmt" placeholder="Enter Amount" [readOnly]="mode == 'Update' && isDateReadOnly(contractForm.get('contractStartDate')?.value)" numbersOnly>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-3">
+
+                                        <div class="form-group mb-3">
+
+                                            <label for="govtId" class="mb-2">Govt.Id</label>
+
+                                            <input type="text" class="form-control" id="govtId" formControlName="govtId" placeholder="Enter Govt" [readOnly]="mode == 'Update' && isDateReadOnly(contractForm.get('contractStartDate')?.value)">
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-3">
+
+                                        <div class="form-group mb-3">
+                                        
+                                            <label for="contractStartDate" class="mb-2">Contract start Date</label>
+
+                                            <div class="input-group">
+
+                                                <input type="text" class="form-control" id="contractStartDate" autocomplete="off" formControlName="contractStartDate"[matDatepicker]="picker" (dateChange)="changeValue({fieldName: 'contractStartDate', index: i})" [readOnly]="mode == 'Update' && isDateReadOnly(contractForm.get('contractStartDate')?.value)" placeholder="Select Date"/>
+
+                                                <mat-datepicker-toggle matSuffix [for]="picker" class="input-group-text border" style="border-radius: 0px 5px 5px 0px !important; height: 38px">
+
+                                                    <ng-container matDatepickerToggleIcon>
+
+                                                        <i class="bi bi-calendar4-week fs-5 text-center"></i>
+
+                                                    </ng-container>
+
+                                                </mat-datepicker-toggle>
+
+                                                <mat-datepicker #picker></mat-datepicker>
+
+                                            </div>
+                                        
+                                        </div>
+                                        
+                                    </div>
+
+                                    <div class="col-md-3">
+
+                                        <div class="form-group mb-3">
+                                        
+                                            <label for="contractEndDate" class="mb-2">Contract End Date</label>
+                                        
+                                            <div class="input-group">
+                                        
+                                                <input type="text" class="form-control" id="contractEndDate" autocomplete="off" formControlName="contractEndDate"[matDatepicker]="picker1" [min]="minContractEndDate | date:'yyyy-MM-dd'" (keydown)="disableTyping($event)" (dateChange)="changeValue({fieldName: 'contractEndDate', index: i})" [readOnly]="mode == 'Update' && isDateReadOnly(contractForm.get('contractStartDate')?.value)" placeholder="Select Date"/>
+                                        
+                                                <mat-datepicker-toggle matSuffix [for]="picker1" class="input-group-text border" style="border-radius: 0px 5px 5px 0px !important; height: 38px">
+
+                                                    <ng-container matDatepickerToggleIcon>
+                                                        
+                                                        <i class="bi bi-calendar4-week fs-5 text-center"></i>
+                                                    
+                                                    </ng-container>
+                                                    
+                                                </mat-datepicker-toggle>
+                                            
+                                                <mat-datepicker #picker1></mat-datepicker>
+
+                                            </div>
+                                        
+                                        </div>
+                                        
+                                    </div>
+
+                                    <!-- <div class="col-md-3">
+        
+                                        <div class="form-group mb-3">
+        
+                                            <label for="paymentMode" class="mb-2">Payment Mode</label>
+        
+                                            <ng-select name="paymentMode" id="paymentMode" class="form-control" formControlName="paymentMode" appendTo="body" [clearable]="false">
+        
+                                                <ng-option *ngFor="let paymentMode of paymentModeList" [value]="paymentMode?.value">{{ paymentMode?.value }}</ng-option>
+        
+                                            </ng-select>
+        
+                                        </div>
+        
+                                    </div> -->
+
+                                    <div class="col-md-3">
+
+                                        <div class="form-group mb-3">
+
+                                            <label for="freeMonths" class="mb-2">Free Months</label>
+
+                                            <input type="text" class="form-control" id="freeMonths" formControlName="freeMonths" placeholder="--" [readOnly]="mode == 'Update' && isDateReadOnly(contractForm.get('contractStartDate')?.value)" numbersOnly>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div *ngIf="dueDateError" class="text-danger mt-1">
+        
+                                        {{ dueDateError }}
+                                        
+                                    </div>
+
+                                </ng-container>
+
+                            </ng-container>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Required Document & Contract detail Document -->
+            <div class="col-md-3 ps-1">
+                
+                <!-- Required Document -->
+                <div class="card border-0 mb-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051); height: 538px;">
+
+                    <div class="card-header bg-white d-flex justify-content-between">
+        
+                        <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+        
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119 ;">Required Document :</h6>
+                        
+                        </div>
+
+                        <div (click)="shareImage()" style="cursor: pointer;">
+
+                            <img src="images/icons/share-icon.svg" class="mt-2" style="width: 27px;" alt="" >
+
+                        </div>
+                        
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="upload-container">
+                        
+                            <label class="upload-box" (dragover)="onDragOver($event)"
+                            (dragleave)="onDragLeave($event)"
+                            (drop)="onDrop($event)"
+                            [class.dragover]="isDragOver">
+                            
+                                <input type="file" (change)="onFileSelect($event)" multiple hidden />
+                            
+                                <img src="images/uploadImg.png" class="mb-2"  style="width: 50px;" alt="">
+                            
+                                <div class="upload-content">
+                            
+                                    <p class="my-0">Drag and Drop or <span class="browse">Browse</span></p>
+                            
+                                    <small class="text-muted">File Supported: Png, Jpg</small>
+                            
+                                </div>
+                            
+                            </label>
+            
+                            <div class="upload-scroll-area">
+            
+                                <div *ngFor="let file of regularDocumentFiles; let i = index" class="upload-list">
+            
+                                    <!-- <img class="thumbnail" [src]="file.preview" (click)="openPreview(file.preview)" alt="Preview" /> -->
+
+                                    <ng-container [ngSwitch]="getFileType(file.file.name)">
+                                            
+                                            <img *ngSwitchCase="'pdf'" class="thumbnail" src="images/pdf.png" alt="PDF" (click)="openPreview(file.preview )" />
+
+                                            <a *ngSwitchCase="'word'" [href]="file.preview" [download]="file.file.name">
+
+                                                <img class="thumbnail" src="images/word2.png" alt="Word" />
+
+                                            </a>
+
+                                            <!-- <img *ngSwitchCase="'word'" class="thumbnail" src="images/word2.png" alt="Word"  /> -->
+
+                                            <img *ngSwitchDefault class="thumbnail" [src]="file.preview" alt="Preview" (click)="openPreview(file.preview)" />
+                                            
+                                    </ng-container>
+            
+                                    <div class="file-info">
+            
+                                        <p>{{ file.file.name }}</p>
+            
+                                        <p [class.completed]="file.status == 'Completed'">{{ file.status }}</p>
+            
+                                        <div class="progress-bar">
+            
+                                            <div class="progress" [style.width.%]="file.progress" [class.completed]="file.status == 'Completed'"></div>
+            
+                                        </div>
+            
+                                    </div>
+            
+                                    <button class="closebutton" (click)="removeImage(i)">✖</button>
+            
+                                </div>
+            
+                            </div>
+            
+                        </div>
+                        
+                    </div>
+
+                </div> 
+
+                <!-- Contract detail Document -->
+                <div class="card border-0 mb-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051); height: 347px;">
+
+                    <div class="card-header bg-white d-flex justify-content-between">
+        
+                        <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+        
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Contract detail Document : </h6>
+                        
+                        </div>
+
+                        <div (click)="shareDocument()" style="cursor: pointer;">
+
+                            <img src="images/icons/share-icon.svg" class="mt-2" style="width: 27px;" alt="" >
+
+                        </div>
+                        
+                    </div>
+
+                    <div class="card-body">
+
+                    <div class="upload-container">
+                    
+                        <label class="upload-box"  (dragover)="onDragOver($event)"
+                        (dragleave)="onDragLeave($event)"
+                        (drop)="onDrop($event,'contract')"
+                        [class.dragover]="isDragOver">
+                        
+                            <input type="file" (change)="onPdfSelect($event)" multiple hidden />
+                        
+                            <img src="images/uploadImg.png" class="mb-2" style="width: 50px;" alt="">
+                        
+                            <div class="upload-content">
+                        
+                                <p class="my-0">Drag and Drop or <span class="browse">Browse</span></p>
+                        
+                                <small class="text-muted">File Supported: Png, Jpg</small>
+                        
+                            </div>
+                        
+                        </label>
+        
+                        <div class="upload-scroll-area">
+        
+                            <div *ngFor="let contract of contractFiles; let i = index" class="upload-list">
+        
+                                <ng-container [ngSwitch]="getFileType(contract.file.name)">
+                                        
+                                    <img *ngSwitchCase="'pdf'" class="thumbnail" src="images/pdf.png" alt="PDF" (click)="openPreview(contract.preview )" />
+
+                                    <a *ngSwitchCase="'word'" [href]="contract.preview" [download]="contract.file.name">
+
+                                        <img class="thumbnail" src="images/word2.png" alt="Word" />
+
+                                    </a>
+
+                                    <img *ngSwitchDefault class="thumbnail" [src]="contract.preview" alt="Preview" (click)="openPreview(contract.preview)" />
+                                        
+                                </ng-container>
+        
+                                <div class="file-info">
+        
+                                    <p>{{ contract.file.name }}</p>
+        
+                                    <p [class.completed]="contract.status == 'Completed'">{{ contract.status }}</p>
+        
+                                    <div class="progress-bar">
+        
+                                        <div class="progress" [style.width.%]="contract.progress" [class.completed]="contract.status == 'Completed'"></div>
+        
+                                    </div>
+        
+                                </div>
+        
+                                <button class="closebutton" (click)="removeContractFile(i)">✖</button>
+        
+                            </div>
+        
+                        </div>
+        
+                    </div>
+                    
+                </div>
+
+                </div> 
+
+                <!-- <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                    <div class="card-header bg-white">
+        
+                        <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+        
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119 ;">Contract detail Document : </h6>
+                        
+                        </div>
+                        
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="row d-flex justify-content-center">
+
+                            <div class="col-md-8">
+
+                                <div class="form-group required mb-3">
+        
+                                    <label for="issues" class="mb-2">Issues</label>
+        
+                                    <ng-select name="issues" id="issues" class="form-control" formControlName="issues" [ngClass]="{ 'is-invalid': (f.issues?.touched || formSubmitted) && f.issues.errors }" appendTo="body" [clearable]="false">
+        
+                                        <ng-option *ngFor="let issues of masterList['issueList']" [value]="issues?._id">{{ issues?.issueName }}</ng-option>
+        
+                                    </ng-select>
+        
+                                    <div *ngIf="(f.issues?.touched || formSubmitted) && f.issues.errors" class="invalid-feedback">
+        
+                                        <div *ngIf="f.issues.errors.required">issues is required</div>
+                
+                                    </div>
+        
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>              -->
+
+            </div>
+            
+        </div>
+
+        <!-- PDC List Table -->
+        <div class="card border-0 mt-1" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+            <div class="card-header bg-white">
+
+                <div class="row">
+
+                    <div class="col-md-10">
+
+                        <h6 class="ps-2 my-0 mt-2" style="font-weight: 600; border-left: 3px solid #D2A119;">PDC Post Dated Cheque :</h6>
+
+                    </div>
+
+                    <div class="col-md-2 text-end">
+
+                        <button class="btn btn-secondary" (click)="openPdcModal()">+ Add</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+            
+            <div class="card-body p-0">
+    
+                <div class="table-responsive">
+    
+                    <table class="table table-borderless align-middle table-striped">
+    
+                        <thead class="bg-light text-secondary">
+    
+                            <tr>
+    
+                                <th>Rent Date</th>
+    
+                                <th>Amount</th>
+    
+                                <th>Cheque No</th>
+    
+                                <th>Cheque Date</th>
+    
+                                <th>Bank</th>
+    
+                                <th>Branch</th>
+    
+                                <th style="width: 20%; text-align: center !important;">Action</th>
+    
+                            </tr>
+    
+                        </thead>
+    
+                        <tbody>
+    
+                            <ng-container *ngIf="!_.isEmpty(masterList['pdcList']); else noRecords">
+    
+                                <ng-container *ngFor="let pdc of f.pdcList.controls; let i = index">
+    
+                                    <ng-container [formGroup]="pdc">
+    
+                                        <tr>
+    
+                                            <td>{{ pdc.value.rentDate | date: 'dd-MM-yyyy' }}</td>
+    
+                                            <td>{{ this.service.currencyCode?.currencyCode }}. {{ (pdc.value.amount | number: '1.0') }}</td>
+    
+                                            <td>{{ pdc.value.chequeNo }}</td>
+    
+                                            <td>{{ pdc.value.chequeDate | date: 'dd-MM-yyyy' }}</td>
+    
+                                            <td>{{ pdc.value.bankName }}</td>
+    
+                                            <td>{{ pdc.value.bankBranch }}</td>
+    
+                                            <td>
+    
+                                                <div class="d-flex justify-content-center align-items-center">
+
+                                                    <i class="bi bi-copy fw-bold me-3" (click)="copyPDC(i)" style="cursor: pointer;"></i>
+                                                    
+                                                    <img *ngIf="!pdc.value.rentPaymentId" src="images/edit.png" alt="Edit" (click)="editPDC(i)" style="width: 18px; cursor: pointer;">
+                                            
+                                                </div>
+    
+                                            </td>
+                    
+                                        </tr>
+                    
+                                    </ng-container>
+                    
+                                </ng-container>
+                    
+                            </ng-container>
+                    
+                            <ng-template #noRecords>
+                    
+                                <tr>
+                                    
+                                    <td colspan="7" style="text-align: center !important;">No Records Found</td>
+                                
+                                </tr>
+                    
+                            </ng-template>
+                    
+                        </tbody>
+                    
+                    </table>
+                    
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Rental List Table -->
+        <div class="row" *ngIf="this.mode == 'Update'">
+
+            <div class="col-md-12">
+
+                <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+    
+                    <div class="card-header bg-white">
+                                
+                        <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+            
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119 ;">Rental List : </h6>
+                            
+                        </div>
+                          
+                    </div>
+        
+                    <div class="card-body p-0">
+        
+                        <div class="table-responsive">
+    
+                            <table class="table table-borderless align-middle table-striped">
+        
+                                <thead class="bg-light text-secondary">
+        
+                                    <tr>
+        
+                                        <th>Bill Date</th>
+
+                                        <th>Due Date</th>
+                                        
+                                        <th>Rent</th>
+                                        
+                                        <th>Paid Amount</th>
+                                        
+                                        <th>Rent Outstanding</th>
+
+                                        <th>Status</th>
+
+                                        <th style="text-align: center !important; min-width: 120px !important;" class="th-action">Action</th>
+
+                                    </tr>
+        
+                                </thead>
+                            
+                                <tbody>
+
+                                    <ng-container *ngIf="!_.isEmpty(this.editData.rentList) ;else other">
+        
+                                        <ng-container *ngFor="let rental of this.editData?.rentList; let i = index; let last = last; let first = first">
+            
+                                            <tr>
+
+                                                <td>{{ rental?.billDate | date: 'dd-MM-yyyy' }}</td>
+
+                                                <td>{{ rental?.dueDate | date: 'dd-MM-yyyy' }}</td>
+
+                                                <td>{{ this.service.currencyCode?.currencyCode }}. {{ (rental?.amountDue | number: '1.0') || '0' }}</td>
+
+                                                <td>{{ this.service.currencyCode?.currencyCode }}. {{ (rental?.amountPaid | number: '1.0') || '0' }}</td>
+                                                
+                                                <td>{{ this.service.currencyCode?.currencyCode }}. {{ (rental?.amountDue - rental?.amountPaid) | number: '1.0' }}</td>
+
+                                                <td class="td-status">
+
+                                                    <ng-container [ngSwitch]="getRentStatus(rental)">
+
+                                                        <font *ngSwitchCase="'Upcoming'" color="#FF9500">Upcoming</font>
+
+                                                        <font *ngSwitchCase="'Overdue'" color="#C92E2E">Overdue</font>
+
+                                                        <font *ngSwitchCase="'Not yet Due'" color="#FF9500">Not yet Due</font>
+
+                                                        <font *ngSwitchCase="'Paid'" color="#34C759">Paid</font>
+
+                                                        <font *ngSwitchCase="'Free'" color="#34C759">Free</font>
+
+                                                        <font *ngSwitchDefault>-</font>
+
+                                                    </ng-container>
+                                                    
+                                                </td>
+                                                
+                                                <td class="d-flex justify-content-between th-action">
+
+                                                    <img src="images/icons/history-outline.svg" class="ms-5" style="width: 26px; height: auto; cursor: pointer;" alt="" (click)="openHistoryModal(rental)" />
+
+                                                    <div class="me-5">
+
+                                                        <ng-container *ngIf="shouldShowApprovePending(rental)">
+
+                                                            <small style="color: #a0a0a0; font-size: 13px; margin-right: -38px !important;">
+
+                                                                Approve Pending
+
+                                                            </small>
+
+                                                        </ng-container>
+
+                                                        <ng-container *ngIf="shouldShowApproveButton(rental)">
+
+                                                            <button class="btn btn-sm btn-secondary" style="margin-right: -17px !important;" (click)="openRentApproveModal(rental)">
+
+                                                                Approve
+
+                                                            </button>
+
+                                                        </ng-container>
+
+                                                        <button *ngIf="shouldShowPayButton(rental)" class="btn btn-sm payment-button fw-500" style="margin-left: 21px !important;" (click)="openUpdatePaymentModal(rental?._id)">
+
+                                                            Pay
+
+                                                        </button>
+
+                                                    </div>
+
+                                                    <!-- <div class="me-5">
+
+                                                        <ng-container *ngIf="userDetails?.userType == 'tenant'">
+                                                            
+                                                            <small *ngIf="isAnyBillNotApproved(rental?.paymentEntries)" class="me-2" style="color: #a0a0a0; font-size: 13px; margin-right: -38px !important;">
+
+                                                                Approved Pending
+                                                                
+                                                            </small>
+
+                                                        </ng-container>
+
+                                                        <ng-container *ngIf="shouldShowApproveButton(rental)">
+
+                                                            <button class="btn btn-sm btn-secondary me-2" style="margin-right: -17px !important;" (click)="openRentApproveModal(rental)">
+
+                                                                Approve
+
+                                                            </button>
+                                                            
+                                                        </ng-container>
+
+                                                        Show Pay button if conditions met
+                                                        <button *ngIf="shouldShowPayButton(rental)" class="btn btn-sm payment-button fw-500" style="margin-left: 21px !important;" (click)="openUpdatePaymentModal(rental?._id)">
+
+                                                            Pay
+
+                                                        </button>
+
+                                                    </div> -->
+
+                                                    <!-- <small *ngIf="hasRejectedBills(rent?.paymentEntries)"
+                                                            class="badge bg-danger ms-2">
+                                                        Rejected
+                                                    </small> -->
+
+                                                </td>
+
+                                            </tr>
+                
+                                        </ng-container>
+
+                                    </ng-container>
+
+                                    <ng-template #other>
+
+                                        <tr>
+
+                                            <td colspan="10" style="text-align: center !important;">No Records Found</td>
+
+                                        </tr>
+
+                                    </ng-template>
+        
+                                </tbody>
+    
+                            </table>
+    
+                        </div>
+        
+                    </div>
+        
+                </div>
+    
+            </div>
+
+        </div>
+
+        <!-- Tenant Membars Table -->
+        <div class="col-md-12">
+
+            <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                <div class="card-header bg-white">
+    
+                    <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+      
+                        <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119 ;">Tenant Members : </h6>
+                      
+                    </div>
+                      
+                </div>
+    
+                <div class="card-body p-0">
+    
+                    <div class="table-responsive" formArrayName="tenantMembers">
+
+                        <table class="table table-borderless align-middle table-striped">
+
+                          <thead class="bg-light text-secondary">
+
+                            <tr>
+
+                              <th style="width: 100px;">Action</th>
+
+                              <th>Member Name</th>
+
+                              <th>Age</th>
+
+                              <th>Gengar</th>
+
+                              <th style="text-align: start !important;">Relationship</th>
+
+                            </tr>
+
+                          </thead>
+                    
+                          <tbody>
+
+                            <ng-container *ngFor="let tenant of f.tenantMembers.controls; let i = index; let last = last; let first = first">
+
+                                <ng-container [formGroup]="tenant" *ngIf="tenant.controls as tm">
+
+                                    <tr>
+
+                                        <td>
+
+                                            <div class="d-flex justify-content-between align-items-center" style="height: 100%;">
+
+                                                <p (click)="tenantMemberDeleteItem(i)" style="color: #FF4949 !important; font-size: 18px; cursor: pointer; margin: 0; display: flex; align-items: center;">
+
+                                                    <i class="bi bi-dash-lg fw-bold"></i>
+                                                
+                                                </p>
+                                            
+                                                <p *ngIf="last" (click)="tetantMembersAddItem(i)" class="fw-bold" style="cursor: pointer; margin: 0; display: flex; align-items: center;">
+
+                                                    <i class="bi bi-plus-lg fw-bold"></i>
+
+                                                </p>
+
+                                            </div>
+
+                                        </td>
+
+                                        <td>
+
+                                            <input type="text" class="form-control" id="memberName" formControlName="memberName" placeholder="Enter Member Name" [ngClass]="{ 'is-invalid': (tm.memberName?.touched || formSubmitted) && tm.memberName?.errors }">
+
+
+                                        </td>
+
+                                        <td >
+
+                                            <input type="text" class="form-control w-50" id="age" formControlName="age" placeholder="Enter Age" [ngClass]="{ 'is-invalid': (tm.age?.touched || formSubmitted) && tm.age?.errors }" numbersOnly>
+
+                                        </td>
+
+                                        <td>
+
+                                            <ng-select name="gendar" class="form-control" id="gendar" formControlName="gendar" [ngClass]="{ 'is-invalid': (tm.gendar?.touched || formSubmitted) && tm.gendar?.errors }" appendTo="body" [clearable]="false" placeholder="Select Gender">
+
+                                                <ng-option *ngFor="let gendar of genderList" [value]="gendar?.value">{{ gendar?.value }}</ng-option>
+
+                                            </ng-select>
+                                            
+                                        </td>
+
+                                        <td>
+
+                                            <ng-select name="relationship" id="relationship" class="form-control" formControlName="relationship" [ngClass]="{ 'is-invalid': (tm.relationship?.touched || formSubmitted) && tm.relationship?.errors }" appendTo="body" [clearable]="false" placeholder="Select Relation">
+
+                                                <ng-option *ngFor="let relationship of relationshipList" [value]="relationship?.value">{{ relationship?.value }}</ng-option>
+
+                                            </ng-select>
+
+                                        </td>
+
+                                    </tr>
+
+                                </ng-container>
+
+                            </ng-container>
+
+                          </tbody>
+
+                        </table>
+
+                    </div>
+    
+                </div>
+    
+            </div>
+
+        </div>
+
+        <!-- Tenant Id Proof Table -->
+        <div class="col-md-12">
+
+            <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                <div class="card-header bg-white">
+    
+                    <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+      
+                        <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119 ;">Tenant Id Proof : </h6>
+                      
+                    </div>
+                      
+                </div>
+    
+                <div class="card-body p-0">
+    
+                    <div class="table-responsive" formArrayName="tenantIdProof">
+
+                        <table class="table table-borderless align-middle table-striped">
+
+                          <thead class="bg-light text-secondary">
+
+                            <tr>
+
+                              <th style="width: 100px;">Action</th>
+
+                              <th>Id Proof</th>
+
+                              <th>Id Number</th>
+
+                              <th>Expiry Date</th>
+
+                              <th style="text-align: center !important;">View File</th>
+
+                              <th style="text-align: center !important;">Action</th>
+
+                            </tr>
+
+                          </thead>
+                    
+                          <tbody>
+
+                            <ng-container *ngFor="let tenant of f.tenantIdProof.controls; let i = index; let last = last; let first = first">
+
+                                <ng-container [formGroup]="tenant" *ngIf="tenant.controls as tip">
+
+                                    <tr>
+
+                                        <td>
+
+                                            <div class="d-flex justify-content-between align-items-center" style="height: 100%;">
+
+                                                <p (click)="tenantIdProofDeleteItem(i)" style="color: #FF4949 !important; font-size: 18px; cursor: pointer; margin: 0; display: flex; align-items: center;">
+
+                                                    <i class="bi bi-dash-lg fw-bold"></i>
+                                                
+                                                </p>
+                                            
+                                                <p *ngIf="last" (click)="tenantIdProofAddItem(i)" class="fw-bold" style="cursor: pointer; margin: 0; display: flex; align-items: center;">
+
+                                                    <i class="bi bi-plus-lg fw-bold"></i>
+
+                                                </p>
+
+                                            </div>
+
+                                        </td>
+
+                                        <td>
+
+                                            <ng-select name="idProof" class="form-control" id="idProof" formControlName="idProof" [ngClass]="{ 'is-invalid': (tip.idProof?.touched || formSubmitted) && tip.idProof.errors }" appendTo="body" [clearable]="false" placeholder="Select ID proof">
+
+                                                <ng-option *ngFor="let idProof of this.masterList['idProofList']" [value]="idProof?._id">{{ idProof?.proofName }}</ng-option>
+
+                                            </ng-select>
+
+                                            <div *ngIf="(tip.idProof?.touched || formSubmitted) && tip.idProof.errors" class="invalid-feedback">
+                
+                                                <div *ngIf="tip.idProof.errors.required">Id Proof is required</div>
+                        
+                                            </div>
+                                            
+                                        </td>
+
+                                        <td>
+
+                                            <input type="text" class="form-control" id="idNumber" formControlName="idNumber" placeholder="Enter ID Number" [ngClass]="{ 'is-invalid': (tip.idNumber?.touched || formSubmitted) && tip.idNumber.errors }">
+
+                                            <div *ngIf="(tip.idNumber?.touched || formSubmitted) && tip.idNumber.errors" class="invalid-feedback">
+                
+                                                <div *ngIf="tip.idNumber.errors.required">Id Number is required</div>
+                        
+                                            </div>
+
+                                        </td>
+
+                                        <td>
+
+                                            <input type="text" class="form-control" id="expiryDate" formControlName="expiryDate" placeholder="Select Date" [ngClass]="{ 'is-invalid': (tip.expiryDate?.touched || formSubmitted) && tip.expiryDate.errors }">
+
+                                            <div *ngIf="(tip.expiryDate?.touched || formSubmitted) && tip.expiryDate.errors" class="invalid-feedback">
+                
+                                                <div *ngIf="tip.expiryDate.errors.required">Expiry Date is required</div>
+                        
+                                            </div>
+                                            
+                                        </td>
+
+                                        <td style="text-align: center !important;"> 
+                                            
+                                            <i class="bi bi-eye fs-5" style="color: #d2a119;"></i>
+
+                                        </td>
+
+                                        <td style="text-align: center !important;">
+
+                                           <img src="images/icons/upload-icon.svg" style="width: 28px;" alt="">
+
+                                        </td>
+
+                                    </tr>
+
+                                </ng-container>
+
+                            </ng-container>
+
+                          </tbody>
+
+                        </table>
+
+                    </div>
+    
+                </div>
+    
+            </div>
+
+        </div>
+
+        <!-- Utilities Table -->
+        <div class="row" *ngIf="this.mode == 'Update'">
+
+            <div class="col-md-12">
+
+                <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+    
+                    <div class="card-header bg-white">
+
+                        <div class="row">
+
+                            <div class="col-md-6">
+
+                                <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+            
+                                    <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Utilities : </h6>
+                                    
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6 text-end mt-2">
+
+                                <span>Total Utilitie Amount : {{ this.service.currencyCode?.currencyCode }}. {{ _.sumBy(filteredUtilityBill, 'utilityAmount') }}</span>
+
+                            </div>
+                            
+                        </div>
+                          
+                    </div>
+        
+                    <div class="card-body p-0">
+        
+                        <div class="table-responsive">
+    
+                            <table class="table table-borderless align-middle table-striped">
+    
+                                <thead class="bg-light text-secondary">
+        
+                                    <tr>
+        
+                                        <th>Utility Name</th>
+                                        
+                                        <th>Due Date</th>
+                                        
+                                        <th>Payment Date</th>
+                                        
+                                        <th>Utility Amount</th>
+                                        
+                                        <th>Paid Amount</th>
+
+                                        <th>Outstanding</th>
+                                        
+                                        <th>Invoice Number</th>
+
+                                        <th>Status</th>
+
+                                        <th style="text-align: center !important; min-width: 210px !important;" class="th-action">Action</th>
+
+                                    </tr>
+    
+                                </thead>
+                        
+                                <tbody>
+
+                                    <ng-container *ngIf="!_.isEmpty(filteredUtilityBill);else other">
+
+                                        <ng-container *ngFor="let utility of filteredUtilityBill; let i = index; let last = last; let first = first">
+            
+                                            <tr>
+
+                                                <td>{{ utility?.utility?.utilityName }}</td>
+
+                                                <td>{{ (utility?.dueDate | date: 'dd-MM-yyyy') || '-' }}</td>
+
+                                                <td>{{ (utility?.paymentDate | date: 'dd-MM-yyyy') || '-'  }}</td>
+                                                
+                                                <td>{{ this.service.currencyCode?.currencyCode }}. {{ utility?.utilityAmount | number: '1.0' }}</td>
+                                                
+                                                <td>{{ this.service.currencyCode?.currencyCode }}. {{ utility?.amountPaid | number: '1.0' }}</td>
+                                                
+                                                <td>{{ this.service.currencyCode?.currencyCode }}. {{ (utility?.utilityAmount - utility?.amountPaid) | number: '1.0' }}</td>
+                                                
+                                                <td>{{ utility?.invoiceNo }}</td>
+                                                
+                                                <td class="td-status">
+
+                                                    <ng-container [ngSwitch]="getUtilityStatus(utility)">
+
+                                                        <font *ngSwitchCase="'Overdue'" color="#C92E2E">Overdue</font>
+
+                                                        <font *ngSwitchCase="'Upcoming'" color="#FFA500">Upcoming</font>
+
+                                                        <font *ngSwitchCase="'Not yet Due'" color="#FF9500">Not yet Due</font>
+
+                                                        <font *ngSwitchCase="'Paid'" color="#34C759">Paid</font>
+
+                                                        <font *ngSwitchDefault>-</font>
+
+                                                    </ng-container>
+
+                                                </td>
+
+                                                <td class="d-flex justify-content-center th-action">
+                
+                                                    <div class="d-flex justify-content-between align-items-center" style="height: 100%;">
+                
+                                                        <ng-container *ngIf="getUtilityStatus(utility) != 'Paid'; else notPay">
+
+                                                            <button class="payment-button btn btn-sm fw-500" style="cursor: pointer;" (click)="openUtilityAmtModal(utility?._id)">Pay</button>
+
+                                                        </ng-container>
+
+                                                        <ng-template #notPay>
+
+                                                            -
+
+                                                        </ng-template>
+
+                                                    </div>
+            
+                                                </td>
+            
+                                            </tr>
+                
+                                        </ng-container>
+                                        
+                                    </ng-container>
+
+                                        <ng-template #other>
+
+                                            <tr>
+
+                                                <td colspan="10" style="text-align: center !important;">No  Records Found</td>
+
+                                            </tr>
+
+                                        </ng-template>
+    
+                                </tbody>
+    
+                            </table>
+    
+                        </div>
+        
+                    </div>
+        
+                </div>
+    
+            </div>
+
+        </div>
+
+        <!-- Issue Configuration Table -->
+        <div class="col-md-12">
+
+            <div class="card border-0 mt-3" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+                <div class="card-header bg-white">
+    
+                    <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+      
+                        <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Issues Configuration : </h6>
+                      
+                    </div>
+                      
+                </div>
+    
+                <div class="card-body p-0">
+    
+                    <div class="table-responsive" formArrayName="issueConfiguration">
+
+                        <table class="table table-borderless align-middle table-striped">
+
+                            <thead class="bg-light text-secondary">
+
+                                <tr>
+
+                                    <th style="width: 6%">Action</th>
+
+                                    <th style="width: 15%">Issue Category</th>
+
+                                    <th style="width: 15%">Priority</th>
+
+                                    <th style="width: 15%">TAT</th>
+
+                                    <th style="width: 20%">Staff</th>
+
+                                    <th style="width: 20%; text-align: start !important;">Managers</th>
+
+                                </tr>
+
+                            </thead>
+                        
+                            <tbody>
+
+                                <ng-container *ngFor="let config of f.issueConfiguration.controls; let i = index; let last = last; let first = first">
+
+                                    <ng-container [formGroup]="config" *ngIf="config.controls as cdf">
+
+                                        <tr>
+
+                                            <td>
+
+                                                <div class="d-flex justify-content-between align-items-center" style="height: 100%;">
+
+                                                    <p (click)="deleteConfigurationItem(i)" style="color: #FF4949 !important; font-size: 18px; cursor: pointer; margin: 0; display: flex; align-items: center;">
+
+                                                        <i class="bi bi-dash-lg fw-bold"></i>
+                                                    
+                                                    </p>
+                                                
+                                                    <p *ngIf="last" (click)="addConfigurationItem(i)" class="fw-bold" style="cursor: pointer; margin: 0; display: flex; align-items: center;">
+
+                                                        <i class="bi bi-plus-lg fw-bold"></i>
+
+                                                    </p>
+
+                                                </div>
+
+                                            </td>
+
+                                            <td>
+                                            
+                                                <ng-select class="form-control" formControlName="issueCategory" id="issueCategory" (change)="changeValue({fieldName: 'issueCategory', index: i})" [ngClass]="{ 'is-invalid': (cdf.issueCategory?.touched || formSubmitted) && cdf.issueCategory?.errors }" appendTo="body" [clearable]="false" placeholder="Select Issue">
+
+                                                    <ng-option *ngFor="let issue of masterList['issueList']" [value]="issue._id">{{ issue.issueName }}</ng-option>
+
+                                                </ng-select>
+
+                                            </td>
+
+                                            <td>
+
+                                                <ng-select name="" id="priority" class="form-control" formControlName="priority" autocomplete="off" [ngClass]="{ 'is-invalid': (cdf.priority?.touched || formSubmitted) && cdf.priority?.errors }" appendTo="body" [clearable]="false" placeholder="Select Priority">
+
+                                                    <ng-option value="hight">High</ng-option>
+
+                                                    <ng-option value="medium">Medium</ng-option>
+
+                                                    <ng-option value="low">Low</ng-option>
+                                                    
+                                                </ng-select>
+
+                                            </td>
+
+                                            <td>
+
+                                                <!-- <div class="w-100 d-flex">
+
+                                                    <input type="text" class="form-control" id="tat" formControlName="tat" numbersOnly>
+
+                                                    <input type="text" class="form-control ms-1" id="tatType" formControlName="tatType"> 
+
+                                                </div> -->
+
+                                                <div class="d-flex w-100">
+
+                                                    <div class="col-md-5">
+
+                                                        <input type="number" class="form-control" id="tat" formControlName="tat" numbersOnly autocomplete="off" placeholder="-" [ngClass]="{ 'is-invalid': (cdf.tat?.touched || formSubmitted) && cdf.tat?.errors }"/>
+                                                        
+                                                    </div>
+                                                 
+                                                    <div class="col-md-6">
+
+                                                        <ng-select name="tatType" id="tatType" formControlName="tatType" class="form-control" [ngClass]="{ 'is-invalid': (cdf.tatType?.touched || formSubmitted) && cdf.tatType?.errors }" appendTo="body" [clearable]="false" placeholder="Select Type">
+
+                                                            <ng-option value="days">Days</ng-option>
+                                                            
+                                                            <ng-option value="hours">Hours</ng-option>
+                                                            
+                                                        </ng-select>
+                                                    
+                                                    </div>
+                                                    
+                                                </div>
+                                                
+                                            </td>
+
+                                            <td>
+                                                
+                                                <ng-select class="form-control" [items]="config.get('staffList')?.value || []" bindLabel="staff" bindValue="_id" formControlName="staff" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body" placeholder="Select Staff">
+
+                                                    <!-- <ng-template ng-label-tmp let-item="item" let-clear="clear">
+                                                    
+                                                        <span class="badge bg-white text-dark me-1 d-inline-flex align-items-center fw-500" style="font-size: 12px;">
+
+                                                            <span>{{ item?.firstName + ' ' + item.lastName }}</span> 
+
+                                                            <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                                                            <span style="width: 1px; height: 20px; background-color: black;"></span>
+                                                            
+                                                            <span *ngIf="item.length > 1" class="text-muted">
+                                                
+                                                                (+{{ item.length - 1 }} 
+                                                
+                                                                {{ item.length == 2 ? 'other' : 'others' }})
+                                                
+                                                            </span>
+                                                            
+                                                        </span>
+
+                                                    </ng-template> -->
+
+                                                    <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                                                        <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                                                            
+                                                            <div class="d-flex">
+
+                                                                <span class="ng-value-label ellipsis ms-1">
+
+                                                                    <span>{{ _.get(item,'firstName') + ' ' + _.get(item,'lastName') }}</span> 
+
+                                                                </span>
+
+                                                                <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                                                                <span style="width: 1px; height: 20px; background-color: black;"></span>
+                                                                
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                                                            <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                                                        </div>
+
+                                                    </ng-template>   
+
+                                                    <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                                                        <div class="form-check d-flex align-items-center"> 
+                                                            
+                                                            <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'staff')"/>
+
+                                                            <label class="form-check-label mt-1">{{ item?.firstName + ' ' + item.lastName }}</label>
+
+                                                        </div>
+                                                        
+                                                    </ng-template>
+                                                
+                                                </ng-select>
+
+                                            </td>
+
+                                            <td>
+
+                                                <ng-select class="form-control" [items]="this.masterList['managerList'] || []" bindLabel="manager" bindValue="_id" formControlName="manager" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body" placeholder="Select Manager">
+
+                                                    <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                                                        <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                                                            
+                                                            <div class="d-flex">
+
+                                                                <span class="ng-value-label ellipsis ms-1">
+
+                                                                    <span>{{ _.get(item,'firstName') + ' ' + _.get(item,'lastName') }}</span> 
+
+                                                                </span>
+
+                                                                <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                                                                <span style="width: 1px; height: 20px; background-color: black;"></span>
+                                                                
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                                                            <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                                                        </div>
+
+                                                    </ng-template>   
+
+                                                    <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                                                        <div class="form-check d-flex align-items-center"> 
+                                                            
+                                                            <input type="checkbox" class="form-check-input me-2" [checked]="isSelected(item._id, 'manager')"/>
+
+                                                            <label class="form-check-label mt-1">{{ item?.firstName + ' ' + item.lastName }}</label>
+
+                                                        </div>
+                                                            
+                                                    </ng-template>
+                                                
+                                                </ng-select>
+
+                                            </td>
+
+                                        </tr>
+
+                                    </ng-container>
+
+                                </ng-container>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+    
+                </div>
+    
+            </div>
+
+        </div>
+
+    </form>
+    
+    <div class="d-flex justify-content-end mt-3 mb-3">
+
+        <button class="btn btn-outline-secondary mt-3 ms-2" (click)=" this.service.navigate({ 'url': 'app/tenant' })">Discard</button>
+
+        <button class="btn btn-secondary mt-3 mx-2" (click)="submit()">Save</button>
+
+    </div>
+
+</div>
+
+<div class="file-modal" *ngIf="previewUrl" (click)="closePreview()">
+
+    <ng-container *ngIf="isPdfPreview; else imagePreview">
+
+        <iframe [src]="previewUrl" class="modal-file" frameborder="0" type="application/pdf"></iframe>
+    
+    </ng-container>
+
+    <ng-template #imagePreview>
+
+        <img [src]="previewUrl" class="modal-img" />
+    
+    </ng-template>
+
+</div>
+
+<!-- Payment Modal -->
+<ng-template #pdcModal let-modal>
+
+    <div class="modal-header">
+
+        <div class="d-flex justify-content-between align-items-center w-100" style="height: 40px;">
+
+            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Add PDC - Post Dated Cheque</h6>
+
+            <i class="bi bi-x-lg pe-2 fw-bold" (click)="modal.close()"></i>
+
+        </div>
+
+    </div>
+
+    <div class="modal-body">
+
+        <form [formGroup]="pdcForm">
+
+            <div class="row">
+
+                <div class="col-md-3 mb-3">
+
+                    <div class="form-group required">
+
+                        <label>Due Date</label>
+
+                        <!-- <input type="date" class="form-control" formControlName="rentDate" [min]="minDate"> -->
+
+                         <div class="input-group">
+
+                            <input type="text" class="form-control" id="rentDate" autocomplete="off" formControlName="rentDate" [matDatepicker]="picker" [min]="minDate" placeholder="Select Date"/>
+
+                            <mat-datepicker-toggle matSuffix [for]="picker" class="input-group-text border" style="border-radius: 0px 5px 5px 0px !important; height: 38px;">
+
+                                <ng-container matDatepickerToggleIcon>
+
+                                    <i class="bi bi-calendar4-week fs-5 text-center"></i>
+
+                                </ng-container>
+
+                            </mat-datepicker-toggle>
+
+                            <mat-datepicker #picker></mat-datepicker>
+
+                        </div>
+
+                        <!-- <ng-select class="form-control" formControlName="rentDate" appendTo="body" [clearable]="false">
+
+                            <ng-option *ngFor="let duedate of masterList['nextDueDayList']" [value]="duedate?.dueDate">
+
+                                {{ duedate?.dueDate }}
+
+                            </ng-option>
+
+                        </ng-select> -->
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <div class="form-group required">
+
+                        <label>Amount</label>
+
+                        <input type="text" class="form-control" formControlName="amount" numbersOnly placeholder="Enter Amount">
+
+                    </div>
+                
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <div class="form-group required">
+
+                        <label>Cheque No</label>
+
+                        <input type="text" class="form-control" formControlName="chequeNo" Placeholder="Enter Cheque No">
+
+                    </div>
+    
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <div class="form-group required">
+
+                        <label>Cheque Date</label>
+
+                        <!-- <input type="date" class="form-control" formControlName="chequeDate" [min]="minDate"> -->
+
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" id="chequeDate" autocomplete="off" formControlName="chequeDate" [matDatepicker]="picker1" [min]="minDate" placeholder="Select Cheque Date"/>
+
+                            <mat-datepicker-toggle matSuffix [for]="picker1" class="input-group-text border" style="border-radius: 0px 5px 5px 0px !important; height: 38px;">
+
+                                <ng-container matDatepickerToggleIcon>
+
+                                    <i class="bi bi-calendar4-week fs-5 text-center"></i>
+
+                                </ng-container>
+
+                            </mat-datepicker-toggle>
+
+                            <mat-datepicker #picker1></mat-datepicker>
+
+                        </div>
+
+                    </div>
+    
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <div class="form-group required">
+                
+                        <label>Bank</label>
+                        
+                        <input type="text" class="form-control" formControlName="bankName" placeholder="Enter bank">
+                    
+                    </div>
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <div class="form-group required">
+
+                        <label>Branch</label>
+                    
+                        <input type="text" class="form-control" formControlName="bankBranch" placeholder="Enter Branch">
+                    
+                    </div>
+    
+                </div>
+    
+            </div>
+
+        </form>
+
+    </div>
+
+     <div class="modal-footer">
+
+        <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss()">Cancel</button>
+        
+        <button type="button" class="btn btn-secondary" (click)="savePDC(modal)">Save</button>
+    
+    </div>
+
+</ng-template>
+
+<!-- Rent History Modal -->
+<ng-template #detailHistoryModal let-modal>
+
+    <div class="modal-header">
+
+        <div class="d-flex justify-content-between align-items-center w-100" style="height: 40px;">
+
+        <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Rental List</h6>
+        
+        <i class="bi bi-x-lg pe-2 fw-bold" (click)="modal.close()"></i>
+        
+        </div>
+
+    </div>
+
+    <div class="modal-body">
+
+        <div class="mt-3">
+
+            <div class="table-responsive">
+
+                <table class="table table-borderless align-middle table-striped">
+
+                <thead class="bg-light text-secondary">
+
+                    <tr>
+
+                        <th>Payment Date</th>
+
+                        <th>Amount</th>
+
+                        <th>Payment Mode</th>
+
+                        <th>PDC</th>
+
+                        <th>PDC Date</th>
+
+                        <th>Bank</th>
+
+                        <th>Bank Branch</th>
+
+                        <th>Cheque No</th>
+
+                    </tr>
+
+                </thead>
+            
+                <tbody>
+
+                    <ng-container *ngIf="!_.isEmpty(this.selectedData?.paymentEntries); else other">
+
+                        <tr *ngFor="let rent of this.selectedData?.paymentEntries">
+
+                            <td>{{ (rent.paymentDate | date: 'dd-MM-yyyy') || '-' }}</td>
+
+                            <td>{{ this.service.currencyCode?.currencyCode }}. {{ (rent?.amountPaid) || '-' }}</td>
+
+                            <td>{{ rent.paymentMode || '-' }}</td>
+                            
+                            <td>{{ (rent.isPdc == true ? 'Yes' : 'No') }}</td>
+
+                            <td>{{ (rent.chequeDate | date: 'dd-MM-yyyy') || '' }}</td>
+
+                            <td>{{ (rent.bank) || '-' }}</td>
+
+                            <td>{{ rent.bankBranch || '-' }}</td>
+
+                            <td>{{ rent.chequeNo || '-' }}</td>
+
+                        </tr>
+
+                    </ng-container>
+
+                    <ng-template #other>
+
+                        <tr>
+
+                            <td colspan="10" style="text-align: center !important;">No Records Found</td>
+
+                        </tr>
+
+                    </ng-template>
+
+                    <ng-template #other>
+
+                        <tr>
+
+                            <td colspan="11" style="width: 16px !important;"><img  class="me-2" src="images/lock2.png" alt="">Access Denied</td>
+
+                        </tr>
+
+                    </ng-template>
+
+                </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</ng-template>
+
+<!-- Rent Approvel Modal -->
+<ng-template #rentApproveModal let-modal>
+
+    <div class="modal-header">
+
+        <div class="d-flex justify-content-between align-items-center w-100" style="height: 40px;">
+
+        <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119 ;">Rental Details</h6>
+        
+        <i class="bi bi-x-lg pe-2 fw-bold" (click)="modal.close()"></i>
+        
+        </div>
+
+    </div>
+
+    <div class="modal-body pb-2" style="color: black;">
+
+        <div class="row">
+
+            <div class="col-5"> <small>Property Name</small> </div>
+            
+            <div class="col-1"> : </div>
+            
+            <div class="col-6"> <small>{{ selectedData.property?.propertyName }}</small> </div>
+
+        </div>
+
+        <div class="row mt-2">
+
+            <div class="col-5"> <small>Unit</small> </div>
+            
+            <div class="col-1"> : </div>
+            
+            <div class="col-6"> <small>{{ selectedData.unit?.unitName }}</small> </div>
+
+        </div>
+
+        <div class="row mt-2">
+
+            <div class="col-5"> <small>Contract Amount</small> </div>
+            
+            <div class="col-1"> : </div>
+            
+            <div class="col-6"> <small>{{ this.service.currencyCode?.currencyCode }}. {{ selectedData.amountDue }}</small> </div>
+
+        </div>
+
+        <div class="row mt-2">
+
+            <div class="col-5"> <small>Paid Amount</small> </div>
+            
+            <div class="col-1"> : </div>
+            
+            <div class="col-6"> <small>{{ this.service.currencyCode?.currencyCode }}. {{ selectedData.amountPaid }}</small> </div>
+
+        </div>
+
+        <div class="row mt-2">
+
+            <div class="col-5"> <small>Amount Outstanding</small> </div>
+            
+            <div class="col-1"> : </div>
+            
+            <div class="col-6"> <small>{{ this.service.currencyCode?.currencyCode }}. {{ selectedData.amountOutstanding }}</small> </div>
+
+        </div>
+
+    </div>
+
+    <div class="modal-footer d-flex justify-content-end me-2">
+
+        <button class="btn btn-sm btn-outline-secondary" (click)="modal.close()">Reject</button>
+
+        <button class="btn btn-sm btn-secondary" (click)="approveRent(selectedData)">Approve</button>
+
+    </div>
+
+</ng-template>

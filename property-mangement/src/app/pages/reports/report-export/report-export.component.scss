@@ -1,0 +1,8 @@
+.btn-outline-secondary{
+    background-color: #e6b52d1a;
+    &:hover{
+        background-color: #e6b42d44;
+        color: var(--secondary-color);
+        // background-color: var(--secondary-color);
+    }
+}
