@@ -1,0 +1,77 @@
+.custom-checkbox:checked {
+    background-color: #2C5069;
+    border-color: #2C5069;
+    accent-color: #2C5069;
+  }
+
+  .custom-checkbox:checked + label {
+    color: #2C5069;
+  }
+
+.custom-switch-color:checked{
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    accent-color: var(--secondary-color);
+    box-shadow: 0 0 0 0;
+
+    &:focus{
+      box-shadow: 0 0 0  0;
+      border-color: var(--secondary-color);
+    }
+  }
+
+  ::ng-deep .custom-tooltip {
+  white-space: pre-line !important;
+}
+
+::ng-deep .mat-mdc-paginator-container {
+  background-color: #fff!important; /* Light pink background */
+}
+  
+
+//   ::ng-deep .ng-option-selected,
+// ::ng-deep .ng-option-marked {
+//   background-color: var(--secondary-color) !important;
+//   // color: white !important;
+//   border-radius: 4px !important;
+//   // margin-top : 1px !important;
+// }
+
+// ::ng-deep .select-option .form-check-input {
+//   width: 18px;
+//   height: 18px;
+//   border: 1px solid black;
+//   background-color: white;
+//   cursor: pointer;
+// }
+
+// /* When checkbox is checked (active) */
+// ::ng-deep .select-option .form-check-input:checked {
+//   background-color: var(--secondary-color) !important;
+//   border-color: white !important;
+// }
+
+// /* Optional: Make the check icon white */
+// ::ng-deep .select-option .form-check-input:checked::before {
+//   color: white !important;
+// }
+
+// ::ng-deep .ng-select {
+//   position: relative;
+// }
+
+// ::ng-deep .ng-select .dropdown-icon {
+//   position: absolute;
+//   right: 10px;
+//   top: 50%;
+//   transform: translateY(-50%);
+//   font-size: 16px;
+// }
+
+// ::ng-deep .ng-select .ng-select-container {
+//   padding-right: 30px; /* To make space for the dropdown icon */
+// }
+
+// ::ng-deep .ng-select .ng-select-arrow {
+//   display: none; /* Hide default arrow */
+// }
