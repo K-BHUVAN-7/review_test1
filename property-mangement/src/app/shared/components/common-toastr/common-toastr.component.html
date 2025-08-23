@@ -1,0 +1,28 @@
+<div fxLayout="row" class="snack-container py-1 cursor-pointer"  (click)="sbRef.dismiss()">
+
+  <div class="d-flex flex-row">
+
+    <div class="d-flex imgContainer justify-content-center align-items-center me-2 p-3" [ngClass]="getIcon().parent">
+      
+      <i class="iconImage" [ngClass]="getIcon().child"></i>
+      
+    </div>
+
+    <div class="border" [ngClass]="getIcon().parent"></div>
+      
+    <div class="d-flex align-items-center ms-2">
+      
+      <div class="text-dark mb-0 content-heading" *ngIf="data.title" [ngClass]="getIcon().text"> {{data?.title}} </div>
+      
+      <h5 class="my-1 text-secondary" [ngClass]="getIcon().text">
+        
+        {{data?.message}}
+        
+      </h5>
+      
+    </div>
+        
+  </div>
+
+</div>
+

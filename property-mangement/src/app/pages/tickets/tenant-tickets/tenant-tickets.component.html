@@ -1,0 +1,1082 @@
+<!-- List -->
+<div class="container-fluid">
+    
+  <div class="d-flex justify-content-end mb-3">
+
+    <small><span class="text-primary">Tenant Issue</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-dark">Tenant Issue List</span> </small>
+
+  </div>
+
+  <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+
+    <div class="card-header bg-white">
+
+      <div class="d-flex justify-content-between align-items-center " style="height: 40px;">
+
+        <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Tenant Ticket List</h6>
+        
+        <img src="images/download.png" style="width: 26px; height: auto; cursor: pointer;" alt="" (click)="xlDownload()">
+        
+      </div>
+          
+    </div>
+
+    <div class="card-body">
+
+      <div class="card rounded-0">
+
+        <div class="card-body rounded-0">
+
+          <div class="d-flex justify-content-between">
+
+            <div class="d-flex">
+
+              <div class="position-relative">
+
+                <img src="images/searchBlack.png" class="position-absolute search-icon" style="width: 25px;top: 6px;left: 8px;">
+                
+                <input type="text" class="form-control" placeholder="Search here..." style="background: transparent !important; border-radius: 8px !important; padding-left: 40px;" [(ngModel)]="searchValue" (change)="this.getTicketsList();">
+      
+              </div>
+
+              <div style="border: 1px solid #D8D8D8; cursor: pointer;" class="px-3 ms-2 d-flex align-items-center rounded-3" aria-controls="offcanvasRight" data-bs-target="#offcanvasRight" data-bs-toggle="offcanvas">
+
+                <img src="images/filterVapour.png" style="width: 18px;" alt=""><span class="ms-2">Filter</span>
+
+              </div>
+
+            </div>
+
+            <div>
+
+              <button class="btn btn-secondary" (click)="openModal()" >+ Add New</button>
+
+            </div>
+
+          </div>
+
+          <div class="mt-3">
+
+            <div class="table-responsive table-wrapper">
+
+              <table class="table table-borderless align-middle table-scroll">
+
+                <thead class="bg-light text-secondary">
+
+                  <tr>
+
+                    <th class="th-first-field">Ticket Id</th>
+
+                    <th class="th-secound-field">Issue Categories</th>
+
+                    <th>Property</th>
+
+                    <th>Unit</th>
+
+                    <th>Raised Date</th>
+
+                    <th>Completed Date</th>
+                    
+                    <th>TAT (Day / Hour)</th>
+
+                    <th>Assigned Staff</th>
+                    
+                    <th>Staff Mobile No</th>
+                    
+                    <th class="th-status">Status</th>
+                    
+                    <th class="th-action">Action</th>
+
+                  </tr>
+
+                </thead>
+          
+                <tbody>
+
+                  <ng-container *ngIf="(_.size(permissions?.viewPermission.branchIds) > 0 ); else other">
+
+                    <ng-container *ngIf="!_.isEmpty(masterList['tenatTicketList']); else other">
+
+                      <tr *ngFor="let tenant of this.masterList['tenatTicketList']">
+
+                        <td class="td-first-field">
+                          
+                          <div class="d-flex">
+                            
+                            <span class="pt-1">{{ tenant.ticketId }}</span>
+
+                            <img *ngIf="isOverdue(tenant)" class="ms-2" src="images/icons/tickets-overdue-icon.svg" style="width: 16px; margin-right: 0px;" alt="">
+                              
+                            <img *ngIf="tenant?.isEscalated == true" class="ms-1 me-1" src="images/icons/tickets-escalate-icon.svg" style="width: 16px; margin-right: 0px;" alt="">
+                            
+                            <img *ngIf="tenant?.isReOpen == true" class="ms-1 me-1" src="images/icons/tickets-reopen-icon.svg" style="width: 16px;" alt="">
+
+                          </div>
+                        
+                        </td>
+
+                        <td class="td-secound-filed">{{ tenant.issueName?.issueName }}</td>
+
+                        <td>{{ tenant.propertyName?.propertyName }}</td>
+
+                        <td>{{ tenant.unitName?.unitName }}</td>
+
+                        <td>{{ tenant.issueRaisedDate | date: 'dd-MM-yyyy' }}</td>
+
+                        <td>{{ (tenant.completedDate | date: 'dd-MM-yyyy') || '-' }}</td>
+
+                        <td>{{ tenant.tat + ' ' + tenant.tatType }}</td>
+                        
+                        <td>{{ tenant.staffName?.firstName + ' ' +  tenant.staffName?.lastName }}</td>
+                        
+                        <td>{{ tenant.staffName?.mobileNo || '-' }}</td>
+
+                        <td class="td-status">
+
+                          <ng-container *ngIf="!_.isEmpty(tenant?.feedbackDescription); else showFeedback">
+                          
+                            <font color="#6C757D" *ngIf="tenant.ticketStatus == 'closed'">
+                          
+                              {{ tenant.ticketStatus | titlecase }}
+                          
+                            </font>
+
+                            <font color="#34C759" *ngIf="tenant.ticketStatus == 'resolved'">
+                       
+                              {{ tenant.ticketStatus | titlecase }}
+                        
+                            </font>
+
+                          </ng-container>
+
+                          <ng-template #showFeedback>
+                     
+                            <button class="btn btn-sm" style="color: #0288D1; background-color: #428ac131; box-shadow: 0px 1px 2px 0px #428ac1;" *ngIf="tenant.ticketStatus == 'closed' || tenant.ticketStatus == 'resolved'" (click)="openfeedBackModal(tenant)">Feedback</button>
+
+                          </ng-template>
+
+                          <font color="#FF9500" *ngIf="tenant.ticketStatus == 'pending'">{{ tenant.ticketStatus | titlecase }}</font>
+
+                          <font color="#FFCC00" *ngIf="tenant.ticketStatus == 'assigned'">{{ tenant.ticketStatus | titlecase }}</font>
+
+                          <font color="#5C57EE" *ngIf="tenant.ticketStatus == 'wip'">{{ tenant.ticketStatus | uppercase }}</font>
+                          
+                        </td>
+                        
+                        <td class="d-flex justify-content-center td-action">
+
+                          <div class="d-flex align-items-center">
+  
+                            <nav class="navbar navbar-expand-lg navbar-light">
+                    
+                              <div class="navbar-collapse collapse show">
+                      
+                                <ul class="navbar-nav ml-auto navbar-list align-items-center">
+                    
+                                  <li class="nav-item nav-icon">
+                  
+                                    <a class="cursor-pointer" [matMenuTriggerFor]="profileMenu">
+            
+                                      <img src="images/icons/pepicons-pencil.svg" style="width: 26px; height: auto;" alt="">
+            
+                                    </a>
+            
+                                    <mat-menu class="header-mat-menu" #profileMenu="matMenu">
+            
+                                      <div class="btn-container">
+          
+                                        <div>
+
+                                          <div class="action-buttons p-1" (click)="openviewTicketsModal(tenant);">
+          
+                                            <p class="p-2 mb-0">View</p>
+    
+                                          </div>
+
+                                          <div class="action-buttons p-1" (click)="openModal(tenant);">
+          
+                                            <p class="p-2 mb-0">Edit</p>
+    
+                                          </div>
+      
+                                          <div class="action-buttons p-1" (click)="deleteTenantTicket(tenant);">
+          
+                                            <p class="p-2 mb-0">Delete</p>
+    
+                                          </div>
+  
+                                          <div *ngIf="tenant?.isEscalated == false" class="action-buttons p-1" (click)="openEscalateModal(tenant);">
+          
+                                            <p class="p-2 mb-0">Escalate</p>
+    
+                                          </div>
+          
+                                        </div>
+          
+                                      </div>
+            
+                                    </mat-menu>
+                  
+                                  </li>
+                    
+                                </ul>
+                      
+                              </div>
+                        
+                            </nav>
+  
+                          </div>
+  
+                        </td>
+
+                      </tr>
+
+                    </ng-container>
+
+                    <ng-template #other>
+
+                      <tr>
+
+                        <td colspan="11" style="text-align: center !important;">No Records Found</td>
+
+                      </tr>
+
+                    </ng-template>
+
+                  </ng-container>
+
+                  <ng-template #other>
+
+                    <tr>
+  
+                      <td colspan="11" style="text-align: center !important;"><img style="width: 16px !important;" class="me-2" src="images/lock2.png" alt="">Access Denied </td>
+  
+                    </tr>
+
+                  </ng-template>
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+            <div class="d-flex justify-content-between">
+
+              <div class="mt-2 d-flex">
+
+                <div> <img class="ms-2" src="images/icons/tickets-overdue-icon.svg" style="width: 16px; margin-right: 0px;" alt=""> <small class="ms-1 me-2 fw-400" style="color: #C92E2E;">Overdue</small> </div>
+  
+                <div> <img class="ms-1 me-1" src="images/icons/tickets-escalate-icon.svg" style="width: 16px; margin-right: 0px;" alt=""> <small class="ms-1 me-2 fw-400" style="color: #9C5C2D;">Escalate</small> </div>
+                  
+                <div> <img class="ms-1 me-1" src="images/icons/tickets-reopen-icon.svg" style="width: 16px;" alt=""> <small class="ms-1 fw-400" style="color: #5C57EE;">Reopen</small> </div>
+  
+              </div>
+
+              <div *ngIf="totalCount > 0">
+  
+                <mat-paginator 
+                  class="custom-paginator"
+                  appendTo="body"
+                  [length]="totalCount"
+                  [pageSize]="pageSize"
+                  [pageIndex]="pageIndex"
+                  [pageSizeOptions]="[5, 10, 25, 50]"
+                  (page)="onPageChange($event)">
+                </mat-paginator>
+  
+              </div>
+
+            </div>
+
+            <!-- <div *ngIf="totalCount > 0">
+
+              <mat-paginator 
+                class="custom-paginator"
+                appendTo="body"
+                [length]="totalCount"
+                [pageSize]="pageSize"
+                [pageIndex]="pageIndex"
+                [pageSizeOptions]="[5, 10, 25, 50]"
+                (page)="onPageChange($event)">
+              </mat-paginator>
+
+            </div>  
+
+            <div class="mt-2 d-flex">
+
+              <img class="ms-2" src="images/icons/tickets-overdue-icon.svg" style="width: 16px; margin-right: 0px;" alt=""> <small class="ms-1 me-2 fw-400" style="color: #C92E2E;">Overdue</small>
+                            
+              <img class="ms-1 me-1" src="images/icons/tickets-escalate-icon.svg" style="width: 16px; margin-right: 0px;" alt=""> <small class="ms-1 me-2 fw-400" style="color: #9C5C2D;">Escalate</small>
+              
+              <img class="ms-1 me-1" src="images/icons/tickets-reopen-icon.svg" style="width: 16px;" alt=""> <small class="ms-1 fw-400" style="color: #5C57EE;">Reopen</small>
+
+            </div> -->
+
+          </div>
+
+        </div>
+          
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Feed Back Modal -->
+<ng-template #feedBackModal let-modal modal-sm>
+
+  <div class="modal-header">
+  
+    <div class="d-flex justify-content-between align-items-center w-100" style="height: 40px;">
+
+      <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119 ;">Feed Back :</h6>
+      
+      <i class="bi bi-x-lg pe-2 fw-bold" (click)="modal.close()"></i>
+      
+    </div>
+  
+  </div>
+
+  <div class="modal-body d-flex justify-content-center">
+
+    <div class="row mt-2">
+
+      <div class="col-md-12 text-center ps-4 pe-4">
+
+        <h6 class="text-dark">Rate The Service</h6>
+
+        <p class="text-dard">Please Rate The Service and share your experience to help us improve.</p>
+
+        <div class="d-flex justify-content-center">
+
+          <ng-container *ngFor="let star of stars; let i = index">
+          
+            <i class="bi bi-star-fill" style="width: 20px;" [ngClass]="{ 'text-warning': i < selectedRating }" (click)="setRating(i + 1)" aria-label="rating star"></i>
+          
+          </ng-container>
+        
+        </div>
+
+      </div>
+
+      <div class="col-md-12 mt-3">
+
+        <div class="form-group">
+
+          <label for="discription">Description</label>
+
+          <textarea class="form-control mt-1" id="description" rows="3" placeholder="Enter Description...." [(ngModel)]="feedbackDescription"></textarea>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+
+    <button class="btn btn-outline-secondary mt-3 ms-2" style="cursor: pointer;" (click)="updateTenanantTicket('reopen')">Reopen</button>
+
+    <button class="btn btn-secondary mt-3 mx-2" style="cursor: pointer;" (click)="updateTenanantTicket('submit')">Submit</button>
+
+  </div>
+
+</ng-template>
+
+<!-- View Tenant Tickets -->
+<ng-template #viewTicketsModal let-modal modal-sm>
+
+  <div class="modal-header">
+  
+    <div class="d-flex justify-content-between align-items-center w-100" style="height: 40px;">
+
+      <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119 ;">{{ selectedTicket.tenantName?.firstName + ' ' + selectedTicket.tenantName?.lastName }} - {{ selectedTicket?.ticketId }} &nbsp; :</h6>
+      
+      <i class="bi bi-x-lg pe-2 fw-bold" (click)="modal.close()"></i>
+      
+    </div>
+  
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+
+      <div class="col-md-7" style="border-right: 2px solid #D8D8D8;">
+
+        <p class="text-dark mb-2">Issue Details</p>
+
+        <div class="col-md-12 d-flex mt-2">
+
+          <div class="col-md-5"> <small>Issue Category</small> </div>
+
+          <div class="col-md-1"> <small>:</small> </div>
+          
+          <div class="col-md-6"> <small>{{ selectedTicket?.issueName?.issueName }}</small> </div>
+          
+        </div>
+
+        <div class="col-md-12 d-flex mt-2">
+
+          <div class="col-md-5"> <small>Description</small> </div>
+
+          <div class="col-md-1"> <small>:</small> </div>
+          
+          <div class="col-md-6"> <small>{{ selectedTicket.issueDescription }}</small> </div>
+          
+        </div>
+
+        <div class="col-md-12 d-flex mt-2">
+
+          <div class="col-md-5"> <small>Issue Raised Date</small> </div>
+
+          <div class="col-md-1"> <small>:</small> </div>
+          
+          <div class="col-md-6"> <small>{{ selectedTicket.issueRaisedDate | date: 'dd-MM-yyyy' }}</small> </div>
+          
+        </div>
+
+        <div class="col-md-12 d-flex mt-2">
+
+          <div class="col-md-5"> <small>Due Date</small> </div>
+
+          <div class="col-md-1"> <small>:</small> </div>
+          
+          <div class="col-md-6"> <small>{{ selectedTicket.dueDate }}</small> </div>
+          
+        </div>
+
+        <div class="col-md-12 d-flex mt-2">
+
+          <div class="col-md-5"> <small>TAT</small> </div>
+
+          <div class="col-md-1"> <small>:</small> </div>
+          
+          <div class="col-md-6"> <small>{{ selectedTicket?.tat }} ({{ selectedTicket?.tatType | titlecase }})</small> </div>
+          
+        </div>
+        
+        <div class="col-md-12 d-flex mt-2">
+
+          <div class="col-md-5"> <small>Completed Date</small> </div>
+
+          <div class="col-md-1"> <small>:</small> </div>
+          
+          <div class="col-md-6"> <small>{{ selectedTicket?.completedDate }}</small> </div>
+          
+        </div>
+
+        <div class="col-md-12 mt-2">
+        
+          <small>Image</small><br>
+
+          <div class="d-flex">
+
+            <ng-container *ngIf="selectedTicket.images?.length > 0; else empty">
+
+              <ng-container *ngFor="let img of selectedTicket.images">
+
+                <img class="me-2" [src]="service.getFullImagePath({ imgUrl : img?.path })" alt="Images" style="width: 80px; height: 80px;"> {{ '' }}
+
+              </ng-container>
+
+            </ng-container>
+
+            <ng-template #empty>
+
+              {{ ' - ' }}
+              
+            </ng-template>
+
+          </div>
+
+        </div>
+
+      </div>
+      
+      <div class="col-md-5">
+
+        <p class="text-dark mb-2">Tenant Details</p>
+
+        <div class="col-md-12 d-flex mt-2">
+
+          <div class="col-md-5"> <small>Tenant Name</small> </div>
+
+          <div class="col-md-1"> <small>:</small> </div>
+          
+          <div class="col-md-6"> <small>{{ selectedTicket.tenantName?.firstName + ' ' + selectedTicket.tenantName?.lastName }}</small> </div>
+          
+        </div>
+
+        <div class="col-md-12 d-flex mt-2">
+
+          <div class="col-md-5"> <small>Phone Number</small> </div>
+
+          <div class="col-md-1"> <small>:</small> </div>
+          
+          <div class="col-md-6"> <small>{{ selectedTicket.tenantName?.mobileNo }}</small> </div>
+          
+        </div>
+        
+        <div class="col-md-12 d-flex mt-2">
+
+          <div class="col-md-5"> <small>Property</small> </div>
+
+          <div class="col-md-1"> <small>:</small> </div>
+          
+          <div class="col-md-6"> <small>{{ selectedTicket.propertyName?.propertyName }}</small> </div>
+          
+        </div>
+
+        <div class="col-md-12 d-flex mt-2">
+
+          <div class="col-md-5"> <small>Unit</small> </div>
+
+          <div class="col-md-1"> <small>:</small> </div>
+          
+          <div class="col-md-6"> <small>{{ selectedTicket.unitName?.unitName }}</small> </div>
+          
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</ng-template>
+  
+<!-- Escalate Modal -->
+<ng-template #escalateModal let-modal modal-sm>
+
+  <div class="modal-header">
+  
+    <div class="d-flex justify-content-between align-items-center w-100" style="height: 40px;">
+
+      <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Escalate Remarks :</h6>
+      
+      <i class="bi bi-x-lg pe-2 fw-bold" (click)="modal.close()"></i>
+      
+    </div>
+  
+  </div>
+
+  <div class="modal-body d-flex justify-content-center">
+
+    <div class="row mt-2 w-100">
+
+      <div class="form-group">
+
+        <textarea class="form-control mt-1" id="description" rows="3" placeholder="Enter Escalation Remarks" [(ngModel)]="escalatedDesc"></textarea>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+
+    <button class="btn btn-outline-secondary mt-3 ms-2" (click)="modal.close()">Cancel</button>
+
+    <button class="btn btn-secondary mt-3 mx-2" (click)="this.updateTenanantTicket('submit')">Submit</button>
+
+  </div>
+
+</ng-template>
+
+<!-- Filter Offcanvas -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" style="margin-top: 84px; background-color: #F6F9FC;">
+  
+  <div class="offcanvas-header border-bottom">
+      
+    <h5 class="offcanvas-title" id="offcanvasRightLabel">Filter</h5>
+    
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  
+  </div>
+
+  <div class="offcanvas-body ps-4 pe-4">
+  
+    <form [formGroup]="filterForm">
+
+      <!-- Accordion: Property -->
+      <div class="accordion mt-2" id="accordionProperty">
+  
+        <div class="accordion-item border-0 p-2">
+
+          <h2 class="accordion-header" id="headingProperty">
+
+            <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProperty" aria-expanded="true" aria-controls="collapseProperty" style="background-color: transparent;">Property</button>
+  
+          </h2>
+  
+          <div id="collapseProperty" class="accordion-collapse collapse" aria-labelledby="headingProperty" data-bs-parent="#accordionProperty">
+              
+            <div class="accordion-body w-100 p-0 mt-3">
+
+              <ng-select class="form-control" [items]="masterList['propertyList']" bindLabel="propertyName" bindValue="_id" formControlName="propertyName" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body" placeholder="Select Property">
+
+                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                  <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                      
+                    <div class="d-flex">
+
+                      <span class="ng-value-label ellipsis ms-1">
+
+                        <span>{{ _.get(item,'propertyName') }}</span> 
+
+                      </span>
+
+                      <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                      <span style="width: 1px; height: 20px; background-color: black;"></span>
+                        
+                    </div>
+
+                  </div>
+
+                  <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                    <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                  </div>
+
+                </ng-template>   
+
+                <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                  <div class="form-check d-flex align-items-center"> 
+                      
+                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected('propertyName', item._id)"/>
+
+                    <label class="form-check-label mt-1">{{ item?.propertyName }}</label>
+
+                  </div>
+                      
+                </ng-template>
+            
+              </ng-select>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Accordion: Unit -->
+      <div class="accordion mt-2" id="accordionUnit">
+  
+        <div class="accordion-item border-0 p-2">
+
+          <h2 class="accordion-header" id="headingUnit">
+
+            <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUnit" aria-expanded="true" aria-controls="collapseUnit" style="background-color: transparent;">Unit</button>
+  
+          </h2>
+  
+          <div id="collapseUnit" class="accordion-collapse collapse" aria-labelledby="headingUnit" data-bs-parent="#accordionUnit">
+              
+            <div class="accordion-body w-100 p-0 mt-3">
+
+              <ng-select class="form-control" [items]="masterList['unitList']" bindLabel="unitName" bindValue="_id" formControlName="unitName" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body" placeholder="Select Unit">
+
+                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                  <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                    
+                    <div class="d-flex">
+
+                      <span class="ng-value-label ellipsis ms-1">
+
+                        <span>{{ _.get(item,'unitName') }}</span> 
+
+                      </span>
+
+                      <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                      <span style="width: 1px; height: 20px; background-color: black;"></span>
+                        
+                    </div>
+
+                  </div>
+
+                  <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                    <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                  </div>
+
+                </ng-template> 
+
+                <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                  <div class="form-check d-flex align-items-center"> 
+                      
+                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected('unitName', item._id)"/>
+
+                    <label class="form-check-label mt-1">{{ item?.unitName }}</label>
+
+                  </div>
+                      
+                </ng-template>
+            
+              </ng-select>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Accordian: Raised Date Date -->
+      <div class="accordion mt-2" id="accordionRaisedDate">
+  
+        <div class="accordion-item border-0 p-2">
+
+          <h2 class="accordion-header" id="headingRaisedDate">
+
+            <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRaisedDate" aria-expanded="true" aria-controls="collapseRaisedDate" style="background-color: transparent;">Raised Date</button>
+  
+          </h2>
+
+          <div class="row">
+
+            <div class="col-md-6">
+
+              <div id="collapseRaisedDate" class="accordion-collapse collapse" aria-labelledby="headingRaisedDate" data-bs-parent="#accordionRaisedDate">
+          
+                <div class="accordion-body w-100 p-0 mt-3">
+
+                  <div class="input-group">
+
+                    <!-- <input type="date" class="form-control" id="raisedStartDate" autocomplete="off" formControlName="raisedStartDate"placeholder="From Date"> -->
+
+                    <input type="text" class="form-control" id="raisedStartDate" autocomplete="off" formControlName="raisedStartDate"[matDatepicker]="picker" placeholder="From Date">
+              
+                    <mat-datepicker-toggle matSuffix [for]="picker" class="input-group-text border" style="border-radius: 0px 5px 5px 0px !important; height: 38px">
+
+                      <ng-container matDatepickerToggleIcon>
+                          
+                        <i class="bi bi-calendar4-week fs-5 text-center"></i>
+                      
+                      </ng-container>
+                      
+                    </mat-datepicker-toggle>
+            
+                    <mat-datepicker #picker></mat-datepicker>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <div class="col-md-6">
+
+              <div id="collapseRaisedDate" class="accordion-collapse collapse" aria-labelledby="headingRaisedDate" data-bs-parent="#accordionRaisedDate">
+          
+                <div class="accordion-body w-100 p-0 mt-3">
+
+                  <div class="input-group">
+
+                    <!-- <input type="date" class="form-control" id="raisedEndDate" autocomplete="off" formControlName="raisedEndDate" placeholder="To Date"> -->
+                  
+                    <input type="text" class="form-control" id="raisedEndDate" autocomplete="off" formControlName="raisedEndDate" [matDatepicker]="picker1" placeholder="To Date">
+              
+                    <mat-datepicker-toggle matSuffix [for]="picker1" class="input-group-text border" style="border-radius: 0px 5px 5px 0px !important; height: 38px">
+
+                      <ng-container matDatepickerToggleIcon>
+                          
+                        <i class="bi bi-calendar4-week fs-5 text-center"></i>
+                      
+                      </ng-container>
+                        
+                    </mat-datepicker-toggle>
+            
+                    <mat-datepicker #picker1></mat-datepicker>
+
+                  </div>
+
+                </div>
+
+              </div>
+                
+            </div>
+
+          </div>
+
+        </div>
+
+      </div> 
+
+      <!-- Accordian:Completed Date -->
+      <div class="accordion mt-2" id="accordionCompletedDate">
+  
+        <div class="accordion-item border-0 p-2">
+
+          <h2 class="accordion-header" id="headingCompletedDate">
+
+            <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCompletedDate" aria-expanded="true" aria-controls="collapseCompletedDate" style="background-color: transparent;">Completed Date</button>
+  
+          </h2>
+
+          <div class="row">
+
+            <div class="col-md-6">
+
+              <div id="collapseCompletedDate" class="accordion-collapse collapse" aria-labelledby="headingCompletedDate" data-bs-parent="#accordionCompletedDate">
+          
+                <div class="accordion-body w-100 p-0 mt-3">
+
+                  <div class="input-group">
+
+                    <!-- <input type="date" class="form-control" id="completedStartDate" autocomplete="off" formControlName="completedStartDate" placeholder="From Date"> -->
+                  
+                    <input type="text" class="form-control" id="completedStartDate" autocomplete="off" formControlName="completedStartDate"[matDatepicker]="picker2" placeholder="From Date">
+              
+                    <mat-datepicker-toggle matSuffix [for]="picker2" class="input-group-text border" style="border-radius: 0px 5px 5px 0px !important; height: 38px">
+
+                      <ng-container matDatepickerToggleIcon>
+                          
+                        <i class="bi bi-calendar4-week fs-5 text-center"></i>
+                      
+                      </ng-container>
+                      
+                    </mat-datepicker-toggle>
+              
+                    <mat-datepicker #picker2></mat-datepicker>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <div class="col-md-6">
+
+              <div id="collapseCompletedDate" class="accordion-collapse collapse" aria-labelledby="headingCompletedDate" data-bs-parent="#accordionCompletedDate">
+          
+                <div class="accordion-body w-100 p-0 mt-3">
+
+                  <div class="input-group">
+
+                    <!-- <input type="date" class="form-control" id="completedEndDate" autocomplete="off" formControlName="completedEndDate" placeholder="To Date"> -->
+                  
+                    <input type="text" class="form-control" id="completedEndDate" autocomplete="off" formControlName="completedEndDate"[matDatepicker]="picker3" placeholder="To Date">
+              
+                    <mat-datepicker-toggle matSuffix [for]="picker3" class="input-group-text border" style="border-radius: 0px 5px 5px 0px !important; height: 38px">
+
+                      <ng-container matDatepickerToggleIcon>
+                            
+                        <i class="bi bi-calendar4-week fs-5 text-center"></i>
+                        
+                      </ng-container>
+                        
+                    </mat-datepicker-toggle>
+              
+                    <mat-datepicker #picker3></mat-datepicker>
+
+                  </div>
+
+                </div>
+
+              </div>
+                
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+     <!-- Accordion: TAT -->
+      <!-- <div class="accordion mt-2" id="accordionTotalAmount">
+
+        <div class="accordion-item border-0 p-2 rounded shadow-sm bg-white">
+        
+          <h2 class="accordion-header" id="headingTotalAmount">
+        
+            <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTotalAmount" 
+            aria-expanded="true" aria-controls="collapseTotalAmount" style="background-color: transparent">TAT</button>
+
+          </h2>
+          
+          <div id="collapseTotalAmount" class="accordion-collapse collapse" aria-labelledby="headingTotalAmount" data-bs-parent="#accordionTotalAmount">
+          
+            <div class="accordion-body w-100 p-0 mt-3">
+          
+              <div class="range-slider-container p-3 rounded">
+          
+                Sliders
+                <div class="range-slider">
+               
+                  <input type="range" class="amount-slider" [(ngModel)]="tatMinValue" [ngModelOptions]="{standalone: true}" [min]="tatSliderMin" [max]="tatSliderMax" [step]="1" (input)="onTatSliderChange()" />
+          
+                  <input type="range" class="amount-slider" [(ngModel)]="tatMaxValue" [ngModelOptions]="{standalone: true}" [min]="tatSliderMin" [max]="tatSliderMax" [step]="1" (input)="onTatSliderChange()" />
+          
+                </div>
+
+                Inputs
+                <div class="amount-inputs d-flex justify-content-between mt-3">
+         
+                  <div class="input-group">
+                    
+                    <input type="number" class="form-control border-0 ps-2" [(ngModel)]="tatMinValue" [ngModelOptions]="{standalone: true}" [min]="tatSliderMin" [max]="tatMaxValue" (input)="onTatSliderChange()" />
+                    
+                    <span class="input-group-text text-dark border-0">Days</span>
+
+                  </div>
+         
+                  <span class="mx-3 mt-2 fw-bold">—</span>
+         
+                  <div class="input-group">
+                    
+                    <input type="number" class="form-control border-0 ps-2" [(ngModel)]="tatMaxValue" [ngModelOptions]="{standalone: true}" [min]="tatMinValue" [max]="tatSliderMax" (input)="onTatSliderChange()" />
+                    
+                    <span class="input-group-text text-dark border-0">Days</span>
+
+                  </div>
+         
+                </div>
+         
+              </div>
+         
+            </div>
+         
+          </div>
+ 
+        </div>
+ 
+      </div> -->
+
+      <!-- Accordion: Staff -->
+      <div class="accordion mt-2" id="accordionStaff">
+  
+        <div class="accordion-item border-0 p-2">
+
+          <h2 class="accordion-header" id="headingStaff">
+
+            <button class="accordion-button p-2 text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStaff" aria-expanded="true" aria-controls="collapseStaff" style="background-color: transparent;">Staff</button>
+  
+          </h2>
+  
+          <div id="collapseStaff" class="accordion-collapse collapse" aria-labelledby="headingStaff" data-bs-parent="#accordionStaff">
+              
+            <div class="accordion-body w-100 p-0 mt-3">
+
+              <ng-select class="form-control" [items]="masterList['staffList']" bindLabel="staffName" bindValue="_id" formControlName="staffName" [multiple]="true" [closeOnSelect]="false" [clearable]="false" [virtualScroll]="true" [searchable]="true" appendTo="body" placeholder="Select Staff">
+
+                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                  <div class="ng-value multiple" *ngFor="let item of items | slice: 0 : 1">
+                      
+                    <div class="d-flex">
+
+                      <span class="ng-value-label ellipsis ms-1">
+
+                        <span>{{ _.get(item,'firstName') + ' ' + _.get(item,'lastName') }}</span> 
+
+                      </span>
+
+                      <span (click)="clear(item)" class="ms-2 me-1 fs-6 fw-200" style="cursor: pointer;">&times;</span>
+
+                      <span style="width: 1px; height: 20px; background-color: black;"></span>
+                        
+                    </div>
+
+                  </div>
+
+                  <div class="ng-value multiple ms-2" *ngIf="items.length > 1">
+
+                    <span class="ng-value-label ellipsis"> + {{ items.length - 1 }} more</span>
+
+                  </div>
+
+                </ng-template>   
+
+                <ng-template class="mt-2" ng-option-tmp let-item="item" let-index="index">
+
+                  <div class="form-check d-flex align-items-center"> 
+                      
+                    <input type="checkbox" class="form-check-input me-2" [checked]="isSelected('staffName', item._id)"/>
+
+                    <span>{{ item?.firstName + ' ' + item?.lastName }}</span> 
+
+                  </div>
+                      
+                </ng-template>
+            
+              </ng-select>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Accordion: Status -->
+      <div class="accordion mt-2" id="accordionStatus">
+
+        <div class="accordion-item border-0 p-2">
+        
+          <h2 class="accordion-header" id="headingStatus">
+        
+            <button class="accordion-button p-2 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="true" aria-controls="collapseStatus" style="background-color: transparent;">Status</button>
+
+          </h2>
+
+          <div id="collapseStatus" class="accordion-collapse collapse" aria-labelledby="headingStatus" data-bs-parent="#accordionStatus">
+
+            <div class="accordion-body w-100 p-0 mt-3">
+
+              <div class="d-flex align-items-center mt-3" *ngFor="let status of statusOptions">
+
+                <div class="form-check">
+                
+                  <input class="form-check-input me-3 custom-checkbox" type="checkbox" [value]="status.value" [(ngModel)]="status.checked" [ngModelOptions]="{ standalone: true }">
+
+                </div>
+
+                <h6 class="mb-0">{{ status.label }}</h6>
+              
+              </div>
+
+            </div>
+
+          </div>
+        
+        </div>
+      
+      </div>
+
+    </form>
+
+  </div>
+
+  <div class="offcanvas-footer d-flex justify-content-end border-bottom border-top p-3">
+    
+    <button class="btn btn-sm btn-outline-secondary me-3" data-bs-dismiss="offcanvas">Close</button>
+
+    <button class="btn btn-sm btn-secondary" (click)="getTicketsList()" data-bs-dismiss="offcanvas">Apply</button>
+  
+  </div>
+
+</div>

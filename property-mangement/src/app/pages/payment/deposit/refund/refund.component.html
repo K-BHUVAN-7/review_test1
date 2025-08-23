@@ -1,0 +1,283 @@
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h5 class="text-dark"></h5>
+
+        <small><span class="text-primary">Deposit</span><img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-primary" style="cursor: pointer;" (click)="this.service.navigate({ 'url': 'app/payment/deposit' })">Deposit List</span> <img src="images/breadcrumbs.png" alt="" style="width: 16px;" class="ms-1 me-1"> <span class="text-dark">Refund Deposit</span></small>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-8">
+
+            <form  *ngIf="!_.isEmpty(refundForm.value)" [formGroup]="refundForm"  class="horizontal-form-fields">
+    
+                <div class="card border-0" style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.051);">
+    
+                    <div class="card-header bg-white">
+        
+                        <div class="d-flex justify-content-between align-items-center" style="height: 40px;">
+          
+                            <h6 class="ps-2 my-0" style="font-weight: 600; border-left: 3px solid #D2A119;">Receive Deposit :</h6>
+                          
+                        </div>
+                          
+                    </div>
+    
+                    <div class="card-body">
+    
+                        <div class="row">
+
+                            <ng-container>
+                                                              
+                                <div class="col-md-6">
+    
+                                    <div class="form-group required mb-3">
+
+                                        <label for="propertyName" class="mb-2">Property</label>
+
+                                        <input type="text" class="form-control" id="propertyName" formControlName="propertyName" readonly [value]="(!_.isEmpty(editData.property) ? editData.property?.propertyName : '')" placeholder="Select Property">
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-6">
+    
+                                    <div class="form-group required mb-3">
+
+                                        <label for="unit" class="mb-2">Unit</label>
+
+                                        <input type="text" class="form-control" id="unitName" formControlName="unitName" readonly [value]="(!_.isEmpty(editData?.unit) ? editData.unit?.unitName : '')" placeholder="Select unit">
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-3">
+
+                                    <div class="form-group mb-3">
+
+                                        <label for="depositAmount" class="mb-2">Received Amount</label>
+
+                                        <input type="text" class="form-control" id="depositAmount" formControlName="depositAmount" readonly placeholder="Enter Deposit Amount" [ngClass]="{ 'is-invalid': (f.depositAmount?.touched || formSubmitted) && f.depositAmount.errors }" numbersOnly>
+
+                                    </div>
+
+                                </div>
+    
+                                <div class="col-md-3">
+
+                                    <div class="form-group mb-3">
+                                    
+                                        <label for="paymentDate" class="mb-2">Refund Date</label>
+                                
+                                        <div class="input-group">
+                                        
+                                            <input type="text" class="form-control" id="paymentDate" autocomplete="off" formControlName="paymentDate"[matDatepicker]="picker1" [ngClass]="{ 'is-invalid': formSubmitted && f.paymentDate.errors }" placeholder="Select Refund Date"/>
+                                    
+                                            <mat-datepicker-toggle matSuffix [for]="picker1" class="input-group-text border" style="border-radius: 0px 5px 5px 0px !important; height: 38px">
+
+                                                <ng-container matDatepickerToggleIcon>
+                                                    
+                                                    <i class="bi bi-calendar4-week fs-5 text-center"></i>
+                                                
+                                                </ng-container>
+                                                
+                                            </mat-datepicker-toggle>
+                                    
+                                            <mat-datepicker #picker1></mat-datepicker>
+
+                                            <div *ngIf="(f.paymentDate?.touched || formSubmitted) && f.paymentDate.errors" class="invalid-feedback">
+            
+                                                <div *ngIf="f.paymentDate.errors.required">Paid Amount is required</div>
+                        
+                                            </div>
+
+                                        </div>
+                                        
+                                    </div>
+                                
+                                </div>
+
+                                <div class="col-md-3">
+
+                                    <div class="form-group mb-3">
+
+                                        <label for="refundAmount" class="mb-2">Refund Amount</label>
+
+                                        <input type="text" class="form-control" id="refundAmount" formControlName="refundAmount" placeholder="Enter Refund Amount" [ngClass]="{ 'is-invalid': (f.refundAmount?.touched || formSubmitted) && f.refundAmount.errors }" numbersOnly>
+
+                                        <div *ngIf="(f.refundAmount?.touched || formSubmitted) && f.refundAmount.errors" class="invalid-feedback">
+            
+                                            <div *ngIf="f.refundAmount.errors.required">Amount Paid is required</div>
+
+                                            <div *ngIf="f.refundAmount.errors.amountExceedsDue">Exceeds due amount</div>
+                    
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-3">
+        
+                                    <div class="form-group mb-3">
+
+                                        <label for="paymentMode" class="mb-2">Refund Mode</label>
+
+                                        <ng-select name="paymentMode" id="paymentMode" class="form-control" formControlName="paymentMode" [ngClass]="{ 'is-invalid': (f.paymentMode?.touched || formSubmitted) && f.paymentMode.errors }" appendTo="body" [clearable]="false" placeholder="Select Refund Mode">
+
+                                            <ng-option *ngFor="let paymentMode of paymentModeList" [value]="paymentMode?.value">{{ paymentMode.label }}</ng-option>
+
+                                        </ng-select>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-3" *ngIf="this.refundForm?.get('paymentMode')?.value != 'cash'">
+
+                                    <div class="form-group required mb-3">
+
+                                        <label for="transactionId" class="mb-2">Transaction Id</label>
+
+                                        <input type="text" class="form-control" id="transactionId" formControlName="transactionId" placeholder="Enter Transaction Id" [ngClass]="{ 'is-invalid': (f.transactionId?.touched || formSubmitted) && f.transactionId.errors }">
+
+                                        <div *ngIf="(f.transactionId?.touched || formSubmitted) && f.transactionId.errors" class="invalid-feedback">
+            
+                                            <div *ngIf="f.transactionId.errors.required">Transaction Id is required</div>
+                    
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-3" *ngIf="this.refundForm?.get('paymentMode')?.value == 'netBanking'">
+
+                                    <div class="form-group required mb-3" >
+
+                                        <label for="accountNo" class="mb-2">Account Number</label>
+
+                                        <input type="text" class="form-control" id="accountNo" formControlName="accountNo" placeholder="Enter Account No" [ngClass]="{ 'is-invalid': (f.accountNo?.touched || formSubmitted) && f.accountNo.errors }">
+
+                                        <div *ngIf="(f.accountNo?.touched || formSubmitted) && f.accountNo.errors" class="invalid-feedback">
+            
+                                            <div *ngIf="f.accountNo.errors.required">Account Number is required</div>
+                    
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-3" *ngIf="this.refundForm?.get('paymentMode')?.value == 'cheque'">
+
+                                    <div class="form-group required mb-3" >
+
+                                        <label for="refNo" class="mb-2">Reference Number</label>
+
+                                        <input type="text" class="form-control" id="refNo" formControlName="refNo" placeholder="Enter Ref No" [ngClass]="{ 'is-invalid': (f.refNo?.touched || formSubmitted) && f.refNo.errors }">
+
+                                        <div *ngIf="(f.refNo?.touched || formSubmitted) && f.refNo.errors" class="invalid-feedback">
+            
+                                            <div *ngIf="f.refNo.errors.required">Reference Number is required</div>
+                    
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-3" *ngIf="this.refundForm?.get('paymentMode')?.value != 'cash' && this.refundForm?.get('paymentMode')?.value != 'upi'">
+            
+                                    <div class="form-group required mb-3">
+        
+                                        <label for="bank" class="mb-2">Bank</label>
+        
+                                        <input type="text" class="form-control" id="bank" formControlName="bank" placeholder="Enter Bank" [ngClass]="{ 'is-invalid': (f.bank?.touched || formSubmitted) && f.bank.errors }">
+        
+                                        <div *ngIf="(f.bank?.touched || formSubmitted) && f.bank.errors" class="invalid-feedback">
+            
+                                            <div *ngIf="f.bank.errors.required">Bank is required</div>
+                    
+                                        </div>
+        
+                                    </div>
+        
+                                </div>
+
+                                <div class="col-md-3">
+        
+                                    <div class="form-group required mb-3" *ngIf="this.refundForm?.get('paymentMode')?.value != 'cash' && this.refundForm?.get('paymentMode')?.value != 'upi'">
+        
+                                        <label for="branch" class="mb-2">Branch</label>
+        
+                                        <input type="text" class="form-control" id="branch" formControlName="branch" placeholder="Enter Branch" [ngClass]="{ 'is-invalid': (f.branch?.touched || formSubmitted) && f.branch.errors }">
+        
+                                        <div *ngIf="(f.branch?.touched || formSubmitted) && f.branch.errors" class="invalid-feedback">
+            
+                                            <div *ngIf="f.branch.errors.required">branch is required</div>
+                    
+                                        </div>
+        
+                                    </div>
+        
+                                </div>
+
+                                <div class="col-md-3" *ngIf="this.refundForm?.get('paymentMode')?.value == 'cheque'">
+        
+                                    <div class="form-group required mb-3">
+        
+                                        <label for="chequeNo" class="mb-2">Cheque No</label>
+        
+                                        <input type="text" class="form-control" id="chequeNo" formControlName="chequeNo" placeholder="Enter Cheque No" [ngClass]="{ 'is-invalid': (f.chequeNo?.touched || formSubmitted) && f.chequeNo.errors }">
+        
+                                        <div *ngIf="(f.chequeNo?.touched || formSubmitted) && f.chequeNo.errors" class="invalid-feedback">
+            
+                                            <div *ngIf="f.chequeNo.errors.required">Cheque No is required</div>
+                    
+                                        </div>
+        
+                                    </div>
+        
+                                </div>
+                                
+                                <div class="col-md-12">
+
+                                    <div class="form-group mb-3">
+
+                                        <label for="otherDetails" class="mb-2">Other Details</label>
+                                    
+                                        <textarea class="form-control" id="otherDetails" formControlName="otherDetails" rows="3" [ngClass]="{ 'is-invalid': (f.otherDetails?.touched || formSubmitted) && f.otherDetails.errors }" placeholder="Enter Other Details...."></textarea>
+                                  
+                                    </div>
+
+                                </div>
+
+                            </ng-container>
+
+                        </div>
+    
+                    </div>
+    
+                </div>
+    
+            </form>
+
+            <div class="d-flex justify-content-end mt-3 mb-3">
+
+                <button class="btn btn-outline-secondary mt-3 ms-2" (click)=" this.service.navigate({ 'url': 'app/payment/deposit' })">Discard</button>
+
+                <button class="btn btn-secondary mt-3 mx-2" (click)="submit()">Save</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
