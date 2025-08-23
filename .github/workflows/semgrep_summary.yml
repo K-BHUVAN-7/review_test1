@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write  # Add permission to write PR comments
 
 jobs:
   semgrep_scan:
@@ -18,20 +19,34 @@ jobs:
       - name: Install Semgrep
         run: python -m pip install semgrep
 
-      - name: Run Semgrep and Fail on Findings
+      - name: Run Semgrep and Generate JSON
         run: |
           semgrep ci \
             --config "rules.yaml" \
             --no-suppress-errors \
-            --json > semgrep.json  # Generate JSON for sending
+            --json > semgrep.json || true  # Don't fail the step, let webhook handle it
+        continue-on-error: true
 
       - name: Send Results to Central Webhook
-        if: always()  # Runs even if scan fails
+        if: always()  # Always run, even if semgrep found issues
         env:
-          WEBHOOK_URL: https://semgrep-receiver.onrender.com/receiver  # Your central Render URL
-          API_TOKEN: ${{ secrets.API_TOKEN }}  # Shared token
+          WEBHOOK_URL: https://semgrep-receiver.onrender.com/receiver
+          API_TOKEN: ${{ secrets.API_TOKEN }}
         run: |
           curl -v -X POST "$WEBHOOK_URL" \
             -H "Authorization: Bearer $API_TOKEN" \
             -H "Content-Type: application/json" \
+            -H "X-GitHub-Repository-Owner: ${{ github.repository_owner }}" \
+            -H "X-GitHub-Repository-Name: ${{ github.event.repository.name }}" \
+            -H "X-GitHub-PR-Number: ${{ github.event.pull_request.number }}" \
             -d @semgrep.json
+
+      - name: Check Semgrep Results
+        run: |
+          # Check if there were any ERROR severity findings
+          if jq -e '.results[] | select(.severity == "ERROR")' semgrep.json > /dev/null; then
+            echo "❌ Critical security issues found. Check the PR comment for details."
+            exit 1
+          else
+            echo "✅ No critical issues found."
+          fi
